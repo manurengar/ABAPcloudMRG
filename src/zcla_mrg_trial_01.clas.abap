@@ -13,7 +13,9 @@ CLASS zcla_mrg_trial_01 DEFINITION
       read_by_assoc,
       read_multi_entity,
       create_new_record,
-      create_by_assoc.
+      create_by_assoc,
+      modify_entity,
+      delete_entity.
 ENDCLASS.
 
 
@@ -27,10 +29,9 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
     me->read_by_assoc(  ).
     me->read_multi_entity( ).
     "me->create_new_record( ).
-    me->create_by_assoc( ).
-*    out->next_section( 'Read Entities using association' ).
-*    out->write( data = read_by_asso name = '/DMO/I_Booking_U' ).
-*    out->write( data = links name = 'Links' ).
+    "me->create_by_assoc( ).
+    "me->modify_entity( ).
+    me->delete_entity( ).
   ENDMETHOD.
   METHOD read_entities_example.
     " Method to use statement READ ENTITIES
@@ -172,7 +173,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
               customer_id    = '000001'
               carrier_id     = 'AA'
               connection_id  = '0018'
-              flight_date    = conv d( '20251024' )
+              flight_date    = CONV d( '20251024' )
               booking_status = 'N' " New
               currency_code  = 'EUR' )
 
@@ -182,7 +183,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
               customer_id    = '000002'
               carrier_id     = 'LH'
               connection_id  = '0400'
-              flight_date    = conv d( '20251026' )
+              flight_date    = CONV d( '20251026' )
               booking_status = 'N' " New
               currency_code  = 'EUR' )
         )
@@ -230,4 +231,47 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+  METHOD modify_entity.
+    DATA keys TYPE TABLE FOR READ IMPORT /DMO/I_Travel_M\\travel.
+
+    keys = VALUE #( ( %tky-travel_id = '00004053' )
+                    ( %tky-travel_id = '00004052' ) ).
+
+    MODIFY ENTITIES OF /dmo/i_travel_m
+        ENTITY travel
+        UPDATE
+            FIELDS ( overall_status )
+        WITH VALUE #( FOR key IN keys ( %tky = key-%tky
+                                        overall_status = 'A' ) )
+        FAILED   DATA(update_failed)
+        REPORTED DATA(update_reported).
+
+    IF update_failed IS INITIAL.
+      COMMIT ENTITIES
+        RESPONSE OF /dmo/i_travel_m
+        FAILED     DATA(commit_failed)
+        REPORTED   DATA(commit_reported).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD delete_entity.
+    DATA keys TYPE TABLE FOR READ IMPORT /DMO/I_Travel_M\\travel.
+
+    keys = VALUE #( ( %tky-travel_id = '00004053' )
+                    ( %tky-travel_id = '00004052' ) ).
+
+    MODIFY ENTITIES OF /dmo/i_travel_m
+        ENTITY travel
+        DELETE
+        FROM VALUE #( FOR key IN keys ( %tky = key-%tky ) )
+        FAILED   DATA(update_failed)
+        REPORTED DATA(update_reported).
+
+    IF update_failed IS INITIAL.
+      COMMIT ENTITIES
+        RESPONSE OF /dmo/i_travel_m
+        FAILED     DATA(commit_failed)
+        REPORTED   DATA(commit_reported).
+    ENDIF.
+  ENDMETHOD.
 ENDCLASS.
