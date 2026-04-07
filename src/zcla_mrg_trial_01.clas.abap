@@ -15,7 +15,9 @@ CLASS zcla_mrg_trial_01 DEFINITION
       create_new_record,
       create_by_assoc,
       modify_entity,
-      delete_entity.
+      delete_entity,
+      get_permission,
+      execute_action.
 ENDCLASS.
 
 
@@ -24,14 +26,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
 
 
   METHOD main.
-
-    me->read_entities_example( ).
-    me->read_by_assoc(  ).
-    me->read_multi_entity( ).
-    "me->create_new_record( ).
-    "me->create_by_assoc( ).
-    "me->modify_entity( ).
-    me->delete_entity( ).
+    me->get_permission( ).
   ENDMETHOD.
   METHOD read_entities_example.
     " Method to use statement READ ENTITIES
@@ -274,4 +269,49 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
         REPORTED   DATA(commit_reported).
     ENDIF.
   ENDMETHOD.
+  METHOD execute_action.
+    DATA keys_for_action TYPE TABLE FOR ACTION IMPORT /dmo/i_travel_m~acceptTravel.
+
+    keys_for_action = VALUE #( ( travel_id = '00000017' )
+                               ( travel_id = '00000018' ) ).
+
+    MODIFY ENTITIES OF /dmo/i_travel_m
+            ENTITY travel
+            EXECUTE acceptTravel
+            FROM keys_for_action
+            REPORTED DATA(t_reported)
+            FAILED   DATA(t_failed).
+
+    IF t_failed IS INITIAL.
+      COMMIT ENTITIES
+           RESPONSE OF /dmo/i_travel_m
+           FAILED     DATA(commit_failed)
+           REPORTED   DATA(commit_reported).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD get_permission.
+    DATA request_global TYPE STRUCTURE FOR PERMISSIONS REQUEST /DMO/I_Travel_M.
+
+    " Check for creation process
+    request_global-%create = if_abap_behv=>mk-on.
+
+    GET PERMISSIONS ONLY GLOBAL AUTHORIZATION ENTITY /DMO/I_Travel_M
+    REQUEST request_global
+    RESULT DATA(result)
+    FAILED DATA(fail)
+    REPORTED DATA(report).
+
+
+    IF result-global-%create = if_abap_behv=>auth-allowed.
+      DATA(a) = ''.
+    ELSEIF result-global-%create = if_abap_behv=>auth-unauthorized.
+      a = 'x'.
+    ENDIF.
+
+    IF fail IS NOT INITIAL.
+
+    ENDIF.
+  ENDMETHOD.
+
 ENDCLASS.

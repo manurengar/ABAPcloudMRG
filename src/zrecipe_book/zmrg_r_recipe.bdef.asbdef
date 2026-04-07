@@ -1,0 +1,114 @@
+managed implementation in class zbp_mrg_r_recipe unique;
+strict ( 2 );
+with draft;
+
+define behavior for zmrg_r_recipe alias Recipe
+persistent table zmrg_recipe
+draft table zmrg_recipe_d
+with additional save
+lock master
+total etag LastChangedAt
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create ( authorization : global );
+  update;
+  delete;
+
+  field ( readonly ) RecipeId;
+
+  field ( readonly )
+  CreatedAt,
+  CreatedBy,
+  LastChangedAt,
+  LastChangedBy,
+  LocalLastChangedAt,
+  LocalLastChangedBy;
+
+  association _Ingredient { create; with draft; }
+  association _Review { create; with draft; }
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  mapping for zmrg_recipe
+    {
+      RecipeId           = recipe_id;
+      RecipeName         = recipe_name;
+      RecipeText         = recipe_text;
+      Published          = published;
+      CreatedBy          = created_by;
+      CreatedAt          = created_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+      LastChangedBy      = last_changed_by;
+    }
+}
+
+define behavior for zmrg_r_ingredient alias Ingredient
+persistent table zmrg_ingredient
+draft table zmrg_ingredien_d
+lock dependent by _Recipe
+authorization dependent by _Recipe
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  field ( readonly ) RecipeId;
+  field ( readonly : update ) IngredientId;
+  field ( mandatory : create ) IngredientId;
+
+  association _Recipe { with draft; }
+  mapping for zmrg_ingredient
+    {
+      RecipeId           = recipe_id;
+      IngredientId       = ingredient_id;
+      Name               = name;
+      Quantity           = quantity;
+      Unit               = unit;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+      LastChangedBy      = last_changed_by;
+      CreatedAt          = created_at;
+      CreatedBy          = created_by;
+    }
+}
+
+define behavior for zmrg_r_review alias Review
+persistent table zmrg_review
+draft table zmrg_review_d
+lock dependent by _Recipe
+authorization dependent by _Recipe
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  field ( readonly )
+  ReviewId,
+  RecipeId;
+  field ( numbering : managed ) ReviewId;
+
+  association _Recipe { with draft; }
+
+  mapping for zmrg_review
+    {
+      ReviewId           = review_id;
+      RecipeId           = recipe_id;
+      Reviewtext         = review_text;
+      Username           = username;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+      LastChangedBy      = last_changed_by;
+      CreatedAt          = created_at;
+      CreatedBy          = created_by;
+      Attachment         = attachment;
+      Filename           = filename;
+      Mimetype           = mimetype;
+    }
+}
