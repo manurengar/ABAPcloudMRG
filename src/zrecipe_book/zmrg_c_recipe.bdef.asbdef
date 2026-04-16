@@ -1,0 +1,33 @@
+projection;
+strict ( 2 );
+use draft;
+
+define behavior for zmrg_c_recipe alias Recipe
+use etag
+{
+  use create;
+  use update;
+  use delete;
+
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+  use association _Ingredient { create; with draft; }
+  use association _Review { create; with draft; }
+
+}
+
+define behavior for zmrg_c_ingredient alias Ingredient {
+    use update;
+    use delete;
+    use association _Recipe { with draft; }
+}
+
+define behavior for zmrg_c_review alias Review {
+    use update;
+    use delete;
+    use association _Recipe { with draft; }
+}
