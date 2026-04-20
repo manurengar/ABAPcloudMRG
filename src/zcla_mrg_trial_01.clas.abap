@@ -17,7 +17,8 @@ CLASS zcla_mrg_trial_01 DEFINITION
       modify_entity,
       delete_entity,
       get_permission,
-      execute_action.
+      execute_action,
+    create_travel_with_booking.
 ENDCLASS.
 
 
@@ -28,6 +29,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
   METHOD main.
     me->get_permission( ).
   ENDMETHOD.
+
   METHOD read_entities_example.
     " Method to use statement READ ENTITIES
     DATA keys TYPE TABLE FOR READ IMPORT /DMO/I_Travel_M\\travel.
@@ -314,4 +316,55 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+  METHOD create_travel_with_booking.
+    DATA: lt_travel_create  TYPE TABLE FOR CREATE /dmo/i_travel_m,
+          lt_booking_create TYPE TABLE FOR CREATE /dmo/i_travel_m\_booking.
+
+    " 1. Define a manual, unique CID for the parent (can be any string)
+    DATA(lv_parent_cid) = 'TRAVEL_001'.
+
+    " 2. Populate the Parent table with the manual CID
+    lt_travel_create = VALUE #( (
+        %cid           = lv_parent_cid
+        agency_id      = '070001'
+        customer_id    = '000001'
+        begin_date     = cl_abap_context_info=>get_system_date( )
+        end_date       = cl_abap_context_info=>get_system_date( ) + 7
+        overall_status = 'O'
+        %control       = VALUE #( agency_id = if_abap_behv=>mk-on
+                                  customer_id = if_abap_behv=>mk-on
+                                  begin_date = if_abap_behv=>mk-on
+                                  end_date = if_abap_behv=>mk-on
+                                  overall_status = if_abap_behv=>mk-on ) ) ).
+
+    lt_booking_create = VALUE #( (
+        %cid_ref = lv_parent_cid "
+        %target  = VALUE #( (
+            %cid          = 'BOOKING_001'
+            customer_id   = '000001'
+            carrier_id    = 'AA'
+            connection_id = '0017'
+            flight_date   = cl_abap_context_info=>get_system_date( ) + 2
+            %control      = VALUE #( customer_id = if_abap_behv=>mk-on
+                                     carrier_id = if_abap_behv=>mk-on
+                                     connection_id = if_abap_behv=>mk-on
+                                     flight_date = if_abap_behv=>mk-on )
+        ) )
+    ) ).
+
+    MODIFY ENTITIES OF /dmo/i_travel_m
+      ENTITY travel
+        CREATE FROM lt_travel_create
+        CREATE BY \_booking FROM lt_booking_create
+      MAPPED   DATA(lt_mapped)
+      FAILED   DATA(lt_failed)
+      REPORTED DATA(lt_reported).
+
+    " 5. Commit to save to database
+    COMMIT ENTITIES
+      RESPONSE OF /dmo/i_travel_m
+      FAILED DATA(lt_commit_failed)
+      REPORTED DATA(lt_commit_reported).
+
+  ENDMETHOD.
 ENDCLASS.

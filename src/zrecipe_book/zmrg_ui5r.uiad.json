@@ -1,0 +1,34 @@
+{
+  "formatVersion": "2",
+  "header": {
+    "description": "MRG Testing OData",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD",
+    "targetMappingTitle": "Recipe Entity Test"
+  },
+  "ui5AppDetails": {
+    "appId": "zmrg_recipe"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_A6BD074BF76E6E7D52C373297E38D8D4952F1085_TM",
+    "semanticObject": "ZMRG",
+    "action": "Display",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_A6BD074BF76E6E7D52C373297E38D8D4952F1085_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Recipe Entity Test"
+      }
+    }
+  ]
+}
