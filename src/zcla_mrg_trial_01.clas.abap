@@ -18,7 +18,7 @@ CLASS zcla_mrg_trial_01 DEFINITION
       delete_entity,
       get_permission,
       execute_action,
-    create_travel_with_booking.
+      create_travel_with_booking.
 ENDCLASS.
 
 
@@ -27,7 +27,10 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
 
 
   METHOD main.
-    me->get_permission( ).
+    "me->get_permission( ).
+    DELETE FROM zmrg_recipe_d.
+
+    COMMIT WORK.
   ENDMETHOD.
 
   METHOD read_entities_example.
