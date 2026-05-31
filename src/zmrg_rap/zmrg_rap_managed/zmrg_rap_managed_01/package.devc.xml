@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <DEVC>
-    <CTEXT>Manuel Rentero package</CTEXT>
+    <CTEXT>Sample 01 managed scenario - employee</CTEXT>
     <LANGUAGE>E</LANGUAGE>
     <MASTERLANG>E</MASTERLANG>
     <SRV_CHECK>X</SRV_CHECK>
