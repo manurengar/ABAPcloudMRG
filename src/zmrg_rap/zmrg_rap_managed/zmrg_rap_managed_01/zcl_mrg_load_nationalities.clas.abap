@@ -8,8 +8,8 @@ CLASS zcl_mrg_load_nationalities DEFINITION
 
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_nationality,
-             spras   TYPE spras,
-             natkey  TYPE land1,
+             spras    TYPE spras,
+             natkey   TYPE land1,
              natdescr TYPE zmrg_employee_natio,
            END OF ty_nationality,
            tt_nationality TYPE STANDARD TABLE OF ty_nationality WITH EMPTY KEY.
@@ -24,26 +24,18 @@ CLASS zcl_mrg_load_nationalities IMPLEMENTATION.
 
   METHOD if_oo_adt_classrun~main.
 
-    DATA(lt_nationalities) = get_nationalities( ).
+    DATA lt_pos TYPE STANDARD TABLE OF zmrg_tab_positio.
 
-    " Delete existing EN records to avoid duplicates
-    DELETE FROM zmrg_tab_natio WHERE spras = 'E'.
+    lt_pos = VALUE #(
+      ( client = sy-mandt langu = 'E' type = '1' pos_text = 'Blue Collar' )
+      ( client = sy-mandt langu = 'E' type = '2' pos_text = 'White Collar' )
+      ( client = sy-mandt langu = 'E' type = '3' pos_text = 'Technician' )
+      ( client = sy-mandt langu = 'E' type = '4' pos_text = 'Supervisor' )
+      ( client = sy-mandt langu = 'E' type = '5' pos_text = 'Executive' )
+    ).
 
-    " Insert all records
-    INSERT zmrg_tab_natio FROM TABLE @( VALUE #(
-      FOR ls_nat IN lt_nationalities (
-        client  = sy-mandt
-        spras   = ls_nat-spras
-        natkey  = ls_nat-natkey
-        natdescr = ls_nat-natdescr
-      )
-    ) ).
-
-    IF sy-subrc = 0.
-      out->write( |{ lines( lt_nationalities ) } nationalities inserted successfully.| ).
-    ELSE.
-      out->write( 'Error during insert.' ).
-    ENDIF.
+    MODIFY zmrg_tab_positio FROM TABLE @lt_pos.
+    COMMIT WORK.
 
   ENDMETHOD.
 

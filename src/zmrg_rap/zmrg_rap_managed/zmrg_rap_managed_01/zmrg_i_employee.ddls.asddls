@@ -1,0 +1,43 @@
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Employee entity view'
+@Metadata.ignorePropagatedAnnotations: true
+define root view entity zmrg_i_employee
+  as select from zmrg_tab_employe
+  composition [0..*] of zmrg_i_child as _Child
+  composition [1..*] of zmrg_i_salary as _Salary
+{
+  key employee_id           as EmployeeId,
+      first_name            as FirstName,
+      last_name             as LastName,
+      age                   as Age,
+      gender                as Gender,
+      nationality           as Nationality,
+      civil_status          as CivilStatus,
+      children              as Children,
+      identity_number       as IdentityNumber,
+      @Semantics.largeObject: {
+                                mimeType: 'Mimetype',
+                                fileName: 'Filename',
+                                contentDispositionPreference: #INLINE,
+                                acceptableMimeTypes: [ 'image/*' ]
+                               }
+      @Semantics.imageUrl: true
+      profile_picture       as ProfilePicture,
+      @Semantics.mimeType: true
+      mimetype              as MimeType,
+      filename              as Filename,
+      @Semantics.user.createdBy: true
+      created_by            as CreatedBy,
+      @Semantics.systemDateTime.createdAt: true
+      created_at            as CreatedAt,
+      @Semantics.user.localInstanceLastChangedBy: true
+      local_last_changed_by as LocalLastChangedBy,
+      @Semantics.systemDateTime.localInstanceLastChangedAt: true
+      local_last_changed_at as LocalLastChangedAt,
+      @Semantics.systemDateTime.lastChangedAt: true
+      last_changed_at       as LastChangedAt,
+      @Semantics.user.lastChangedBy: true
+      last_changed_by       as LastChangedBy,
+      _Child,
+      _Salary
+}
