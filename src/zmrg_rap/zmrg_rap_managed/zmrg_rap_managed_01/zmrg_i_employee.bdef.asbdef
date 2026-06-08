@@ -17,8 +17,8 @@ etag master LocalLastChangedAt
   field ( readonly ) EmployeeId;
   field ( readonly ) CreatedBy, CreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt, LastChangedBy;
 
-  association _Child { create; with draft; }
-  association _Salary { create; with draft; }
+  association _Child { create( authorization : instance ); with draft; }
+  association _Salary { create( authorization: instance ); with draft; }
 
   draft action Edit;
   draft action Activate optimized;

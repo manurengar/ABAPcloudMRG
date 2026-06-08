@@ -24,19 +24,9 @@ CLASS zcl_mrg_load_nationalities IMPLEMENTATION.
 
   METHOD if_oo_adt_classrun~main.
 
-    DATA lt_pos TYPE STANDARD TABLE OF zmrg_tab_positio.
-
-    lt_pos = VALUE #(
-      ( client = sy-mandt langu = 'E' type = '1' pos_text = 'Blue Collar' )
-      ( client = sy-mandt langu = 'E' type = '2' pos_text = 'White Collar' )
-      ( client = sy-mandt langu = 'E' type = '3' pos_text = 'Technician' )
-      ( client = sy-mandt langu = 'E' type = '4' pos_text = 'Supervisor' )
-      ( client = sy-mandt langu = 'E' type = '5' pos_text = 'Executive' )
-    ).
-
-    MODIFY zmrg_tab_positio FROM TABLE @lt_pos.
-    COMMIT WORK.
-
+    DATA(lv_string) = |Z_NATIO=01;Z_NATIO=02;Z_FIELD1=DUMMY|.
+    data(my_string) = match( val = lv_string pcre = `Z_NATIO=03` ).
+    out->write( my_string ).
   ENDMETHOD.
 
 
