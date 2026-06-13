@@ -14,6 +14,12 @@
      <MSGNR>001</MSGNR>
      <TEXT>Operation &amp;1 not authorized on tables: &amp;2, &amp;3 and &amp;4</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMRG_RAP_01_MESS</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Operation &amp;1 not authorized for Nationality (&amp;2) - Emp. ID (&amp;3).</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

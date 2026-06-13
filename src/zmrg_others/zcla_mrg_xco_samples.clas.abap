@@ -4,7 +4,13 @@ PUBLIC
   CREATE PUBLIC .
 
   PUBLIC SECTION.
-
+    TYPES: ty_char01 TYPE c LENGTH 01,
+           BEGIN OF ty_sample_data,
+             col1 TYPE ty_char01,
+             col2 TYPE n LENGTH 2,
+             col3 TYPE ty_char01,
+           END OF ty_sample_data,
+           ty_sample_data_tab TYPE TABLE OF ty_sample_data WITH DEFAULT KEY.
     INTERFACES if_oo_adt_classrun .
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -29,7 +35,8 @@ PUBLIC
       "! Example to get information about the user
       "! using classes like <strong>CL_ABAP_CONTEXT_INFO</strong>
       "!
-      get_user_data IMPORTING  out TYPE REF TO if_oo_adt_classrun_out.
+      get_user_data IMPORTING  out TYPE REF TO if_oo_adt_classrun_out,
+      get_xlsx_binary IMPORTING iv_data TYPE REF TO data RETURNING VALUE(rv_binary) TYPE xstring.
 ENDCLASS.
 
 
@@ -168,7 +175,17 @@ CLASS zcla_mrg_xco_samples IMPLEMENTATION.
     ENDTRY.
 
     " Language using XCO
-    data(language) =  xco_cp=>sy->language( ).
+    DATA(language) =  xco_cp=>sy->language( ).
     out->write( |Language XCO: { language->get_name( ) }, { language->get_long_text_description( ) }, { language->value }, { language->as( io_format = xco_cp_language=>format->iso_639 ) }| ).
   ENDMETHOD.
+  METHOD get_xlsx_binary.
+
+    DATA(o_document) = xco_cp_xlsx=>document->empty( )->write_access( ).
+    DATA(o_sheet) = o_document->get_workbook( )->worksheet->at_position( 1 ).
+    DATA(o_pattern) = xco_cp_xlsx_selection=>pattern_builder->simple_from_to( )->get_pattern( ).
+    o_sheet->select( o_pattern )->row_stream( )->operation->write_from( iv_data )->execute( ).
+
+    rv_binary = o_document->get_file_content( ).
+  ENDMETHOD.
+
 ENDCLASS.

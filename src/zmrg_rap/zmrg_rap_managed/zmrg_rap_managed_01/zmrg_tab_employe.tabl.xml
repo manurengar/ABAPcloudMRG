@@ -10,7 +10,7 @@
     <DDTEXT>employee table for rap managed 01</DDTEXT>
     <MASTERLANG>E</MASTERLANG>
     <CONTFLAG>A</CONTFLAG>
-    <EXCLASS>1</EXCLASS>
+    <EXCLASS>4</EXCLASS>
    </DD02V>
    <DD09L>
     <TABNAME>ZMRG_TAB_EMPLOYE</TABNAME>

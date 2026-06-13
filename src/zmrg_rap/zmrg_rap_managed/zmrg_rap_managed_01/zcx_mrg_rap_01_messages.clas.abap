@@ -16,16 +16,16 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         attr2 TYPE scx_attrname VALUE 'TABLE_NAME_01',
         attr3 TYPE scx_attrname VALUE 'TABLE_NAME_02',
         attr4 TYPE scx_attrname VALUE 'TABLE_NAME_03',
-      END OF not_authorized.
+      END OF not_authorized,
 
-*      BEGIN OF date_invalid,
-*        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
-*        msgno TYPE symsgno VALUE '002',
-*        attr1 TYPE scx_attrname VALUE 'BEGINDATE',
-*        attr2 TYPE scx_attrname VALUE 'ENDDATE',
-*        attr3 TYPE scx_attrname VALUE '',
-*        attr4 TYPE scx_attrname VALUE '',
-*      END OF date_invalid,
+      BEGIN OF not_authorized_for_nationality,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '002',
+        attr1 TYPE scx_attrname VALUE 'ACTIVITY',
+        attr2 TYPE scx_attrname VALUE 'NATIONALITY',
+        attr3 TYPE scx_attrname VALUE 'EMPLOYEE_ID',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF not_authorized_for_nationality.
 *
 *      BEGIN OF agency_unknown,
 *        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
@@ -40,7 +40,9 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       activity      TYPE zmrg_auth_field_value,
       table_name_01 TYPE zmrg_auth_field_value,
       table_name_02 TYPE zmrg_auth_field_value,
-      table_name_03 TYPE zmrg_auth_field_value.
+      table_name_03 TYPE zmrg_auth_field_value,
+      nationality   TYPE land1,
+      employee_id   TYPE zmrg_employee_id.
 
 
     METHODS constructor
@@ -51,7 +53,9 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         activity      TYPE zmrg_auth_field_value           OPTIONAL
         table_name_01 TYPE zmrg_auth_field_value           OPTIONAL
         table_name_02 TYPE zmrg_auth_field_value           OPTIONAL
-        table_name_03 TYPE zmrg_auth_field_value           OPTIONAL.
+        table_name_03 TYPE zmrg_auth_field_value           OPTIONAL
+        nationality   TYPE land1 OPTIONAL
+        employee_id   TYPE zmrg_employee_id OPTIONAL.
 ENDCLASS.
 
 CLASS zcx_mrg_rap_01_messages IMPLEMENTATION.
