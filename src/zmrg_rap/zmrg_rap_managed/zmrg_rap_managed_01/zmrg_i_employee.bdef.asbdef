@@ -9,6 +9,7 @@ draft table zmrg_dra_employe
 lock master total etag LastChangedAt
 authorization master ( instance, global )
 etag master LocalLastChangedAt
+early numbering
 {
   create ( precheck );
   update;

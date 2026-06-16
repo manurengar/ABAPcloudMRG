@@ -16,6 +16,8 @@ CLASS lhc_Employee DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING keys REQUEST requested_authorizations FOR Employee RESULT result.
     METHODS precheck_create FOR PRECHECK
       IMPORTING entities FOR CREATE employee.
+    METHODS earlynumbering_create FOR NUMBERING
+      IMPORTING entities FOR CREATE employee.
 
     METHODS:
       is_created_granted IMPORTING iv_country TYPE land1 OPTIONAL RETURNING VALUE(is_granted) TYPE abap_bool,
@@ -212,6 +214,28 @@ CLASS lhc_Employee IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD precheck_create.
+  ENDMETHOD.
+
+  METHOD earlynumbering_create.
+    " I cannot create number range here on trial, so I have my range on table zmrg_rang_emp_id
+    LOOP AT entities ASSIGNING FIELD-SYMBOL(<entity>).
+      TRY.
+          DATA(new_employee_id) = NEW zcl_mrg_range_ids( )->get_next_number( range_key = '01' ).
+
+          APPEND VALUE #( %cid       = <entity>-%cid
+                          %is_draft  = <entity>-%is_draft
+                          EmployeeId = new_employee_id ) TO mapped-employee.
+
+        CATCH zcx_mrg_rap_01_messages INTO DATA(ex_ranges).
+
+          APPEND VALUE #( %cid       = <entity>-%cid
+                            %is_draft  = <entity>-%is_draft ) TO failed-employee.
+
+          APPEND VALUE #( %cid       = <entity>-%cid
+                          %is_draft  = <entity>-%is_draft
+                          %msg       = ex_ranges ) TO reported-employee.
+      ENDTRY.
+    ENDLOOP.
   ENDMETHOD.
 
 ENDCLASS.

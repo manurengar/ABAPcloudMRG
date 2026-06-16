@@ -184,7 +184,6 @@ CLASS zcla_mrg_xco_samples IMPLEMENTATION.
     DATA(o_sheet) = o_document->get_workbook( )->worksheet->at_position( 1 ).
     DATA(o_pattern) = xco_cp_xlsx_selection=>pattern_builder->simple_from_to( )->get_pattern( ).
     o_sheet->select( o_pattern )->row_stream( )->operation->write_from( iv_data )->execute( ).
-
     rv_binary = o_document->get_file_content( ).
   ENDMETHOD.
 

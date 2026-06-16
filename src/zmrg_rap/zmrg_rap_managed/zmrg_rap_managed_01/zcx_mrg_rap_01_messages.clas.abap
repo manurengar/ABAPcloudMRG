@@ -25,7 +25,16 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         attr2 TYPE scx_attrname VALUE 'NATIONALITY',
         attr3 TYPE scx_attrname VALUE 'EMPLOYEE_ID',
         attr4 TYPE scx_attrname VALUE '',
-      END OF not_authorized_for_nationality.
+      END OF not_authorized_for_nationality,
+
+      BEGIN OF no_range_key_found,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '003',
+        attr1 TYPE scx_attrname VALUE 'RANGE_KEY',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF no_range_key_found.
 *
 *      BEGIN OF agency_unknown,
 *        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
@@ -42,7 +51,8 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       table_name_02 TYPE zmrg_auth_field_value,
       table_name_03 TYPE zmrg_auth_field_value,
       nationality   TYPE land1,
-      employee_id   TYPE zmrg_employee_id.
+      employee_id   TYPE zmrg_employee_id,
+      range_key TYPE ZMRG_EMP_CHAR02.
 
 
     METHODS constructor
@@ -55,7 +65,8 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         table_name_02 TYPE zmrg_auth_field_value           OPTIONAL
         table_name_03 TYPE zmrg_auth_field_value           OPTIONAL
         nationality   TYPE land1 OPTIONAL
-        employee_id   TYPE zmrg_employee_id OPTIONAL.
+        employee_id   TYPE zmrg_employee_id OPTIONAL
+        range_key TYPE ZMRG_EMP_CHAR02 OPTIONAL.
 ENDCLASS.
 
 CLASS zcx_mrg_rap_01_messages IMPLEMENTATION.
