@@ -12,7 +12,7 @@ etag master LocalLastChangedAt
 early numbering
 {
   create ( precheck );
-  update;
+  update ( precheck );
   delete;
 
   field ( mandatory : create ) Nationality;
@@ -114,7 +114,8 @@ etag master LocalLastChangedAt
       EndDate            = end_date;
       PositionType       = position_type;
       EmployeeId         = employee_id;
-      AnnualSalary       = annual_salary;
+      GrossAnnualSalary  = gross_annual_salary;
+      NetAnnualSalary    = net_annual_salary;
       Currency           = currency;
       CreatedBy          = created_by;
       CreatedAt          = created_at;

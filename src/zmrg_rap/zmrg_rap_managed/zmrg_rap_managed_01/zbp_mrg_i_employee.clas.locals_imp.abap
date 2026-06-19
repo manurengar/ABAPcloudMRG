@@ -10,12 +10,28 @@ CLASS lhc_Employee DEFINITION INHERITING FROM cl_abap_behavior_handler.
     DATA:
          o_auth_ref TYPE REF TO zmrg_cla_auth_util.
 
+    TYPES:
+      t_entities_create   TYPE TABLE FOR CREATE zmrg_i_employee\\Employee,
+      t_entities_update   TYPE TABLE FOR UPDATE zmrg_i_employee\\Employee,
+      t_failed_employee   TYPE TABLE FOR FAILED EARLY zmrg_i_employee\\Employee,
+      t_reported_employee TYPE TABLE FOR REPORTED EARLY zmrg_i_employee\\Employee.
+
+    METHODS precheck_auths
+      IMPORTING
+        entities_create TYPE t_entities_create OPTIONAL
+        entities_update TYPE t_entities_update OPTIONAL
+      CHANGING
+        failed          TYPE t_failed_employee
+        reported        TYPE t_reported_employee.
+
     METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
       IMPORTING REQUEST requested_authorizations FOR Employee RESULT result.
     METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
       IMPORTING keys REQUEST requested_authorizations FOR Employee RESULT result.
     METHODS precheck_create FOR PRECHECK
       IMPORTING entities FOR CREATE employee.
+    METHODS precheck_update FOR PRECHECK
+      IMPORTING entities FOR UPDATE employee.
     METHODS earlynumbering_create FOR NUMBERING
       IMPORTING entities FOR CREATE employee.
 
@@ -213,9 +229,6 @@ CLASS lhc_Employee IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD precheck_create.
-  ENDMETHOD.
-
   METHOD earlynumbering_create.
     " I cannot create number range here on trial, so I have my range on table zmrg_rang_emp_id
     LOOP AT entities ASSIGNING FIELD-SYMBOL(<entity>).
@@ -235,6 +248,69 @@ CLASS lhc_Employee IMPLEMENTATION.
                           %is_draft  = <entity>-%is_draft
                           %msg       = ex_ranges ) TO reported-employee.
       ENDTRY.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD precheck_create.
+    me->precheck_auths( EXPORTING
+                          entities_create = entities
+                        CHANGING
+                          failed = failed-employee
+                          reported = reported-employee ).
+  ENDMETHOD.
+
+  METHOD precheck_update.
+    me->precheck_auths( EXPORTING
+                            entities_update = entities
+                        CHANGING
+                            failed = failed-employee
+                            reported = reported-employee ).
+  ENDMETHOD.
+
+  METHOD precheck_auths.
+    DATA:
+      entities       TYPE t_entities_update,
+      operation      TYPE if_abap_behv=>t_char01,
+      access_granted TYPE abap_bool,
+      actvt          TYPE zmrg_emp_char02.
+
+    " Either entities create or entities update are provided, not both
+    ASSERT NOT ( entities_create IS INITIAL EQUIV entities_update IS INITIAL ).
+
+    IF entities_create IS NOT INITIAL.
+      entities = CORRESPONDING #( entities_create MAPPING %cid_ref = %cid ).
+      operation = if_abap_behv=>op-m-create.
+    ELSE.
+      entities = entities_update.
+      operation = if_abap_behv=>op-m-update.
+    ENDIF.
+
+    DELETE entities WHERE %control-Nationality EQ if_abap_behv=>mk-off.
+
+
+    LOOP AT entities ASSIGNING FIELD-SYMBOL(<entity>).
+      CASE operation.
+        WHEN if_abap_behv=>op-m-create.
+          access_granted = me->is_created_granted( <entity>-Nationality ).
+          actvt = '01'.
+        WHEN if_abap_behv=>op-m-update.
+          access_granted = me->is_updated_granted( <entity>-Nationality ).
+          actvt = '02'.
+      ENDCASE.
+
+      IF access_granted EQ abap_false.
+        APPEND VALUE #( %cid = COND #( WHEN operation EQ if_abap_behv=>op-m-create THEN <entity>-%cid_ref )
+                        %tky = <entity>-%tky ) TO failed.
+
+        APPEND VALUE #( %cid  = COND #( WHEN operation EQ if_abap_behv=>op-m-create THEN <entity>-%cid_ref )
+                        %tky = <entity>-%tky
+                        %element-Nationality = if_abap_behv=>mk-on
+                        %msg = NEW zcx_mrg_rap_01_messages( textid = zcx_mrg_rap_01_messages=>not_authorized_for_nationality
+                                                            severity = if_abap_behv_message=>severity-error
+                                                            activity = CONV #( actvt )
+                                                            employee_id = <entity>-EmployeeId
+                                                            nationality = <entity>-Nationality ) ) TO reported.
+      ENDIF.
     ENDLOOP.
   ENDMETHOD.
 

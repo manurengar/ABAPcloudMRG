@@ -11,7 +11,9 @@ define view entity zmrg_i_salary
       position_type         as PositionType,
       employee_id           as EmployeeId,
       @Semantics.amount.currencyCode: 'Currency'
-      annual_salary         as AnnualSalary,
+      gross_annual_salary   as GrossAnnualSalary,
+      @Semantics.amount.currencyCode: 'Currency'
+      net_annual_salary     as NetAnnualSalary,
       currency              as Currency,
       @Semantics.user.createdBy: true
       created_by            as CreatedBy,
