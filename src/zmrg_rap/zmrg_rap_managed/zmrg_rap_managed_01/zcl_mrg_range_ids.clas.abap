@@ -28,7 +28,7 @@ CLASS zcl_mrg_range_ids IMPLEMENTATION.
     IF sy-subrc IS INITIAL.
       rv_range = <range>-range_value.
 
-      <range>-range_value = 1 + <range>-range_value.
+      <range>-range_value = 1 + CONV i( <range>-range_value ).
       MODIFY zmrg_ranges FROM @<range>.
       COMMIT WORK.
     ELSE.

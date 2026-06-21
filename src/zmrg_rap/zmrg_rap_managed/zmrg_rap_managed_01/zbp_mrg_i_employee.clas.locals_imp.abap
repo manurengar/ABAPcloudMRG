@@ -32,6 +32,8 @@ CLASS lhc_Employee DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING entities FOR CREATE employee.
     METHODS precheck_update FOR PRECHECK
       IMPORTING entities FOR UPDATE employee.
+    METHODS createdefaultsalary FOR DETERMINE ON MODIFY
+      IMPORTING keys FOR employee~createdefaultsalary.
     METHODS earlynumbering_create FOR NUMBERING
       IMPORTING entities FOR CREATE employee.
 
@@ -312,6 +314,49 @@ CLASS lhc_Employee IMPLEMENTATION.
                                                             nationality = <entity>-Nationality ) ) TO reported.
       ENDIF.
     ENDLOOP.
+  ENDMETHOD.
+
+  METHOD CreateDefaultSalary.
+    DATA salary_create_tab TYPE TABLE FOR CREATE zmrg_i_employee\_Salary.
+
+    READ ENTITIES OF zmrg_i_employee IN LOCAL MODE
+      ENTITY Employee
+        FIELDS ( Children )
+      WITH CORRESPONDING #( keys )
+      RESULT DATA(employees).
+
+    LOOP AT employees ASSIGNING FIELD-SYMBOL(<employee>).
+      " Obtain next available position id
+      DATA(new_position_id) = NEW zcl_mrg_range_ids( )->get_next_number( range_key = '02' ).
+
+      APPEND VALUE #( %tky    = <employee>-%tky
+                      %target = VALUE #( ( %is_draft          = <employee>-%is_draft
+                                           PositionId         = new_position_id
+                                           StartDate          = cl_abap_context_info=>get_system_date( )
+                                           EndDate            = CONV d( '99991231' )
+                                           PositionType       = '1'
+                                           GrossAnnualSalary  = 10000
+                                           NetAnnualSalary    = 10000
+                                           Currency           = 'EUR'
+                                           %control           = VALUE #( PositionId        = if_abap_behv=>mk-on
+                                                                         StartDate         = if_abap_behv=>mk-on
+                                                                         EndDate           = if_abap_behv=>mk-on
+                                                                         PositionType      = if_abap_behv=>mk-on
+                                                                         GrossAnnualSalary = if_abap_behv=>mk-on
+                                                                         NetAnnualSalary   = if_abap_behv=>mk-on
+                                                                         Currency          = if_abap_behv=>mk-on
+                                                                       )
+                                          )
+                                        )
+                    ) TO salary_create_tab.
+    ENDLOOP.
+
+    IF salary_create_tab IS NOT INITIAL.
+      MODIFY ENTITIES OF zmrg_i_employee IN LOCAL MODE
+      ENTITY Employee
+      CREATE BY \_Salary
+      FROM salary_create_tab.
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.

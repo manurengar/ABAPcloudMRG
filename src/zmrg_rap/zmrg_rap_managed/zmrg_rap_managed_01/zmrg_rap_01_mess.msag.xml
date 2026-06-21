@@ -26,6 +26,12 @@
      <MSGNR>003</MSGNR>
      <TEXT>Range key not found (&amp;1)</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMRG_RAP_01_MESS</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Inserted percentage (&amp;1) out of bounds.</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

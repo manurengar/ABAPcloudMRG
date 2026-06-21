@@ -34,7 +34,16 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         attr2 TYPE scx_attrname VALUE '',
         attr3 TYPE scx_attrname VALUE '',
         attr4 TYPE scx_attrname VALUE '',
-      END OF no_range_key_found.
+      END OF no_range_key_found,
+
+      BEGIN OF percentage_out_of_bounds,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '004',
+        attr1 TYPE scx_attrname VALUE 'PERCENTAGE',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF percentage_out_of_bounds.
 *
 *      BEGIN OF agency_unknown,
 *        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
@@ -52,7 +61,8 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       table_name_03 TYPE zmrg_auth_field_value,
       nationality   TYPE land1,
       employee_id   TYPE zmrg_employee_id,
-      range_key TYPE ZMRG_EMP_CHAR02.
+      range_key     TYPE zmrg_emp_char02,
+      percentage    TYPE zmrg_employee_percentage.
 
 
     METHODS constructor
@@ -66,7 +76,8 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         table_name_03 TYPE zmrg_auth_field_value           OPTIONAL
         nationality   TYPE land1 OPTIONAL
         employee_id   TYPE zmrg_employee_id OPTIONAL
-        range_key TYPE ZMRG_EMP_CHAR02 OPTIONAL.
+        range_key     TYPE zmrg_emp_char02 OPTIONAL
+        percentage    TYPE zmrg_employee_percentage OPTIONAL.
 ENDCLASS.
 
 CLASS zcx_mrg_rap_01_messages IMPLEMENTATION.
@@ -76,6 +87,10 @@ CLASS zcx_mrg_rap_01_messages IMPLEMENTATION.
     me->table_name_01  = table_name_01.
     me->table_name_02  = table_name_02.
     me->table_name_03  = table_name_03.
+    me->nationality    = nationality.
+    me->employee_id    = employee_id.
+    me->range_key      = range_key.
+    me->percentage     = percentage.
 
     CLEAR me->textid.
     IF textid IS INITIAL.

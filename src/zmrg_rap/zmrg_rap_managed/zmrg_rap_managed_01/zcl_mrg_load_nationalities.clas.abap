@@ -23,10 +23,18 @@ ENDCLASS.
 CLASS zcl_mrg_load_nationalities IMPLEMENTATION.
 
   METHOD if_oo_adt_classrun~main.
+    DATA range_tab TYPE TABLE OF zmrg_ranges WITH DEFAULT KEY.
 
-    DATA(lv_string) = |Z_NATIO=01;Z_NATIO=02;Z_FIELD1=DUMMY|.
-    data(my_string) = match( val = lv_string pcre = `Z_NATIO=03` ).
-    out->write( my_string ).
+    APPEND INITIAL LINE TO range_tab ASSIGNING FIELD-SYMBOL(<range>).
+    <range>-range_key = '01'.
+    <range>-range_value = '10000000'.
+
+    APPEND INITIAL LINE TO range_tab ASSIGNING <range>.
+    <range>-range_key = '02'.
+    <range>-range_value = '2000000'.
+
+    MODIFY zmrg_ranges FROM TABLE @range_tab.
+    COMMIT WORK.
   ENDMETHOD.
 
 
