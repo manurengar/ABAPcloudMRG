@@ -34,6 +34,8 @@ CLASS lhc_Employee DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING entities FOR UPDATE employee.
     METHODS createdefaultsalary FOR DETERMINE ON MODIFY
       IMPORTING keys FOR employee~createdefaultsalary.
+    METHODS earlynumbering_cba_salary FOR NUMBERING
+      IMPORTING entities FOR CREATE employee\_salary.
     METHODS earlynumbering_create FOR NUMBERING
       IMPORTING entities FOR CREATE employee.
 
@@ -326,20 +328,19 @@ CLASS lhc_Employee IMPLEMENTATION.
       RESULT DATA(employees).
 
     LOOP AT employees ASSIGNING FIELD-SYMBOL(<employee>).
-      " Obtain next available position id
-      DATA(new_position_id) = NEW zcl_mrg_range_ids( )->get_next_number( range_key = '02' ).
+
+      DATA(temp_cid) = |SALARY_{ <employee>-EmployeeId }|.
 
       APPEND VALUE #( %tky    = <employee>-%tky
                       %target = VALUE #( ( %is_draft          = <employee>-%is_draft
-                                           PositionId         = new_position_id
+                                           %cid               = temp_cid
                                            StartDate          = cl_abap_context_info=>get_system_date( )
                                            EndDate            = CONV d( '99991231' )
                                            PositionType       = '1'
                                            GrossAnnualSalary  = 10000
                                            NetAnnualSalary    = 10000
                                            Currency           = 'EUR'
-                                           %control           = VALUE #( PositionId        = if_abap_behv=>mk-on
-                                                                         StartDate         = if_abap_behv=>mk-on
+                                           %control           = VALUE #( StartDate         = if_abap_behv=>mk-on
                                                                          EndDate           = if_abap_behv=>mk-on
                                                                          PositionType      = if_abap_behv=>mk-on
                                                                          GrossAnnualSalary = if_abap_behv=>mk-on
@@ -357,6 +358,24 @@ CLASS lhc_Employee IMPLEMENTATION.
       CREATE BY \_Salary
       FROM salary_create_tab.
     ENDIF.
+  ENDMETHOD.
+
+  METHOD earlynumbering_cba_Salary.
+    DATA: lo_range_ids TYPE REF TO zcl_mrg_range_ids.
+    lo_range_ids = NEW zcl_mrg_range_ids( ).
+
+    LOOP AT entities ASSIGNING FIELD-SYMBOL(<entity>).
+      LOOP AT <entity>-%target ASSIGNING FIELD-SYMBOL(<salary>).
+        DATA(new_position_id) = lo_range_ids->get_next_number( range_key = '02' ).
+
+        APPEND VALUE #( %cid       = <salary>-%cid
+                        %is_draft  = <salary>-%is_draft
+                        PositionId = new_position_id
+                        startdate  = <salary>-StartDate " Provided on EML
+                        enddate   = <salary>-EndDate    " Provided on EML
+                      ) TO mapped-salary.
+      ENDLOOP.
+    ENDLOOP.
   ENDMETHOD.
 
 ENDCLASS.

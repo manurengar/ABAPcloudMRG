@@ -36,6 +36,15 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         attr4 TYPE scx_attrname VALUE '',
       END OF no_range_key_found,
 
+      BEGIN OF age_out_of_bounds,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '005',
+        attr1 TYPE scx_attrname VALUE 'AGE',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF age_out_of_bounds,
+
       BEGIN OF percentage_out_of_bounds,
         msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
         msgno TYPE symsgno VALUE '004',
@@ -62,6 +71,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       nationality   TYPE land1,
       employee_id   TYPE zmrg_employee_id,
       range_key     TYPE zmrg_emp_char02,
+      age           TYPE zmrg_employee_age,
       percentage    TYPE zmrg_employee_percentage.
 
 
@@ -74,6 +84,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         table_name_01 TYPE zmrg_auth_field_value           OPTIONAL
         table_name_02 TYPE zmrg_auth_field_value           OPTIONAL
         table_name_03 TYPE zmrg_auth_field_value           OPTIONAL
+        age           TYPE zmrg_employee_age OPTIONAL
         nationality   TYPE land1 OPTIONAL
         employee_id   TYPE zmrg_employee_id OPTIONAL
         range_key     TYPE zmrg_emp_char02 OPTIONAL

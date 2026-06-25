@@ -21,7 +21,7 @@ early numbering
   field ( readonly ) CreatedBy, CreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt, LastChangedBy;
 
   association _Child { create ( authorization : update ); with draft; }
-  association _Salary { create ( authorization : global ); with draft; }
+  association _Salary { internal create ( authorization : global ); with draft; }
 
   determination CreateDefaultSalary on modify { create; }
 
@@ -29,7 +29,11 @@ early numbering
   draft action Activate optimized;
   draft action Discard;
   draft action Resume;
-  draft determine action Prepare;
+  draft determine action Prepare
+  {
+    validation Child~validatePercentage;
+    validation Child~validateAge;
+  }
 
   mapping for zmrg_tab_employe corresponding
     {
@@ -71,7 +75,8 @@ etag master LocalLastChangedAt
 
   association _Employee { with draft; }
 
-  validation validatePercentage on save { field DiscapacityPercentage; }
+  validation validatePercentage on save { field DiscapacityPercentage; create; }
+  validation validateAge on save { field Age; create; }
 
   mapping for zmrg_tab_child corresponding
     {
@@ -101,6 +106,7 @@ draft table zmrg_dra_salary
 lock dependent by _Employee
 authorization dependent by _Employee
 etag master LocalLastChangedAt
+early numbering
 {
   update;
   delete;
@@ -111,10 +117,16 @@ etag master LocalLastChangedAt
 
   association _Employee { with draft; }
 
-  determination ReCalculateNetSalary on modify { field GrossAnnualSalary, PositionType; }
-  side effects { field GrossAnnualSalary affects field NetAnnualSalary;
-                 field PositionType affects field NetAnnualSalary;
-               }
+  factory action newSplit parameter zmrg_a_create_salary [1];
+
+  determination ReCalculateNetSalary on modify { field GrossAnnualSalary, PositionType; create; }
+  side effects
+  { field GrossAnnualSalary affects field NetAnnualSalary;
+    field PositionType affects field NetAnnualSalary;
+  }
+
+  validation validateGrossAnnualSalary on save { field GrossAnnualSalary; create; }
+  validation validateOverlappingSplits on save { field StartDate; create; }
 
   mapping for zmrg_tab_salary corresponding
     {

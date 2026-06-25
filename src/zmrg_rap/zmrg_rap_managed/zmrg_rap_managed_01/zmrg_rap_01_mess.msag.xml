@@ -32,6 +32,12 @@
      <MSGNR>004</MSGNR>
      <TEXT>Inserted percentage (&amp;1) out of bounds.</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMRG_RAP_01_MESS</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Age &amp;1 lower than 0 or greater than 17.</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

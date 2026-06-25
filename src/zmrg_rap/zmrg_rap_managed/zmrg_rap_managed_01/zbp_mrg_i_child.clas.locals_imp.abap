@@ -4,6 +4,8 @@ CLASS lhc_child DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS validatePercentage FOR VALIDATE ON SAVE
       IMPORTING keys FOR Child~validatePercentage.
+    METHODS validateAge FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Child~validateAge.
 
 ENDCLASS.
 
@@ -30,6 +32,27 @@ CLASS lhc_child IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
+
+  METHOD validateAge.
+      " Only kids between 0 and 17 will apply for salary increase
+      READ ENTITIES OF zmrg_i_employee IN LOCAL MODE
+      ENTITY Child
+      FIELDS ( DiscapacityPercentage )
+      WITH CORRESPONDING #( keys )
+      RESULT DATA(child_entities).
+
+      LOOP AT child_entities ASSIGNING FIELD-SYMBOL(<child>)
+          WHERE age LT 0 OR age ge 18.
+
+        APPEND VALUE #( %tky = <child>-%tky ) TO failed-child.
+
+        APPEND VALUE #( %tky = <child>-%tky
+                        %element-DiscapacityPercentage = if_abap_behv=>mk-on
+                        %msg = NEW zcx_mrg_rap_01_messages( textid = zcx_mrg_rap_01_messages=>age_out_of_bounds
+                                                            severity = if_abap_behv_message=>severity-error
+                                                            age = <child>-age ) ) TO reported-child.
+      ENDLOOP.
+    ENDMETHOD.
 
 ENDCLASS.
 
