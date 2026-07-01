@@ -16,11 +16,11 @@ CLASS zmrg_cla_auth_run IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.
-    DATA cl TYPE zmrg_rang_emp_id.
+    DATA cl TYPE zmrg_ranges.
 
-    cl-range = '01'.
-    cl-employee_id = '10000000'.
-    MODIFY zmrg_rang_emp_id FROM @cl.
+    cl-range_key = '01'.
+    cl-range_value = '10000000'.
+    MODIFY zmrg_ranges FROM @cl.
 
 *    DATA(o_auth_ref) = zmrg_cla_auth_util=>get_instance( xco_cp=>sy->user( )->name ).
 *
