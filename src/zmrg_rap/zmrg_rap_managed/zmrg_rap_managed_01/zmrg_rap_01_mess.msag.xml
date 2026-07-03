@@ -38,6 +38,24 @@
      <MSGNR>005</MSGNR>
      <TEXT>Age &amp;1 lower than 0 or greater than 17.</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMRG_RAP_01_MESS</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Gross Salary &amp;1 too low. Min val. is 1000</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMRG_RAP_01_MESS</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>Start date &amp;1 greater than end date &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMRG_RAP_01_MESS</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>Salary entity with start date &amp;1 and end date &amp;2 already exists</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

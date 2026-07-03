@@ -87,9 +87,113 @@ CLASS lhc_salary IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD validateGrossAnnualSalary.
+    " Check that the gross amount introduced is never lower than 1000
+    READ ENTITIES OF zmrg_i_employee IN LOCAL MODE
+    ENTITY Salary
+    FIELDS ( GrossAnnualSalary )
+    WITH CORRESPONDING #( keys )
+    RESULT DATA(salary_entities).
+
+    LOOP AT salary_entities ASSIGNING FIELD-SYMBOL(<salary>).
+      " Invalidate state message
+      APPEND VALUE #( %tky = <salary>-%tky
+                      %state_area = 'GROSS_VALIDATION' ) TO reported-salary.
+      IF <salary>-GrossAnnualSalary LT 1000.
+        APPEND VALUE #( %tky = <salary>-%tky ) TO failed-salary.
+
+        APPEND VALUE #( %tky = <salary>-%tky
+                        %path = VALUE #( employee-%tky = VALUE #( EmployeeId = <salary>-EmployeeId
+                                                                  %is_draft  = <salary>-%is_draft
+                                                                 )
+                                       )
+                        %state_area = 'GROSS_VALIDATION'
+                        %element-grossannualsalary = if_abap_behv=>mk-on
+                        %msg = NEW zcx_mrg_rap_01_messages( textid = zcx_mrg_rap_01_messages=>incorrect_gross_salary
+                                                            severity = if_abap_behv_message=>severity-error
+                                                            gross_salary = <salary>-GrossAnnualSalary
+                                                           )
+                       ) TO reported-salary.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD validateOverlappingSplits.
+    " Check:
+    " 1) That start_date lt end_date
+    " 2) Salary splits for 1 employee do not overlap
+
+    READ ENTITIES OF zmrg_i_employee IN LOCAL MODE
+    ENTITY salary
+    FIELDS ( PositionId StartDate EndDate EmployeeId )
+    WITH CORRESPONDING #( keys )
+    RESULT DATA(salary_entities).
+
+    CHECK salary_entities IS NOT INITIAL.
+
+    DATA employee_entities TYPE TABLE FOR READ IMPORT zmrg_i_employee\\Employee.
+
+    employee_entities = CORRESPONDING #( salary_entities  MAPPING EmployeeId = EmployeeId
+                                                                  %is_draft  = %is_draft  EXCEPT * ).
+    SORT employee_entities BY EmployeeId DESCENDING.
+    DELETE ADJACENT DUPLICATES FROM employee_entities COMPARING EmployeeId.
+
+    " Read all existing salary entities for this employees
+    READ ENTITIES OF zmrg_i_employee IN LOCAL MODE
+    ENTITY Employee BY \_Salary
+    FIELDS ( PositionId StartDate EndDate EmployeeId )
+    WITH CORRESPONDING #( employee_entities )
+    RESULT DATA(employee_salaries).
+
+    LOOP AT salary_entities ASSIGNING FIELD-SYMBOL(<salary_2b_checked>).
+      " Invalidate status message
+      APPEND VALUE #( %tky = <salary_2b_checked>-%tky
+                      %state_area = 'VALIDATE_OVERLAP_SPLIT' ) TO reported-salary.
+
+      IF <salary_2b_checked>-StartDate GT <salary_2b_checked>-EndDate.
+        APPEND VALUE #( %tky = <salary_2b_checked>-%tky ) TO failed-salary.
+
+        APPEND VALUE #(  %tky  = <salary_2b_checked>-%tky
+                         %path = VALUE #( employee-%tky = VALUE #( EmployeeId = <salary_2b_checked>-EmployeeId
+                                                                   %is_draft  = <salary_2b_checked>-%is_draft
+                                                                 )
+                                        )
+                    %state_area = 'VALIDATE_OVERLAP_SPLIT'
+                    %element-startdate = if_abap_behv=>mk-on
+                    %msg = NEW zcx_mrg_rap_01_messages( textid = zcx_mrg_rap_01_messages=>incorrect_gross_salary
+                                                        severity = if_abap_behv_message=>severity-error
+                                                        start_date = <salary_2b_checked>-StartDate
+                                                        end_date = <salary_2b_checked>-EndDate
+                                                       )
+                      ) TO reported-salary.
+        CONTINUE.
+      ENDIF.
+
+      " Check over the rest of salaries for this employee
+      LOOP AT employee_salaries ASSIGNING FIELD-SYMBOL(<existing_salary>)
+       WHERE EmployeeId = <salary_2b_checked>-EmployeeId
+         AND PositionId <> <salary_2b_checked>-PositionId
+         AND %is_draft  = <salary_2b_checked>-%is_draft.
+
+        IF <salary_2b_checked>-StartDate <= <existing_salary>-EndDate AND
+           <salary_2b_checked>-EndDate   >= <existing_salary>-StartDate.
+          APPEND VALUE #( %tky = <salary_2b_checked>-%tky ) TO failed-salary.
+
+          APPEND VALUE #(  %tky  = <salary_2b_checked>-%tky
+                           %path = VALUE #( employee-%tky = VALUE #( EmployeeId = <salary_2b_checked>-EmployeeId
+                                                                     %is_draft  = <salary_2b_checked>-%is_draft
+                                                                   )
+                                          )
+                      %state_area = 'VALIDATE_OVERLAP_SPLIT'
+                      %element-startdate = if_abap_behv=>mk-on
+                      %msg = NEW zcx_mrg_rap_01_messages( textid = zcx_mrg_rap_01_messages=>split_collision
+                                                          severity = if_abap_behv_message=>severity-error
+                                                          start_date = <salary_2b_checked>-StartDate
+                                                          end_date = <salary_2b_checked>-EndDate
+                                                         )
+                        ) TO reported-salary.
+        ENDIF.
+      ENDLOOP.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD calculate_net_salary.

@@ -33,6 +33,8 @@ early numbering
   {
     validation Child~validatePercentage;
     validation Child~validateAge;
+    validation Salary~validateOverlappingSplits;
+    validation Salary~validateGrossAnnualSalary;
   }
 
   mapping for zmrg_tab_employe corresponding

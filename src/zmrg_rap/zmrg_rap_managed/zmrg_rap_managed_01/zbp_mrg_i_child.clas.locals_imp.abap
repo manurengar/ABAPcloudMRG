@@ -32,6 +32,8 @@ CLASS lhc_child IMPLEMENTATION.
         APPEND VALUE #( %tky = <child>-%tky
                         %state_area         = 'VALIDATE_PERCENTAGE'
                         %element-DiscapacityPercentage = if_abap_behv=>mk-on
+                        %path       = VALUE #( employee-%tky = VALUE #( EmployeeId = <child>-EmployeeId
+                                                                        %is_draft  = <child>-%is_draft ) )
                         %msg = NEW zcx_mrg_rap_01_messages( textid = zcx_mrg_rap_01_messages=>percentage_out_of_bounds
                                                             severity = if_abap_behv_message=>severity-error
                                                             percentage = <child>-DiscapacityPercentage ) ) TO reported-child.
@@ -59,6 +61,8 @@ CLASS lhc_child IMPLEMENTATION.
         APPEND VALUE #( %tky = <child>-%tky
                         %state_area = 'VALIDATE_AGE'
                         %element-age = if_abap_behv=>mk-on
+                        %path        = VALUE #( employee-%tky = VALUE #( EmployeeId = <child>-EmployeeId
+                                                                         %is_draft  = <child>-%is_draft ) )
                         %msg = NEW zcx_mrg_rap_01_messages( textid   = zcx_mrg_rap_01_messages=>age_out_of_bounds
                                                             severity = if_abap_behv_message=>severity-error
                                                             age      = <child>-age ) ) TO reported-child.

@@ -52,16 +52,34 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         attr2 TYPE scx_attrname VALUE '',
         attr3 TYPE scx_attrname VALUE '',
         attr4 TYPE scx_attrname VALUE '',
-      END OF percentage_out_of_bounds.
-*
-*      BEGIN OF agency_unknown,
-*        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
-*        msgno TYPE symsgno VALUE '003',
-*        attr1 TYPE scx_attrname VALUE 'AGENCYID',
-*        attr2 TYPE scx_attrname VALUE '',
-*        attr3 TYPE scx_attrname VALUE '',
-*        attr4 TYPE scx_attrname VALUE '',
-*      END OF agency_unknown.
+      END OF percentage_out_of_bounds,
+
+      BEGIN OF incorrect_gross_salary,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '006',
+        attr1 TYPE scx_attrname VALUE 'GROSS_SALARY',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF incorrect_gross_salary,
+
+      BEGIN OF incorrect_start_date,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '007',
+        attr1 TYPE scx_attrname VALUE 'START_DATE',
+        attr2 TYPE scx_attrname VALUE 'END_DATE',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF incorrect_start_date,
+
+      BEGIN OF split_collision,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '008',
+        attr1 TYPE scx_attrname VALUE 'START_DATE',
+        attr2 TYPE scx_attrname VALUE 'END_DATE',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF split_collision.
 
     DATA:
       activity      TYPE zmrg_auth_field_value,
@@ -72,6 +90,9 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       employee_id   TYPE zmrg_employee_id,
       range_key     TYPE zmrg_emp_char02,
       age           TYPE zmrg_employee_age,
+      start_date    TYPE begda,
+      end_date      TYPE endda,
+      gross_salary  TYPE betrg,
       percentage    TYPE zmrg_employee_percentage.
 
 
@@ -87,6 +108,9 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         age           TYPE zmrg_employee_age OPTIONAL
         nationality   TYPE land1 OPTIONAL
         employee_id   TYPE zmrg_employee_id OPTIONAL
+        start_date    TYPE begda OPTIONAL
+        end_date      TYPE endda OPTIONAL
+        gross_salary  TYPE betrg OPTIONAL
         range_key     TYPE zmrg_emp_char02 OPTIONAL
         percentage    TYPE zmrg_employee_percentage OPTIONAL.
 ENDCLASS.
@@ -99,9 +123,12 @@ CLASS zcx_mrg_rap_01_messages IMPLEMENTATION.
     me->table_name_02  = table_name_02.
     me->table_name_03  = table_name_03.
     me->nationality    = nationality.
+    me->start_date     = start_date.
     me->employee_id    = employee_id.
     me->range_key      = range_key.
+    me->end_date       = end_date.
     me->percentage     = percentage.
+    me->gross_salary   = gross_salary.
 
     CLEAR me->textid.
     IF textid IS INITIAL.
