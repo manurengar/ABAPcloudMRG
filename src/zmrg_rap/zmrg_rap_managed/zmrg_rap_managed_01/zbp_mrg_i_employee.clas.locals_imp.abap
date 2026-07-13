@@ -7,7 +7,8 @@ CLASS lhc_Employee DEFINITION INHERITING FROM cl_abap_behavior_handler.
            ty_auth_tab TYPE TABLE OF ty_auth_str WITH DEFAULT KEY.
 
     CONSTANTS:
-        state_area_validate_lob        TYPE string VALUE 'VALIDATE_LOB'     ##NO_TEXT.
+      state_area_validate_lob  TYPE string VALUE 'VALIDATE_LOB'     ##NO_TEXT,
+      state_area_precheck_auth TYPE string VALUE 'PRECHECK_AUTH'    ##NO_TEXT.
 
     TYPES: BEGIN OF t_mimetypes,
              file_extension TYPE string,
@@ -314,6 +315,12 @@ CLASS lhc_Employee IMPLEMENTATION.
 
 
     LOOP AT entities ASSIGNING FIELD-SYMBOL(<entity>).
+
+      " Area invalidation
+      APPEND VALUE #( %cid        = COND #( WHEN operation EQ if_abap_behv=>op-m-create THEN <entity>-%cid_ref )
+                      %tky        = <entity>-%tky
+                      %state_area = state_area_precheck_auth ) TO reported.
+
       CASE operation.
         WHEN if_abap_behv=>op-m-create.
           access_granted = me->is_created_granted( <entity>-Nationality ).
@@ -327,14 +334,15 @@ CLASS lhc_Employee IMPLEMENTATION.
         APPEND VALUE #( %cid = COND #( WHEN operation EQ if_abap_behv=>op-m-create THEN <entity>-%cid_ref )
                         %tky = <entity>-%tky ) TO failed.
 
-        APPEND VALUE #( %cid  = COND #( WHEN operation EQ if_abap_behv=>op-m-create THEN <entity>-%cid_ref )
-                        %tky = <entity>-%tky
+        APPEND VALUE #( %cid                 = COND #( WHEN operation EQ if_abap_behv=>op-m-create THEN <entity>-%cid_ref )
+                        %tky                 = <entity>-%tky
+                        %state_area          = state_area_precheck_auth
                         %element-Nationality = if_abap_behv=>mk-on
-                        %msg = NEW zcx_mrg_rap_01_messages( textid = zcx_mrg_rap_01_messages=>not_authorized_for_nationality
-                                                            severity = if_abap_behv_message=>severity-error
-                                                            activity = CONV #( actvt )
-                                                            employee_id = <entity>-EmployeeId
-                                                            nationality = <entity>-Nationality ) ) TO reported.
+                        %msg                 = NEW zcx_mrg_rap_01_messages( textid      = zcx_mrg_rap_01_messages=>not_authorized_for_nationality
+                                                                            severity    = if_abap_behv_message=>severity-error
+                                                                            activity    = CONV #( actvt )
+                                                                            employee_id = <entity>-EmployeeId
+                                                                            nationality = <entity>-Nationality ) ) TO reported.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
