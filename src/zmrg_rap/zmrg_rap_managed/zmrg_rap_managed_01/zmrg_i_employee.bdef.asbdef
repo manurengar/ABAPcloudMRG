@@ -25,6 +25,7 @@ early numbering
 
   determination CreateDefaultSalary on modify { create; }
 
+  validation validateProfilePicture on save { create; field ProfilePicture, MimeType, Filename; }
   draft action Edit;
   draft action Activate optimized;
   draft action Discard;
@@ -128,13 +129,14 @@ early numbering
   factory action ( authorization: update ) newSplit parameter zmrg_a_create_salary [1];
 
   determination ReCalculateNetSalary on modify { field GrossAnnualSalary, PositionType; create; }
+
+  validation validateGrossAnnualSalary on save { field GrossAnnualSalary; create; }
+  validation validateOverlappingSplits on save { field StartDate; create; }
+
   side effects
   { field GrossAnnualSalary affects field NetAnnualSalary;
     field PositionType affects field NetAnnualSalary;
   }
-
-  validation validateGrossAnnualSalary on save { field GrossAnnualSalary; create; }
-  validation validateOverlappingSplits on save { field StartDate; create; }
 
   mapping for zmrg_tab_salary corresponding
     {

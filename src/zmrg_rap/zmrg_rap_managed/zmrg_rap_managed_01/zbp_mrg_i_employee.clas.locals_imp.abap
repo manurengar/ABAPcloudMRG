@@ -6,6 +6,18 @@ CLASS lhc_Employee DEFINITION INHERITING FROM cl_abap_behavior_handler.
            END OF TY_AUTH_str,
            ty_auth_tab TYPE TABLE OF ty_auth_str WITH DEFAULT KEY.
 
+    CONSTANTS:
+        state_area_validate_lob        TYPE string VALUE 'VALIDATE_LOB'     ##NO_TEXT.
+
+    TYPES: BEGIN OF t_mimetypes,
+             file_extension TYPE string,
+             mimetype       TYPE string,
+           END OF t_mimetypes.
+
+    CLASS-DATA allowed_mimetypes TYPE STANDARD TABLE OF t_mimetypes WITH KEY mimetype.
+
+    CLASS-METHODS class_constructor.
+
   PRIVATE SECTION.
     DATA:
          o_auth_ref TYPE REF TO zmrg_cla_auth_util.
@@ -34,6 +46,8 @@ CLASS lhc_Employee DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING entities FOR UPDATE employee.
     METHODS createdefaultsalary FOR DETERMINE ON MODIFY
       IMPORTING keys FOR employee~createdefaultsalary.
+    METHODS validateprofilepicture FOR VALIDATE ON SAVE
+      IMPORTING keys FOR employee~validateprofilepicture.
     METHODS earlynumbering_cba_salary FOR NUMBERING
       IMPORTING entities FOR CREATE employee\_salary.
     METHODS earlynumbering_create FOR NUMBERING
@@ -46,6 +60,13 @@ CLASS lhc_Employee DEFINITION INHERITING FROM cl_abap_behavior_handler.
 ENDCLASS.
 
 CLASS lhc_Employee IMPLEMENTATION.
+
+  METHOD class_constructor.
+    allowed_mimetypes = VALUE #( ( file_extension = '.jpg' mimetype = 'image/jpeg' )
+                                 ( file_extension = '.png' mimetype = 'image/png' )
+                                 ( file_extension = '.bmp' mimetype = 'image/bmp' ) ).
+
+  ENDMETHOD.
 
   METHOD get_global_authorizations.
     " Utility class for MRG packages authorizations management
@@ -375,6 +396,89 @@ CLASS lhc_Employee IMPLEMENTATION.
                         enddate   = <salary>-EndDate    " Provided on EML
                       ) TO mapped-salary.
       ENDLOOP.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD validateProfilePicture.
+
+    "No attachment may exist without its mimetype.
+    "The attachment must not be initial for an existing mimetype. This includes both empty and non-existing attachments, since there is no way to different between these two cases in ABAP.
+    "The mimetype must be in the list of supported mimetypes. This list is provided in the class constructor for the sake of simplicity.
+    "The file extension of the file name must match the file extension in the list of supported mimetypes.
+    "Filenames are optional. If a filename is provided, however, there must be a corresponding attachment and mimetype.
+
+    READ ENTITIES OF zmrg_i_employee IN LOCAL MODE
+    ENTITY Employee
+    FIELDS ( ProfilePicture MimeType Filename )
+    WITH CORRESPONDING #( keys )
+    RESULT DATA(employees).
+
+    LOOP AT employees ASSIGNING FIELD-SYMBOL(<employee>).
+      " Area invalidation
+      APPEND VALUE #( %tky = <employee>-%tky
+                      %state_area = state_area_validate_lob ) TO reported-employee.
+
+      " No mimetype found
+      IF <employee>-ProfilePicture IS NOT INITIAL AND <employee>-MimeType IS INITIAL.
+        APPEND VALUE #( %tky = <employee>-%tky ) TO failed-employee.
+        APPEND VALUE #( %tky = <employee>-%tky
+                        %state_area = state_area_validate_lob
+                        %element-mimetype = if_abap_behv=>mk-on
+                        %msg = NEW zcx_mrg_rap_01_messages( textid            = zcx_mrg_rap_01_messages=>incorrect_mimetype
+                                                            severity          = if_abap_behv_message=>severity-error
+                                                            prof_picture      = <employee>-ProfilePicture ) ) TO reported-employee.
+      ENDIF.
+
+      IF <employee>-MimeType IS NOT INITIAL.
+
+        " No (empty) attachment for mimetype
+        IF <employee>-ProfilePicture IS INITIAL.
+          APPEND VALUE #( %tky = <employee>-%tky ) TO failed-employee.
+          APPEND VALUE #( %tky = <employee>-%tky
+                          %state_area = state_area_validate_lob
+                          %element-ProfilePicture = if_abap_behv=>mk-on
+                          %msg = NEW zcx_mrg_rap_01_messages( textid            = zcx_mrg_rap_01_messages=>attachment_empty_missing
+                                                              severity          = if_abap_behv_message=>severity-error
+                                                              prof_picture      = <employee>-ProfilePicture ) ) TO reported-employee.
+        ENDIF.
+
+        " Mimetype is not supported
+        IF NOT line_exists( allowed_mimetypes[ mimetype = <employee>-mimetype ] ).
+          APPEND VALUE #( %tky = <employee>-%tky ) TO failed-employee.
+          APPEND VALUE #( %tky = <employee>-%tky
+                          %state_area = state_area_validate_lob
+                          %element-mimetype = if_abap_behv=>mk-on
+                          %msg = NEW zcx_mrg_rap_01_messages( textid            = zcx_mrg_rap_01_messages=>mimetype_not_supported
+                                                              severity          = if_abap_behv_message=>severity-error
+                                                              mimetype          = <employee>-MimeType ) ) TO reported-employee.
+        ELSE.
+          " File extension does not match mimetype
+          IF <employee>-Filename IS NOT INITIAL.
+            DATA(file_extension) = substring_from( val = <employee>-filename pcre = '(.[^.]*)$' ).
+
+            IF file_extension <> allowed_mimetypes[ mimetype = <employee>-mimetype ]-file_extension.
+              APPEND VALUE #( %tky = <employee>-%tky ) TO failed-employee.
+              APPEND VALUE #( %tky = <employee>-%tky
+                              %state_area = state_area_validate_lob
+                              %element-mimetype = if_abap_behv=>mk-on
+                              %element-filename = if_abap_behv=>mk-on
+                              %msg = NEW zcx_mrg_rap_01_messages( textid            = zcx_mrg_rap_01_messages=>extension_mimetype_mismatch
+                                                                  severity          = if_abap_behv_message=>severity-error
+                                                                  mimetype          = <employee>-MimeType ) ) TO reported-employee.
+            ENDIF.
+          ENDIF.
+        ENDIF.
+
+      ELSEIF <employee>-ProfilePicture IS INITIAL AND <employee>-filename IS NOT INITIAL.
+        APPEND VALUE #( %tky = <employee>-%tky ) TO failed-employee.
+        APPEND VALUE #( %tky = <employee>-%tky
+                        %state_area = state_area_validate_lob
+                        %element-mimetype = if_abap_behv=>mk-on
+                        %element-ProfilePicture = if_abap_behv=>mk-on
+                        %msg = NEW zcx_mrg_rap_01_messages( textid            = zcx_mrg_rap_01_messages=>mimetype_not_supported
+                                                            severity          = if_abap_behv_message=>severity-error
+                                                            filename          = <employee>-filename ) ) TO reported-employee.
+      ENDIF.
     ENDLOOP.
   ENDMETHOD.
 

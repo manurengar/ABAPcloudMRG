@@ -79,7 +79,52 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         attr2 TYPE scx_attrname VALUE 'END_DATE',
         attr3 TYPE scx_attrname VALUE '',
         attr4 TYPE scx_attrname VALUE '',
-      END OF split_collision.
+      END OF split_collision,
+
+      BEGIN OF incorrect_mimetype,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '009',
+        attr1 TYPE scx_attrname VALUE 'PROF_PICTURE',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF incorrect_mimetype,
+
+      BEGIN OF attachment_empty_missing,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '010',
+        attr1 TYPE scx_attrname VALUE 'PROF_PICTURE',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF attachment_empty_missing,
+
+      BEGIN OF mimetype_not_supported,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '011',
+        attr1 TYPE scx_attrname VALUE 'MIMETYPE',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF mimetype_not_supported,
+
+      BEGIN OF extension_mimetype_mismatch,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '011',
+        attr1 TYPE scx_attrname VALUE 'MIMETYPE',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF extension_mimetype_mismatch,
+
+      BEGIN OF only_filename,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgno TYPE symsgno VALUE '011',
+        attr1 TYPE scx_attrname VALUE 'FILENAME',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF only_filename.
 
     DATA:
       activity      TYPE zmrg_auth_field_value,
@@ -93,7 +138,10 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       start_date    TYPE begda,
       end_date      TYPE endda,
       gross_salary  TYPE betrg,
-      percentage    TYPE zmrg_employee_percentage.
+      prof_picture  TYPE zmrg_employee_photo,
+      percentage    TYPE zmrg_employee_percentage,
+      mimetype      TYPE zmrg_mime_type,
+      filename      TYPE zmrg_filename.
 
 
     METHODS constructor
@@ -112,7 +160,10 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         end_date      TYPE endda OPTIONAL
         gross_salary  TYPE betrg OPTIONAL
         range_key     TYPE zmrg_emp_char02 OPTIONAL
-        percentage    TYPE zmrg_employee_percentage OPTIONAL.
+        percentage    TYPE zmrg_employee_percentage OPTIONAL
+        prof_picture  TYPE zmrg_employee_photo OPTIONAL
+        mimetype      TYPE zmrg_mime_type OPTIONAL
+        filename      TYPE zmrg_filename OPTIONAL.
 ENDCLASS.
 
 CLASS zcx_mrg_rap_01_messages IMPLEMENTATION.
@@ -129,6 +180,7 @@ CLASS zcx_mrg_rap_01_messages IMPLEMENTATION.
     me->end_date       = end_date.
     me->percentage     = percentage.
     me->gross_salary   = gross_salary.
+    me->prof_picture   = prof_picture.
 
     CLEAR me->textid.
     IF textid IS INITIAL.

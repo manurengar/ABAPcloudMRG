@@ -1,5 +1,10 @@
 CLASS lhc_child DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
+  PUBLIC SECTION.
+    CONSTANTS:
+      state_area_validate_percentage TYPE string VALUE 'VALIDATE_PERCENTAGE' ##NO_TEXT,
+      state_area_validate_age        TYPE string VALUE 'VALIDATE_AGE'        ##NO_TEXT.
+
   PRIVATE SECTION.
 
     METHODS validatePercentage FOR VALIDATE ON SAVE
@@ -22,21 +27,21 @@ CLASS lhc_child IMPLEMENTATION.
     RESULT DATA(child_entities).
 
     LOOP AT child_entities ASSIGNING FIELD-SYMBOL(<child>).
-      APPEND VALUE #( %tky          = <child>-%tky
-                      %state_area   = 'VALIDATE_PERCENTAGE' ) TO reported-child.
+      APPEND VALUE #( %tky        = <child>-%tky
+                      %state_area = state_area_validate_percentage ) TO reported-child.
 
       IF <child>-DiscapacityPercentage LT 0 OR <child>-DiscapacityPercentage GT 1.
 
         APPEND VALUE #( %tky = <child>-%tky ) TO failed-child.
 
-        APPEND VALUE #( %tky = <child>-%tky
-                        %state_area         = 'VALIDATE_PERCENTAGE'
+        APPEND VALUE #( %tky                           = <child>-%tky
+                        %state_area                    = state_area_validate_percentage
                         %element-DiscapacityPercentage = if_abap_behv=>mk-on
-                        %path       = VALUE #( employee-%tky = VALUE #( EmployeeId = <child>-EmployeeId
-                                                                        %is_draft  = <child>-%is_draft ) )
-                        %msg = NEW zcx_mrg_rap_01_messages( textid = zcx_mrg_rap_01_messages=>percentage_out_of_bounds
-                                                            severity = if_abap_behv_message=>severity-error
-                                                            percentage = <child>-DiscapacityPercentage ) ) TO reported-child.
+                        %path                          = VALUE #( employee-%tky = VALUE #( EmployeeId = <child>-EmployeeId
+                                                                                           %is_draft  = <child>-%is_draft ) )
+                        %msg                           = NEW zcx_mrg_rap_01_messages( textid     = zcx_mrg_rap_01_messages=>percentage_out_of_bounds
+                                                                                      severity   = if_abap_behv_message=>severity-error
+                                                                                      percentage = <child>-DiscapacityPercentage ) ) TO reported-child.
       ENDIF.
     ENDLOOP.
 
@@ -52,20 +57,20 @@ CLASS lhc_child IMPLEMENTATION.
 
     LOOP AT child_entities ASSIGNING FIELD-SYMBOL(<child>).
       APPEND VALUE #( %tky        = <child>-%tky
-                      %state_area = 'VALIDATE_AGE' ) TO reported-child.
+                      %state_area = state_area_validate_age ) TO reported-child.
 
       IF <child>-age LT 0 OR <child>-age GE 18.
 
         APPEND VALUE #( %tky = <child>-%tky ) TO failed-child.
 
-        APPEND VALUE #( %tky = <child>-%tky
-                        %state_area = 'VALIDATE_AGE'
+        APPEND VALUE #( %tky         = <child>-%tky
+                        %state_area  = state_area_validate_age
                         %element-age = if_abap_behv=>mk-on
                         %path        = VALUE #( employee-%tky = VALUE #( EmployeeId = <child>-EmployeeId
                                                                          %is_draft  = <child>-%is_draft ) )
-                        %msg = NEW zcx_mrg_rap_01_messages( textid   = zcx_mrg_rap_01_messages=>age_out_of_bounds
-                                                            severity = if_abap_behv_message=>severity-error
-                                                            age      = <child>-age ) ) TO reported-child.
+                        %msg         = NEW zcx_mrg_rap_01_messages( textid   = zcx_mrg_rap_01_messages=>age_out_of_bounds
+                                                                    severity = if_abap_behv_message=>severity-error
+                                                                    age      = <child>-age ) ) TO reported-child.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
