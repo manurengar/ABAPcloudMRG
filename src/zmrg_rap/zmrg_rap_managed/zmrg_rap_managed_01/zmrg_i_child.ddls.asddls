@@ -1,31 +1,37 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Child entity view'
 @Metadata.ignorePropagatedAnnotations: true
-define view entity zmrg_i_child as select from zmrg_tab_child
-association to parent zmrg_i_employee as _Employee
-    on $projection.EmployeeId = _Employee.EmployeeId
+define view entity zmrg_i_child
+  as select from zmrg_tab_child
+  association        to parent zmrg_i_employee as _Employee    on  $projection.EmployeeId = _Employee.EmployeeId
+  association [0..1] to zmrg_i_nationality_vh  as _Nationality on  $projection.Nationality = _Nationality.Nationality
+                                                               and _Nationality.Language   = $session.system_language
 {
-    key uuid as Uuid,
-    key employee_id as EmployeeId,
-    first_name as FirstName,
-    last_name as LastName,
-    age as Age,
-    gender as Gender,
-    nationality as Nationality,
-    identity_number as IdentityNumber,
-    discapacity as Discapacity,
-    discapacity_percentage as DiscapacityPercentage,
-    @Semantics.user.createdBy: true
-    created_by as CreatedBy,
-    @Semantics.systemDateTime.createdAt: true
-    created_at as CreatedAt,
-    @Semantics.user.localInstanceLastChangedBy: true
-    local_last_changed_by as LocalLastChangedBy,
-    @Semantics.systemDateTime.localInstanceLastChangedAt: true
-    local_last_changed_at as LocalLastChangedAt,
-    @Semantics.systemDateTime.lastChangedAt: true
-    last_changed_at as LastChangedAt,
-    @Semantics.user.lastChangedBy: true
-    last_changed_by as LastChangedBy,
-    _Employee 
+  key uuid                          as Uuid,
+  key employee_id                   as EmployeeId,
+      first_name                    as FirstName,
+      last_name                     as LastName,
+      age                           as Age,
+      gender                        as Gender,
+      @ObjectModel.text.element: [ 'NationalityText' ]
+      nationality                   as Nationality,
+      @Semantics.text: true
+      _Nationality.NationalityDescr as NationalityText,
+      identity_number               as IdentityNumber,
+      discapacity                   as Discapacity,
+      discapacity_percentage        as DiscapacityPercentage,
+      @Semantics.user.createdBy: true
+      created_by                    as CreatedBy,
+      @Semantics.systemDateTime.createdAt: true
+      created_at                    as CreatedAt,
+      @Semantics.user.localInstanceLastChangedBy: true
+      local_last_changed_by         as LocalLastChangedBy,
+      @Semantics.systemDateTime.localInstanceLastChangedAt: true
+      local_last_changed_at         as LocalLastChangedAt,
+      @Semantics.systemDateTime.lastChangedAt: true
+      last_changed_at               as LastChangedAt,
+      @Semantics.user.lastChangedBy: true
+      last_changed_by               as LastChangedBy,
+      _Employee,
+      _Nationality
 }

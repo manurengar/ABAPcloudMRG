@@ -36,6 +36,7 @@ early numbering
     validation Child~validateAge;
     validation Salary~validateOverlappingSplits;
     validation Salary~validateGrossAnnualSalary;
+    validation validateProfilePicture;
   }
 
   mapping for zmrg_tab_employe corresponding
