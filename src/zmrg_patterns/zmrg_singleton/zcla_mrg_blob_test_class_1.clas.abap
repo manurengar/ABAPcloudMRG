@@ -1,13 +1,26 @@
-class ZCLA_MRG_BLOB_TEST_CLASS_1 definition
-  public
-  create private .
+CLASS zcla_mrg_blob_test_class_1 DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
-protected section.
-private section.
+  PUBLIC SECTION.
+    METHODS:
+      constructor,
+      test_1 IMPORTING out         TYPE REF TO if_oo_adt_classrun_out
+                       blob_reader TYPE REF TO zmrg_if_blob_reader.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCLA_MRG_BLOB_TEST_CLASS_1 IMPLEMENTATION.
+CLASS zcla_mrg_blob_test_class_1 IMPLEMENTATION.
+  METHOD constructor.
+
+  ENDMETHOD.
+
+  METHOD test_1.
+    out->write( |BLOB1: { blob_reader->get_blob_from_pernr( '00002122' ) }| ).
+  ENDMETHOD.
+
 ENDCLASS.
