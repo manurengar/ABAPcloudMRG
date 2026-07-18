@@ -1,0 +1,8 @@
+@EndUserText.label: 'Service definition for managed Employee'
+define service ZMRG_UI_EMPLOYEE_M {
+  expose zmrg_c_employee       as Employee;
+  expose zmrg_c_child          as Child;
+  expose ZMRG_C_SALARY         as Salary;
+  expose zmrg_i_POSITION_VH    as Position_VH;
+  expose zmrg_i_nationality_vh as Nationality_VH;
+}

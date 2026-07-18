@@ -16,7 +16,7 @@ early numbering
   delete;
 
   field ( mandatory : create ) Nationality;
-  field ( readonly ) EmployeeId, Children;
+  field ( readonly ) EmployeeId, Children, NationalityText;
   field ( readonly : update ) Nationality;
   field ( readonly ) CreatedBy, CreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt, LastChangedBy;
 
@@ -73,7 +73,7 @@ etag master LocalLastChangedAt
   update;
   delete;
 
-  field ( readonly ) Uuid, EmployeeId;
+  field ( readonly ) Uuid, EmployeeId, NATIONALITYTEXT;
   field ( numbering : managed ) Uuid;
   field ( readonly ) CreatedBy, CreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt, LastChangedBy;
 
@@ -81,8 +81,9 @@ etag master LocalLastChangedAt
 
   determination CalculateChildrenCount on modify { create; delete; }
 
-  side effects {
-   $self affects field _Employee.Children;
+  side effects
+  {
+    $self affects field _Employee.Children;
   }
 
   validation validatePercentage on save { field DiscapacityPercentage; create; }
@@ -121,13 +122,13 @@ early numbering
   update;
   delete;
 
-  field ( readonly ) PositionId, StartDate, EndDate, EmployeeId, NetAnnualSalary;
+  field ( readonly ) PositionId, StartDate, EndDate, EmployeeId, NetAnnualSalary, PositionText;
 
   field ( readonly ) CreatedBy, CreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt, LastChangedBy;
 
   association _Employee { with draft; }
 
-  factory action ( authorization: update ) newSplit parameter zmrg_a_create_salary [1];
+  factory action ( authorization : update ) newSplit parameter zmrg_a_create_salary [1];
 
   determination ReCalculateNetSalary on modify { field GrossAnnualSalary, PositionType; create; }
 

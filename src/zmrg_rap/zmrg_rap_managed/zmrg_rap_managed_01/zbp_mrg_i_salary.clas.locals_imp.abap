@@ -70,8 +70,6 @@ CLASS lhc_salary IMPLEMENTATION.
     IF sy-subrc IS INITIAL.
       DATA(delimited_end_date) = keys[ 1 ]-%param-start_date - 1.
 
-      " TODO: THE ENDDA MUST NOT BE KEY, RAP CANNOT CHANGE IT
-
       APPEND VALUE #( %tky = <entity_2b_delimited>-%tky
                       enddate = delimited_end_date
                       %control-enddate = if_abap_behv=>mk-on ) TO update_salary.

@@ -9,7 +9,7 @@ define view entity zmrg_i_salary
 {
   key position_id           as PositionId,
   key start_date            as StartDate,
-  key end_date              as EndDate,
+      end_date              as EndDate,
       @ObjectModel.text.element: [ 'PositionText' ]
       position_type         as PositionType,
       @Semantics.text: true
