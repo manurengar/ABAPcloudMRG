@@ -14,6 +14,7 @@ define root view entity zmrg_i_employee
       age                           as Age,
       gender                        as Gender,
       @ObjectModel.text.element: [ 'NationalityText' ]
+      @Semantics.address.country: true
       nationality                   as Nationality,
       @Semantics.text: true
       _Nationality.NationalityDescr as NationalityText,
@@ -23,7 +24,8 @@ define root view entity zmrg_i_employee
       @Semantics.largeObject: {
                                 mimeType: 'Mimetype',
                                 fileName: 'Filename',
-                                contentDispositionPreference: #INLINE,
+                                cacheControl.maxAge: #MEDIUM,
+                                contentDispositionPreference: #ATTACHMENT,
                                 acceptableMimeTypes: [ 'image/*' ]
                                }
       @Semantics.imageUrl: true

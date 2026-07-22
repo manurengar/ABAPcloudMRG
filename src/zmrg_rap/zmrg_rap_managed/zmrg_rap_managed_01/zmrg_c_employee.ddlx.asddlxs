@@ -1,0 +1,107 @@
+@Metadata.layer: #CORE
+
+// Manuel Rentero Garcia - ESP - manuelrus15@gmail.com
+
+@UI: {
+        headerInfo: {
+                        typeName: 'Employee Entity',
+                        typeNamePlural: 'Employees Entities',
+                        typeImageUrl: 'sap-icon://employee-pane',
+                        imageUrl: 'ProfilePicture',
+                        title: {
+                                 value: 'EmployeeId',
+                                 type: #STANDARD
+                               },
+                        description: {
+                                        value: 'Nationality',
+                                        label: 'Employee description',
+                                        type: #STANDARD
+                                     }
+                    },
+        presentationVariant: [{ sortOrder: [{ by: 'EmployeeId', direction: #ASC }] }]
+     }
+annotate entity zmrg_c_employee with
+{
+  @UI.facet: [
+      { id: 'EmployeeInfo',
+        purpose: #STANDARD,
+        type: #IDENTIFICATION_REFERENCE,
+        label: 'General Information',
+        position: 10 },
+      { id: 'ChildInfo',
+        purpose: #STANDARD,
+        type: #LINEITEM_REFERENCE,
+        label: 'Children',
+        position: 20,
+        targetElement: '_Child' },
+      { id: 'SalaryInfo',
+        purpose: #STANDARD,
+        type: #LINEITEM_REFERENCE,
+        label: 'Salary Overview',
+        position: 30,
+        targetElement: '_Salary' }
+    ]
+
+  @UI.selectionField: [{ position: 10 }]
+  @UI.lineItem: [{ position: 10 }]
+  @UI.identification: [{ position: 10 }]
+  EmployeeId;
+
+  @UI.selectionField: [{ position: 20 }]
+  @UI.lineItem: [{ position: 20 }]
+  @UI.identification: [{ position: 20 }]
+  FirstName;
+
+  @UI.selectionField: [{ position: 30 }]
+  @UI.lineItem: [{ position: 30 }]
+  @UI.identification: [{ position: 30 }]
+  LastName;
+
+  @UI.lineItem: [{ position: 40 }]
+  @UI.identification: [{ position: 40 }]
+  Age;
+
+  @UI.selectionField: [{ position: 40 }]
+  @UI.lineItem: [{ position: 50 }]
+  @UI.identification: [{ position: 50 }]
+  Gender;
+
+  @UI.selectionField: [{ position: 50 }]
+  @UI.lineItem: [{ position: 60 }]
+  @UI.identification: [{ position: 60 }]
+  Nationality;
+
+  @UI.hidden: true
+  NationalityText;
+
+  @UI.lineItem: [{ position: 70 }]
+  @UI.identification: [{ position: 70 }]
+  CivilStatus;
+
+  @UI.lineItem: [{ position: 80 }]
+  @UI.identification: [{ position: 80 }]
+  Children;
+
+  @UI.identification: [{ position: 90 }]
+  IdentityNumber;
+
+  @UI.hidden: true
+  ProfilePicture;
+  @UI.hidden: true
+  MimeType;
+  @UI.hidden: true
+  Filename;
+  @UI.hidden: true
+  CreatedBy;
+  @UI.hidden: true
+  CreatedAt;
+  @UI.hidden: true
+  LocalLastChangedBy;
+  @UI.hidden: true
+  LocalLastChangedAt;
+  @UI.hidden: true
+  LastChangedAt;
+  @UI.hidden: true
+  LastChangedBy;
+
+}

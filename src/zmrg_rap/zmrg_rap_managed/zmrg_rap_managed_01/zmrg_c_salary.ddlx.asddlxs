@@ -1,0 +1,71 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: { typeName: 'Salary',
+                typeNamePlural: 'Salaries',
+                title: { type: #STANDARD, value: 'PositionType' } },
+  presentationVariant: [{ sortOrder: [{ by: 'StartDate', direction: #DESC }] }]
+}
+annotate entity ZMRG_C_SALARY with
+{
+  @UI.facet: [
+  { id: 'SalaryInfo',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Salary Details',
+    position: 10 }
+  ]
+
+  @UI.lineItem: [
+    { position: 10 },
+    { type: #FOR_ACTION, dataAction: 'newSplit', label: 'Create New Split' }
+  ]
+  @UI.identification: [
+    { position: 10 },
+    { type: #FOR_ACTION, dataAction: 'newSplit', label: 'Create New Split' }
+  ]
+  PositionId;
+
+  @UI.lineItem: [{ position: 20 }]
+  @UI.identification: [{ position: 20 }]
+  StartDate;
+
+  @UI.lineItem: [{ position: 30 }]
+  @UI.identification: [{ position: 30 }]
+  EndDate;
+
+  @UI.lineItem: [{ position: 40 }]
+  @UI.identification: [{ position: 40 }]
+  PositionType;
+
+  @UI.hidden: true
+  PositionText;
+
+  @UI.hidden: true
+  EmployeeId;
+
+  @UI.lineItem: [{ position: 50 }]
+  @UI.identification: [{ position: 50 }]
+  GrossAnnualSalary;
+
+  @UI.lineItem: [{ position: 60 }]
+  @UI.identification: [{ position: 60 }]
+  NetAnnualSalary;
+
+  @UI.hidden: true
+  Currency;
+
+  /* Hide administrative and technical fields */
+  @UI.hidden: true
+  CreatedBy;
+  @UI.hidden: true
+  CreatedAt;
+  @UI.hidden: true
+  LocalLastChangedBy;
+  @UI.hidden: true
+  LocalLastChangedAt;
+  @UI.hidden: true
+  LastChangedAt;
+  @UI.hidden: true
+  LastChangedBy;
+
+}

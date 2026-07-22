@@ -1,0 +1,73 @@
+@Metadata.layer: #CORE
+
+@UI: {
+  headerInfo: { typeName: 'Child',
+                typeNamePlural: 'Children',
+                title: { type: #STANDARD, value: 'FirstName' },
+                description: { type: #STANDARD, value: 'LastName' } }
+}
+
+annotate entity zmrg_c_child with
+{
+  @UI.facet: [
+   { id: 'ChildInfo',
+     purpose: #STANDARD,
+     type: #IDENTIFICATION_REFERENCE,
+     label: 'Child Details',
+     position: 10 }
+  ]
+
+  @UI.hidden: true
+  Uuid;
+
+  @UI.hidden: true
+  EmployeeId;
+
+  @UI.lineItem: [{ position: 10 }]
+  @UI.identification: [{ position: 10 }]
+  FirstName;
+
+  @UI.lineItem: [{ position: 20 }]
+  @UI.identification: [{ position: 20 }]
+  LastName;
+
+  @UI.lineItem: [{ position: 30 }]
+  @UI.identification: [{ position: 30 }]
+  Age;
+
+  @UI.lineItem: [{ position: 40 }]
+  @UI.identification: [{ position: 40 }]
+  Gender;
+
+  @UI.lineItem: [{ position: 50 }]
+  @UI.identification: [{ position: 50 }]
+  Nationality;
+
+  @UI.hidden: true
+  NationalityText;
+
+  @UI.identification: [{ position: 60 }]
+  IdentityNumber;
+
+  @UI.lineItem: [{ position: 70 }]
+  @UI.identification: [{ position: 70 }]
+  Discapacity;
+
+  @UI.lineItem: [{ position: 80 }]
+  @UI.identification: [{ position: 80 }]
+  DiscapacityPercentage;
+
+  @UI.hidden: true
+  CreatedBy;
+  @UI.hidden: true
+  CreatedAt;
+  @UI.hidden: true
+  LocalLastChangedBy;
+  @UI.hidden: true
+  LocalLastChangedAt;
+  @UI.hidden: true
+  LastChangedAt;
+  @UI.hidden: true
+  LastChangedBy;
+
+}
