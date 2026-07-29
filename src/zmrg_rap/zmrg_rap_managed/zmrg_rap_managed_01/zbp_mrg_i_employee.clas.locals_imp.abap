@@ -147,9 +147,10 @@ CLASS lhc_Employee IMPLEMENTATION.
                             ( auth_field = 'S_TABU'  auth_value = 'ZMRG_TAB_CHILD' )
                             ( auth_field = 'S_TABU'  auth_value = 'ZMRG_TAB_SALARY' ) ).
 
-      is_granted = o_auth_ref->is_authorized( auth_obj          = 'ZMRG_EMP'
-                                              field_value_pairs = key_values ).
     ENDIF.
+
+    is_granted = o_auth_ref->is_authorized( auth_obj            = 'ZMRG_EMP'
+                                            field_value_pairs   = key_values ).
   ENDMETHOD.
 
   METHOD is_deleted_granted.
@@ -194,6 +195,8 @@ CLASS lhc_Employee IMPLEMENTATION.
       delete_requested TYPE abap_bool,
       update_granted   TYPE abap_bool,
       delete_granted   TYPE abap_bool.
+
+    me->o_auth_ref = zmrg_cla_auth_util=>get_instance( xco_cp=>sy->user( )->name ).
 
     READ ENTITIES OF zmrg_i_employee IN LOCAL MODE
         ENTITY Employee
@@ -278,6 +281,8 @@ CLASS lhc_Employee IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD precheck_create.
+    me->o_auth_ref = zmrg_cla_auth_util=>get_instance( xco_cp=>sy->user( )->name ).
+
     me->precheck_auths( EXPORTING
                           entities_create = entities
                         CHANGING
@@ -286,6 +291,8 @@ CLASS lhc_Employee IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD precheck_update.
+    me->o_auth_ref = zmrg_cla_auth_util=>get_instance( xco_cp=>sy->user( )->name ).
+
     me->precheck_auths( EXPORTING
                             entities_update = entities
                         CHANGING
@@ -401,7 +408,6 @@ CLASS lhc_Employee IMPLEMENTATION.
                         %is_draft  = <salary>-%is_draft
                         PositionId = new_position_id
                         startdate  = <salary>-StartDate " Provided on EML
-                        enddate   = <salary>-EndDate    " Provided on EML
                       ) TO mapped-salary.
       ENDLOOP.
     ENDLOOP.

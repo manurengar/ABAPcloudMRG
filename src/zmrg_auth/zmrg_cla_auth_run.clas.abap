@@ -22,13 +22,28 @@ CLASS zmrg_cla_auth_run IMPLEMENTATION.
     cl-range_value = '10000000'.
     MODIFY zmrg_ranges FROM @cl.
 
-*    DATA(o_auth_ref) = zmrg_cla_auth_util=>get_instance( xco_cp=>sy->user( )->name ).
+    DATA(o_auth_ref) = zmrg_cla_auth_util=>get_instance( xco_cp=>sy->user( )->name ).
+
+*    o_auth_ref->grant_field_to_role( role_name = 'ZMRG_APP_EMP_USER'
+*                                     auth_obj  = 'ZMRG_EMP'
+*                                     auth_field = 'S_TABU'
+*                                     auth_value = 'ZMRG_TAB_EMPLOYEE' ).
 *
-*
-**    o_auth_ref->grant_field_to_role( role_name = 'ZMRG_APP_EMP_USER'
-**                                     auth_obj  = 'ZMRG_EMP'
-**                                     auth_field = 'ACTVT'
-**                                     auth_value = '03' ).
+*    o_auth_ref->grant_field_to_role( role_name = 'ZMRG_APP_EMP_USER'
+*                                     auth_obj  = 'ZMRG_EMP'
+*                                     auth_field = 'S_TABU'
+*                                     auth_value = 'ZMRG_TAB_CHILD' ).
+
+
+    o_auth_ref->grant_field_to_role( role_name = 'ZMRG_APP_EMP_USER'
+                                     auth_obj  = 'ZMRG_EMP'
+                                     auth_field = 'S_TABU'
+                                     auth_value = 'ZMRG_TAB_SALARY' ).
+
+*    o_auth_ref->grant_field_to_role( role_name = 'ZMRG_APP_EMP_USER'
+*                                     auth_obj  = 'ZMRG_EMP'
+*                                     auth_field = 'ACTVT'
+*                                     auth_value = '03' ).
 *
 *    DATA key_values TYPE zmrg_cla_auth_util=>ty_field_value_tab.
 *

@@ -198,21 +198,21 @@ CLASS zmrg_cla_auth_util IMPLEMENTATION.
 
     ASSIGN filtered_auth_obj_tab[ auth_obj   = auth_obj
                                   auth_field = auth_field ] TO FIELD-SYMBOL(<auth_obj>).
-    IF sy-subrc IS INITIAL.
 
-      DATA(max_seqnr) = COND zmrg_auth_seqnr( WHEN sy-subrc IS INITIAL THEN <auth_obj>-seqnr + 1 ELSE '00' ).
+    DATA(max_seqnr) = COND zmrg_auth_seqnr( WHEN sy-subrc IS INITIAL THEN <auth_obj>-seqnr + 1 ELSE '00' ).
 
-      new_auth_obj_line = VALUE #( auth_obj   = cond #( when <auth_obj> is assigned then <auth_obj>-auth_obj else auth_obj )
-                                   auth_field = cond #( when <auth_obj> is assigned then <auth_obj>-auth_field else auth_field )
-                                   auth_value = auth_value
-                                   role_name  = role_name
-                                   seqnr      = max_seqnr ).
 
-      INSERT new_auth_obj_line INTO TABLE me->authorization_objects.
+    new_auth_obj_line = VALUE #( auth_obj   = COND #( WHEN <auth_obj> IS ASSIGNED THEN <auth_obj>-auth_obj ELSE auth_obj )
+                                 auth_field = COND #( WHEN <auth_obj> IS ASSIGNED THEN <auth_obj>-auth_field ELSE auth_field )
+                                 auth_value = auth_value
+                                 role_name  = role_name
+                                 seqnr      = max_seqnr ).
 
-      SORT me->authorization_objects BY role_name auth_obj auth_field auth_value DESCENDING.
-      DELETE ADJACENT DUPLICATES FROM me->authorization_objects COMPARING auth_value.
-    ENDIF.
+    INSERT new_auth_obj_line INTO TABLE me->authorization_objects.
+
+    SORT me->authorization_objects BY role_name auth_obj auth_field auth_value DESCENDING.
+    DELETE ADJACENT DUPLICATES FROM me->authorization_objects COMPARING auth_value.
+
 
     MODIFY zmrg_auth_object FROM TABLE @me->authorization_objects.
     COMMIT WORK.

@@ -10,7 +10,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
 
     CONSTANTS:
       BEGIN OF not_authorized,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '001',
         attr1 TYPE scx_attrname VALUE 'ACTIVITY',
         attr2 TYPE scx_attrname VALUE 'TABLE_NAME_01',
@@ -19,7 +19,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF not_authorized,
 
       BEGIN OF not_authorized_for_nationality,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '002',
         attr1 TYPE scx_attrname VALUE 'ACTIVITY',
         attr2 TYPE scx_attrname VALUE 'NATIONALITY',
@@ -28,7 +28,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF not_authorized_for_nationality,
 
       BEGIN OF no_range_key_found,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '003',
         attr1 TYPE scx_attrname VALUE 'RANGE_KEY',
         attr2 TYPE scx_attrname VALUE '',
@@ -37,7 +37,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF no_range_key_found,
 
       BEGIN OF age_out_of_bounds,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '005',
         attr1 TYPE scx_attrname VALUE 'AGE',
         attr2 TYPE scx_attrname VALUE '',
@@ -46,7 +46,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF age_out_of_bounds,
 
       BEGIN OF percentage_out_of_bounds,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '004',
         attr1 TYPE scx_attrname VALUE 'PERCENTAGE',
         attr2 TYPE scx_attrname VALUE '',
@@ -55,7 +55,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF percentage_out_of_bounds,
 
       BEGIN OF incorrect_gross_salary,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '006',
         attr1 TYPE scx_attrname VALUE 'GROSS_SALARY',
         attr2 TYPE scx_attrname VALUE '',
@@ -64,7 +64,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF incorrect_gross_salary,
 
       BEGIN OF incorrect_start_date,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '007',
         attr1 TYPE scx_attrname VALUE 'START_DATE',
         attr2 TYPE scx_attrname VALUE 'END_DATE',
@@ -73,7 +73,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF incorrect_start_date,
 
       BEGIN OF split_collision,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '008',
         attr1 TYPE scx_attrname VALUE 'START_DATE',
         attr2 TYPE scx_attrname VALUE 'END_DATE',
@@ -82,7 +82,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF split_collision,
 
       BEGIN OF incorrect_mimetype,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '009',
         attr1 TYPE scx_attrname VALUE 'PROF_PICTURE',
         attr2 TYPE scx_attrname VALUE '',
@@ -91,7 +91,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF incorrect_mimetype,
 
       BEGIN OF attachment_empty_missing,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '010',
         attr1 TYPE scx_attrname VALUE 'PROF_PICTURE',
         attr2 TYPE scx_attrname VALUE '',
@@ -100,7 +100,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF attachment_empty_missing,
 
       BEGIN OF mimetype_not_supported,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '011',
         attr1 TYPE scx_attrname VALUE 'MIMETYPE',
         attr2 TYPE scx_attrname VALUE '',
@@ -109,7 +109,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF mimetype_not_supported,
 
       BEGIN OF extension_mimetype_mismatch,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '011',
         attr1 TYPE scx_attrname VALUE 'MIMETYPE',
         attr2 TYPE scx_attrname VALUE '',
@@ -118,7 +118,7 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
       END OF extension_mimetype_mismatch,
 
       BEGIN OF only_filename,
-        msgid TYPE symsgid VALUE 'ZMRG_RAP_01',
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_01_MESS',
         msgno TYPE symsgno VALUE '011',
         attr1 TYPE scx_attrname VALUE 'FILENAME',
         attr2 TYPE scx_attrname VALUE '',
