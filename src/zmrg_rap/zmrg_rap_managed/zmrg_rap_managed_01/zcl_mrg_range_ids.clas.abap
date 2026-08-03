@@ -8,10 +8,10 @@ CLASS zcl_mrg_range_ids DEFINITION
         co_employee_id TYPE c LENGTH 2 VALUE '01'.
 
     METHODS:
-      get_next_number IMPORTING range_key       TYPE zmrg_emp_char02
-                      RETURNING VALUE(rv_range) TYPE zmrg_emp_range_value
-                      RAISING
-                                zcx_mrg_rap_01_messages.
+      create_interval RETURNING VALUE(is_created)  TYPE abap_bool,
+      get_next_number IMPORTING range_key          TYPE cl_numberrange_runtime=>nr_object
+                      RETURNING VALUE(next_number) TYPE cl_numberrange_runtime=>nr_number
+                      RAISING   zcx_mrg_rap_01_messages.
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -20,24 +20,31 @@ ENDCLASS.
 
 CLASS zcl_mrg_range_ids IMPLEMENTATION.
   METHOD get_next_number.
-    SELECT * FROM zmrg_ranges
-        WHERE range_key EQ @range_key
-        INTO TABLE @DATA(range_tab).
 
-    ASSIGN range_tab[ 1 ] TO FIELD-SYMBOL(<range>).
-    IF sy-subrc IS INITIAL.
-      rv_range = <range>-range_value.
+    me->create_interval( ).
 
-      <range>-range_value = 1 + CONV i( <range>-range_value ).
-      MODIFY zmrg_ranges FROM @<range>.
-      COMMIT WORK.
-    ELSE.
-      RAISE EXCEPTION TYPE zcx_mrg_rap_01_messages
-        EXPORTING
-          textid    = zcx_mrg_rap_01_messages=>no_range_key_found
-          severity  = if_abap_behv_message=>severity-error
-          range_key = range_key.
-    ENDIF.
+    TRY.
+        cl_numberrange_runtime=>number_get(
+          EXPORTING
+            nr_range_nr = '01'
+            object      = range_key
+          IMPORTING
+            number      = next_number ).
+
+
+      CATCH cx_number_ranges INTO DATA(lx_nr_error).
+        RAISE EXCEPTION TYPE zcx_mrg_rap_01_messages
+          EXPORTING
+            textid    = zcx_mrg_rap_01_messages=>no_range_key_found
+            severity  = if_abap_behv_message=>severity-error
+            range_key = CONV #( range_key ).
+    ENDTRY.
+
+  ENDMETHOD.
+
+  METHOD create_interval.
+    " If fails, likely it means it was already created (1st execution only).
+    DATA(interval_created) = NEW zcl_run_set_intervals( )->generate_intervals( ).
   ENDMETHOD.
 
 ENDCLASS.

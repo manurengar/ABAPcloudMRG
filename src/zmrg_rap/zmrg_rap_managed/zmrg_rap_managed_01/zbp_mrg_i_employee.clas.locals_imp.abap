@@ -262,7 +262,7 @@ CLASS lhc_Employee IMPLEMENTATION.
     " I cannot create number range here on trial, so I have my range on table zmrg_rang_emp_id
     LOOP AT entities ASSIGNING FIELD-SYMBOL(<entity>).
       TRY.
-          DATA(new_employee_id) = NEW zcl_mrg_range_ids( )->get_next_number( range_key = '01' ).
+          DATA(new_employee_id) = NEW zcl_mrg_range_ids( )->get_next_number( range_key = 'ZMRG_EMPID' ).
 
           APPEND VALUE #( %cid       = <entity>-%cid
                           %is_draft  = <entity>-%is_draft

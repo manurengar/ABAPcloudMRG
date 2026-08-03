@@ -64,6 +64,17 @@ CLASS zmrg_cla_auth_util DEFINITION
           role_name  TYPE zmrg_auth_role_name
           start_date TYPE begda OPTIONAL
           end_Date   TYPE endda OPTIONAL,
+      "! <strong>Remove a role from a user</strong>
+      "!
+      "! If the role is removed from database the flag <em>is_removed</em> returns
+      "! abap_true, otherwise returns abap_false.
+      "!
+      "! @parameter role_name | Name of the authorization role to grant or update
+      "! @parameter is_removed | Flag indicating if the role was or not removed
+      revoke_user_role
+        IMPORTING
+                  role_name         TYPE zmrg_auth_role_name
+        RETURNING VALUE(is_removed) TYPE abap_bool,
       "! Grants an authorization field value to a role within an authorization object.
       "!
       "! <p>If the authorization object does not yet exist on the role, a new entry is
@@ -158,10 +169,10 @@ CLASS zmrg_cla_auth_util IMPLEMENTATION.
   METHOD grant_user_role.
     ASSIGN me->user_authorizations[ role_name = role_name ] TO FIELD-SYMBOL(<rol>).
     IF sy-subrc IS INITIAL.
-      <rol>-start_Date = start_date.
-      <rol>-end_date = end_date.
+      <rol>-start_date = start_date.
+      <rol>-end_date   = end_date.
     ELSE.
-      INSERT VALUE #( user_name = me->user_name
+      INSERT VALUE #( user_name  = me->user_name
                       start_date = COND #( WHEN start_date IS INITIAL THEN me->curr_date ELSE start_date )
                       end_Date   = COND #( WHEN end_Date IS INITIAL THEN co_end_date ELSE end_date )
                       role_name  = role_name ) INTO TABLE me->user_authorizations.
@@ -246,6 +257,19 @@ CLASS zmrg_cla_auth_util IMPLEMENTATION.
 
     is_authorized = abap_true.
 
+  ENDMETHOD.
+
+  METHOD revoke_user_role.
+    ASSIGN me->user_authorizations[ role_name = role_name ] TO FIELD-SYMBOL(<rol>).
+
+    IF sy-subrc IS INITIAL.
+      DELETE TABLE me->user_authorizations FROM <rol>.
+      MODIFY zmrg_auth_user FROM TABLE @me->user_authorizations.
+      is_removed = abap_true.
+      COMMIT WORK.
+    ELSE.
+      is_removed = abap_false.
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.
