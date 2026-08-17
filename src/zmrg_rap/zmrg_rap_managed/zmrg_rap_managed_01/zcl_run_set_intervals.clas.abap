@@ -12,11 +12,17 @@ CLASS zcl_run_set_intervals DEFINITION
 
 ENDCLASS.
 
-CLASS zcl_run_set_intervals IMPLEMENTATION.
+
+
+CLASS ZCL_RUN_SET_INTERVALS IMPLEMENTATION.
+
+
   METHOD if_oo_adt_classrun~main.
     "me->generate_intervals( out ).
     "me->test_intervals( out ).
   ENDMETHOD.
+
+
   METHOD generate_intervals.
     TRY.
         cl_numberrange_intervals=>create(
@@ -31,6 +37,7 @@ CLASS zcl_run_set_intervals IMPLEMENTATION.
         is_ok = abap_false.
     ENDTRY.
   ENDMETHOD.
+
 
   METHOD test_intervals.
 
@@ -47,5 +54,4 @@ CLASS zcl_run_set_intervals IMPLEMENTATION.
         " Handle the exception (e.g., interval exhausted)
     ENDTRY.
   ENDMETHOD.
-
 ENDCLASS.

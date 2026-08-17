@@ -41,7 +41,8 @@ ENDCLASS.
 
 
 
-CLASS zcla_mrg_xco_samples IMPLEMENTATION.
+CLASS ZCLA_MRG_XCO_SAMPLES IMPLEMENTATION.
+
 
   METHOD if_oo_adt_classrun~main.
     me->time_info_access( out ).
@@ -51,6 +52,8 @@ CLASS zcla_mrg_xco_samples IMPLEMENTATION.
     me->use_identity_class( out = out ).
     me->get_user_data( out ).
   ENDMETHOD.
+
+
   METHOD time_info_access.
     " System Date
     out->write( |Date in UTC { cl_abap_context_info=>get_system_date( ) DATE = USER }| ).
@@ -117,6 +120,7 @@ CLASS zcla_mrg_xco_samples IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+
   METHOD interface_is_released.
     " Using the XCO library to check if interface is released
 
@@ -128,6 +132,7 @@ CLASS zcla_mrg_xco_samples IMPLEMENTATION.
     out->write( |Contract C1: { interface_is_released->value } | ).
   ENDMETHOD.
 
+
   METHOD get_abap_stack.
     DATA(callstack) = xco_cp=>current->call_stack->full( ).
     DATA(xco_abap_stack) = callstack->as_text( io_format = xco_cp_call_stack=>format->adt( ) ).
@@ -138,9 +143,11 @@ CLASS zcla_mrg_xco_samples IMPLEMENTATION.
     out->write( | { filtered_call_stack->as_text( xco_cp_call_stack=>format->adt( ) )->get_lines( )->join( |\n| )->value } | ).
   ENDMETHOD.
 
+
   METHOD use_identity_class.
 
   ENDMETHOD.
+
 
   METHOD get_user_data.
     " Get user name on current system (remember sy-uname is available)
@@ -178,6 +185,8 @@ CLASS zcla_mrg_xco_samples IMPLEMENTATION.
     DATA(language) =  xco_cp=>sy->language( ).
     out->write( |Language XCO: { language->get_name( ) }, { language->get_long_text_description( ) }, { language->value }, { language->as( io_format = xco_cp_language=>format->iso_639 ) }| ).
   ENDMETHOD.
+
+
   METHOD get_xlsx_binary.
 
     DATA(o_document) = xco_cp_xlsx=>document->empty( )->write_access( ).
@@ -186,5 +195,4 @@ CLASS zcla_mrg_xco_samples IMPLEMENTATION.
     o_sheet->select( o_pattern )->row_stream( )->operation->write_from( iv_data )->execute( ).
     rv_binary = o_document->get_file_content( ).
   ENDMETHOD.
-
 ENDCLASS.

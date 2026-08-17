@@ -23,7 +23,7 @@ ENDCLASS.
 
 
 
-CLASS zcla_mrg_trial_01 IMPLEMENTATION.
+CLASS ZCLA_MRG_TRIAL_01 IMPLEMENTATION.
 
 
   METHOD main.
@@ -32,6 +32,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
 
     COMMIT WORK.
   ENDMETHOD.
+
 
   METHOD read_entities_example.
     " Method to use statement READ ENTITIES
@@ -54,6 +55,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
        REPORTED DATA(lt_reported).
   ENDMETHOD.
 
+
   METHOD read_by_assoc.
     " Read by association entities
     DATA keys TYPE TABLE FOR READ IMPORT /DMO/I_Travel_M\\travel.
@@ -69,6 +71,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
         WITH CORRESPONDING #( keys )
         RESULT DATA(lt_bookings).
   ENDMETHOD.
+
 
   METHOD read_multi_entity.
     " Read multiple entities at once
@@ -90,6 +93,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
        REPORTED DATA(ls_reported).
 
   ENDMETHOD.
+
 
   METHOD create_new_record.
     " Creates new record using EML Modify
@@ -142,6 +146,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
       out->write( 'Failed during modify.' ).
     ENDIF.
   ENDMETHOD.
+
 
   METHOD create_by_assoc.
     " Creation of 2 child instances and a parent one at once
@@ -231,6 +236,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+
   METHOD modify_entity.
     DATA keys TYPE TABLE FOR READ IMPORT /DMO/I_Travel_M\\travel.
 
@@ -254,6 +260,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+
   METHOD delete_entity.
     DATA keys TYPE TABLE FOR READ IMPORT /DMO/I_Travel_M\\travel.
 
@@ -274,6 +281,8 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
         REPORTED   DATA(commit_reported).
     ENDIF.
   ENDMETHOD.
+
+
   METHOD execute_action.
     DATA keys_for_action TYPE TABLE FOR ACTION IMPORT /dmo/i_travel_m~acceptTravel.
 
@@ -294,6 +303,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
            REPORTED   DATA(commit_reported).
     ENDIF.
   ENDMETHOD.
+
 
   METHOD get_permission.
     DATA request_global TYPE STRUCTURE FOR PERMISSIONS REQUEST /DMO/I_Travel_M.
@@ -318,6 +328,7 @@ CLASS zcla_mrg_trial_01 IMPLEMENTATION.
 
     ENDIF.
   ENDMETHOD.
+
 
   METHOD create_travel_with_booking.
     DATA: lt_travel_create  TYPE TABLE FOR CREATE /dmo/i_travel_m,

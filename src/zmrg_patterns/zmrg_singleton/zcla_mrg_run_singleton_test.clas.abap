@@ -11,7 +11,9 @@ ENDCLASS.
 
 
 
-CLASS zcla_mrg_run_singleton_test IMPLEMENTATION.
+CLASS ZCLA_MRG_RUN_SINGLETON_TEST IMPLEMENTATION.
+
+
   METHOD if_oo_adt_classrun~main.
     DATA(o_test1) = NEW zcla_mrg_blob_test_class_1( ).
     DATA(o_test2) = NEW zcla_mrg_blob_test_class_2( ).
@@ -22,5 +24,4 @@ CLASS zcla_mrg_run_singleton_test IMPLEMENTATION.
     DATA(o_blob_reader_2) = CAST zmrg_if_blob_reader( zcla_mrg_blob_reader=>get_instance( ) ).
     o_test2->test_2( out = out blob_reader = o_blob_reader ).
   ENDMETHOD.
-
 ENDCLASS.

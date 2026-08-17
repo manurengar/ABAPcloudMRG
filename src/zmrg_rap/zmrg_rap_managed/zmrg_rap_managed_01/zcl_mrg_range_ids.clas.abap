@@ -18,7 +18,9 @@ ENDCLASS.
 
 
 
-CLASS zcl_mrg_range_ids IMPLEMENTATION.
+CLASS ZCL_MRG_RANGE_IDS IMPLEMENTATION.
+
+
   METHOD get_next_number.
 
     me->create_interval( ).
@@ -42,9 +44,9 @@ CLASS zcl_mrg_range_ids IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD create_interval.
     " If fails, likely it means it was already created (1st execution only).
     DATA(interval_created) = NEW zcl_run_set_intervals( )->generate_intervals( ).
   ENDMETHOD.
-
 ENDCLASS.

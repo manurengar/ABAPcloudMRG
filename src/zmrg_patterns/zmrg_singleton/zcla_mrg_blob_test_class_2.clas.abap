@@ -14,14 +14,16 @@ ENDCLASS.
 
 
 
-CLASS zcla_mrg_blob_test_class_2 IMPLEMENTATION.
+CLASS ZCLA_MRG_BLOB_TEST_CLASS_2 IMPLEMENTATION.
+
+
   METHOD constructor.
 
   ENDMETHOD.
+
 
   METHOD test_2.
     out->write( |BLOB2: { blob_reader->get_blob_from_pernr( '00002123' ) }| ).
     out->write( |BLOB3: { blob_reader->get_blob_from_pernr( '00002122' ) }| ).
   ENDMETHOD.
-
 ENDCLASS.

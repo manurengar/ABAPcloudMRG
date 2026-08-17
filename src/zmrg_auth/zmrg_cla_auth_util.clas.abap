@@ -117,12 +117,15 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_auth_util IMPLEMENTATION.
+CLASS ZMRG_CLA_AUTH_UTIL IMPLEMENTATION.
+
+
   METHOD constructor.
     me->curr_date = xco_cp=>sy->date( xco_cp_time=>time_zone->user )->as( io_format =  xco_cp_time=>format->abap )->value.
     me->user_name = user_name.
     me->calculate_auth_objects( ).
   ENDMETHOD.
+
 
   METHOD get_instance.
     ASSIGN instances_tab[ KEY primary_key COMPONENTS user_name = user_name ] TO FIELD-SYMBOL(<instance>).
@@ -134,6 +137,7 @@ CLASS zmrg_cla_auth_util IMPLEMENTATION.
       ro_instance = <instance>-instance.
     ENDIF.
   ENDMETHOD.
+
 
   METHOD calculate_auth_objects.
 
@@ -166,6 +170,7 @@ CLASS zmrg_cla_auth_util IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+
   METHOD grant_user_role.
     ASSIGN me->user_authorizations[ role_name = role_name ] TO FIELD-SYMBOL(<rol>).
     IF sy-subrc IS INITIAL.
@@ -181,6 +186,7 @@ CLASS zmrg_cla_auth_util IMPLEMENTATION.
     MODIFY zmrg_auth_user FROM TABLE @me->user_authorizations.
     COMMIT WORK.
   ENDMETHOD.
+
 
   METHOD grant_field_to_role.
     DATA:
@@ -229,6 +235,7 @@ CLASS zmrg_cla_auth_util IMPLEMENTATION.
     COMMIT WORK.
   ENDMETHOD.
 
+
   METHOD is_authorized.
     DATA:
       field_values_string_table TYPE TABLE OF string WITH DEFAULT KEY,
@@ -259,6 +266,7 @@ CLASS zmrg_cla_auth_util IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD revoke_user_role.
     ASSIGN me->user_authorizations[ role_name = role_name ] TO FIELD-SYMBOL(<rol>).
 
@@ -271,5 +279,4 @@ CLASS zmrg_cla_auth_util IMPLEMENTATION.
       is_removed = abap_false.
     ENDIF.
   ENDMETHOD.
-
 ENDCLASS.

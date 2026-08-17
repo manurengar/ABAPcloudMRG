@@ -166,7 +166,11 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         filename      TYPE zmrg_filename OPTIONAL.
 ENDCLASS.
 
-CLASS zcx_mrg_rap_01_messages IMPLEMENTATION.
+
+
+CLASS ZCX_MRG_RAP_01_MESSAGES IMPLEMENTATION.
+
+
   METHOD constructor ##ADT_SUPPRESS_GENERATION.
     super->constructor( previous = previous ).
     me->activity       = activity.

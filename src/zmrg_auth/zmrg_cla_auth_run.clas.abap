@@ -12,7 +12,7 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_auth_run IMPLEMENTATION.
+CLASS ZMRG_CLA_AUTH_RUN IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.

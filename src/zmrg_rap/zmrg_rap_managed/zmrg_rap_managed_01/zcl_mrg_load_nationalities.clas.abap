@@ -20,7 +20,9 @@ CLASS zcl_mrg_load_nationalities DEFINITION
 ENDCLASS.
 
 
-CLASS zcl_mrg_load_nationalities IMPLEMENTATION.
+
+CLASS ZCL_MRG_LOAD_NATIONALITIES IMPLEMENTATION.
+
 
   METHOD if_oo_adt_classrun~main.
     DATA range_tab TYPE TABLE OF zmrg_ranges WITH DEFAULT KEY.
@@ -243,5 +245,4 @@ CLASS zcl_mrg_load_nationalities IMPLEMENTATION.
     ).
 
   ENDMETHOD.
-
 ENDCLASS.
