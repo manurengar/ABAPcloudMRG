@@ -1,11 +1,13 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Certificate State interface entity'
-@Metadata.ignorePropagatedAnnotations: true
+@Metadata.ignorePropagatedAnnotations: false
 define view entity zmrg_i_certificatestate
-  as select from ZMRG_CERTI_STATE
+  as select from zmrg_certi_state
   association to parent zmrg_i_certificate as _Certificate on $projection.CertUUID = _Certificate.CertUUID
 {
+      @Semantics.uuid: true
   key state_uuid            as StateUuid,
+      @Semantics.uuid: true
       cert_uuid             as CertUUID,
       matnr                 as Product,
       version               as Version,

@@ -4,10 +4,13 @@
 define root view entity zmrg_i_certificate
   as select from zmrg_certificate
   composition [0..*] of zmrg_i_certificatestate as _CertificateState
-  association [0..1] to zmrg_i_producttext      as _ProductText on  $projection.Product   = _ProductText.Material
+  association [0..1] to zmrg_i_producttext      as _ProductText on  $projection.Product       = _ProductText.Material
                                                                 and _ProductText.MaterialType = 'HAWA'
-                                                                and _ProductText.Language = $session.system_language
+                                                                and _ProductText.Language     = $session.system_language
+  association [0..1] to zmrg_i_status_text      as _StatusText  on  $projection.CertificationStatus = _StatusText.Status
+                                                                and _StatusText.Language            = $session.system_language
 {
+      @Semantics.uuid: true
   key cert_uuid             as CertUUID,
       @EndUserText.label: 'Product Number'
       @Consumption.valueHelpDefinition: [{ entity: { name: 'zmrg_i_producttext', element: 'Material' } }]
@@ -26,6 +29,7 @@ define root view entity zmrg_i_certificate
       mimeType: 'MimetypeCE'
       }
       attachment_ce         as AttachmentCE,
+      @Semantics.mimeType: true
       mimetype_ce           as MimetypeCE,
       filename_ce           as FilenameCE,
       @Semantics.largeObject: {
@@ -36,6 +40,7 @@ define root view entity zmrg_i_certificate
       mimeType: 'MimetypeGS'
       }
       attachment_gs         as AttachmentGS,
+      @Semantics.mimeType: true
       mimetype_gs           as MimetypeGS,
       filename_gs           as FilenameGS,
       @Semantics.largeObject: {
@@ -46,6 +51,7 @@ define root view entity zmrg_i_certificate
       mimeType: 'MimetypeTuev'
       }
       attachment_tuev       as AttachmentTuev,
+      @Semantics.mimeType: true
       mimetype_tuev         as MimetypeTuev,
       filename_tuev         as FilenameTuev,
       @Semantics.user.createdBy: true
@@ -60,7 +66,6 @@ define root view entity zmrg_i_certificate
       last_changed_at       as LastChangedAt,
       @Semantics.user.lastChangedBy: true
       last_changed_by       as LastChangedBy,
-
       case
         when ( cert_status = '01' or cert_status = '04' ) then 2
         when ( cert_status = '03' or cert_status is initial ) then 1
@@ -68,5 +73,6 @@ define root view entity zmrg_i_certificate
       end                   as Criticality,
 
       _CertificateState,
-      _ProductText
+      _ProductText,
+      _StatusText
 }

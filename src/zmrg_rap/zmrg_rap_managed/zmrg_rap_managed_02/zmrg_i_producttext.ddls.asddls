@@ -1,6 +1,7 @@
 @AbapCatalog.viewEnhancementCategory: [#NONE]
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Product text entity view'
+@Search.searchable: true
 @Metadata.ignorePropagatedAnnotations: true
 define view entity zmrg_i_producttext
   as select from zmrg_matnr_t
