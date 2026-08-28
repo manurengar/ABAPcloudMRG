@@ -1,0 +1,88 @@
+managed;
+strict ( 2 );
+with draft;
+
+define behavior for zmrg_i_certificate alias Certificate
+implementation in class zmrg_cla_bp_certificate unique
+persistent table zmrg_certificate
+draft table zmrg_dft_certifi
+lock master total etag LastChangedAt
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create ( authorization : global );
+  update;
+  delete;
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  field ( numbering : managed, readonly ) CertUUID;
+  field ( readonly ) CreatedAt, CreatedBy, LastChangedAt, LastChangedBy, LocalLastChangedAt, LocalLastChangedBy;
+  field ( readonly ) Criticality;
+
+  association _CertificateState { create; with draft; }
+
+  mapping for zmrg_certificate
+    {
+      CertUUID            = cert_uuid;
+      Product             = matnr;
+      Version             = version;
+      CertificationStatus = cert_status;
+      CertificateCe       = cert_ce;
+      CertificateGs       = cert_gs;
+      CertificateTuev     = cert_tuev;
+      AttachmentCE        = attachment_ce;
+      MimetypeCE          = mimetype_ce;
+      FilenameCE          = filename_ce;
+      AttachmentGS        = attachment_gs;
+      MimetypeGS          = mimetype_gs;
+      FilenameGS          = filename_gs;
+      AttachmentTuev      = attachment_tuev;
+      MimetypeTuev        = mimetype_tuev;
+      FilenameTuev        = filename_tuev;
+      CreatedBy           = created_by;
+      CreatedAt           = created_at;
+      LocalLastChangedBy  = local_last_changed_by;
+      LocalLastChangedAt  = local_last_changed_at;
+      LastChangedAt       = last_changed_at;
+      LastChangedBy       = last_changed_by;
+    }
+}
+
+define behavior for zmrg_i_certificatestate alias CertificateState
+implementation in class zmrg_cla_bp_certi_state unique
+persistent table zmrg_certi_state
+draft table zmrg_dft_cer_sta
+lock dependent by _Certificate
+authorization dependent by _Certificate
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+
+  field ( numbering : managed, readonly ) StateUuid;
+  field ( readonly ) CertUUID;
+  field ( readonly ) CreatedAt, CreatedBy, LastChangedAt, LastChangedBy, LocalLastChangedAt, LocalLastChangedBy;
+
+  association _Certificate { with draft; }
+
+  mapping for zmrg_certi_state
+    {
+      StateUuid          = state_uuid;
+      CertUUID           = cert_uuid;
+      Product            = matnr;
+      Version            = version;
+      Status             = status;
+      StatusOld          = status_old;
+      CreatedBy          = created_by;
+      CreatedAt          = created_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+      LastChangedBy      = last_changed_by;
+    }
+}
