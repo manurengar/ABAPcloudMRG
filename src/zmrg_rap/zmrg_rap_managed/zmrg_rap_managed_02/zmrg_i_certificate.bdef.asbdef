@@ -14,6 +14,13 @@ etag master LocalLastChangedAt
   update;
   delete;
 
+  determination setInitialValues on modify { field Product; create; }
+
+  action ( features : instance ) newVersion result [1] $self;
+  action ( features : instance ) releaseVersion result [1] $self;
+  action ( features : instance ) archiveVersion result [1] $self;
+
+
   draft action Edit;
   draft action Activate optimized;
   draft action Discard;
