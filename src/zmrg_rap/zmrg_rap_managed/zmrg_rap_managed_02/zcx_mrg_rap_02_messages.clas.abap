@@ -16,17 +16,37 @@ CLASS zcx_mrg_rap_02_messages DEFINITION
         attr2 TYPE scx_attrname VALUE '',
         attr3 TYPE scx_attrname VALUE '',
         attr4 TYPE scx_attrname VALUE '',
-      END OF product_unkown.
+      END OF product_unkown,
+
+      BEGIN OF update_product_typ_not_allowed,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_02_MESS',
+        msgno TYPE symsgno VALUE '002',
+        attr1 TYPE scx_attrname VALUE 'PRODUCTTYPE',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF update_product_typ_not_allowed,
+
+      BEGIN OF delete_product_typ_not_allowed,
+        msgid TYPE symsgid VALUE 'ZMRG_RAP_02_MESS',
+        msgno TYPE symsgno VALUE '003',
+        attr1 TYPE scx_attrname VALUE 'PRODUCTTYPE',
+        attr2 TYPE scx_attrname VALUE '',
+        attr3 TYPE scx_attrname VALUE '',
+        attr4 TYPE scx_attrname VALUE '',
+      END OF delete_product_typ_not_allowed.
 
     DATA:
-        product TYPE matnr.
+      product     TYPE matnr,
+      producttype TYPE mtart.
 
     METHODS constructor
       IMPORTING
-        textid   LIKE if_t100_message=>t100key OPTIONAL
-        previous LIKE previous                 OPTIONAL
-        severity TYPE if_abap_behv_message=>t_severity DEFAULT if_abap_behv_message=>severity-error
-        product  TYPE matnr.
+        textid      LIKE if_t100_message=>t100key OPTIONAL
+        previous    LIKE previous                 OPTIONAL
+        severity    TYPE if_abap_behv_message=>t_severity DEFAULT if_abap_behv_message=>severity-error
+        product     TYPE matnr OPTIONAL
+        producttype TYPE mtart OPTIONAL.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -41,6 +61,7 @@ CLASS zcx_mrg_rap_02_messages IMPLEMENTATION.
     super->constructor( previous = previous ).
 
     me->product = product.
+    me->producttype = producttype.
 
     CLEAR me->textid.
     IF textid IS INITIAL.

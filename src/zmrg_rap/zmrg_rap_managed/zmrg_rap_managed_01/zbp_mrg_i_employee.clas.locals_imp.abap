@@ -111,8 +111,7 @@ CLASS lhc_Employee IMPLEMENTATION.
     ENDIF.
 
     " Deletion of entries - ACTVT 03
-    IF requested_authorizations-%action-Edit EQ if_abap_behv=>mk-on
-    OR requested_authorizations-%update EQ if_abap_behv=>mk-on.
+    IF requested_authorizations-%delete EQ if_abap_behv=>mk-on.
       IF me->is_deleted_granted(  ) EQ abap_true.
         result-%create = if_abap_behv=>auth-allowed.
       ELSE.
@@ -259,7 +258,7 @@ CLASS lhc_Employee IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD earlynumbering_create.
-    " I cannot create number range here on trial, so I have my range on table zmrg_rang_emp_id
+
     LOOP AT entities ASSIGNING FIELD-SYMBOL(<entity>).
       TRY.
           DATA(new_employee_id) = NEW zcl_mrg_range_ids( )->get_next_number( range_key = 'ZMRG_EMPID' ).
