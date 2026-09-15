@@ -1,0 +1,7 @@
+@EndUserText.label: 'Certificate service definition'
+define service ZMRG_UI_certificate {
+  expose zmrg_c_certificate      as Certificate;
+  expose zmrg_c_certificatestate as CertificateState;
+  expose zmrg_i_producttext      as ProductText;
+  expose zmrg_i_status_text      as StatusText;
+}

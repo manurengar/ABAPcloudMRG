@@ -15,6 +15,7 @@ define root view entity zmrg_c_certificate
           @Semantics.text: true
           @Search.defaultSearchElement: true
           @Search.fuzzinessThreshold: 0.7
+          @EndUserText.label: 'Product Name'
           _ProductText.MaterialName as ProductName,
           Version,
           @ObjectModel.text.element: [ 'StatusText' ]
@@ -24,6 +25,7 @@ define root view entity zmrg_c_certificate
           @Semantics.text: true
           @Search.defaultSearchElement: true
           @Search.fuzzinessThreshold: 0.7
+          @EndUserText.label: 'Certification Status'
           _StatusText.StatusText    as StatusText,
           CertificateCe,
           CertificateGs,

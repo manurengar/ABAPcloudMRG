@@ -62,6 +62,11 @@ CLASS lhc_Certificate DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING
                 material_type     TYPE mtart OPTIONAL
       RETURNING VALUE(is_granted) TYPE abap_bool.
+
+    METHODS is_created_granted
+      IMPORTING
+                material_type     TYPE mtart OPTIONAL
+      RETURNING VALUE(is_granted) TYPE abap_bool.
 ENDCLASS.
 
 CLASS lhc_Certificate IMPLEMENTATION.
@@ -160,6 +165,15 @@ CLASS lhc_Certificate IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_global_authorizations.
+    me->authorization_checker = zmrg_cla_auth_util=>get_instance( xco_cp=>sy->user( )->name ).
+
+    IF requested_authorizations-%create EQ if_abap_behv=>mk-on.
+      IF me->is_created_granted( ) EQ abap_true.
+        result-%create = if_abap_behv=>auth-allowed.
+      ELSE.
+        result-%create = if_abap_behv=>auth-unauthorized.
+      ENDIF.
+    ENDIF.
   ENDMETHOD.
 
   METHOD setInitialValues.
@@ -391,6 +405,21 @@ CLASS lhc_Certificate IMPLEMENTATION.
                             ( auth_field = 'MTART'   auth_value = 'HAWA' ) ).
     ELSE.
       key_values = VALUE #( ( auth_field = 'ACTVT'   auth_value = '02' )
+                            ( auth_field = 'DDLS'  auth_value = 'ZMRG_I_CERTIFICATE' ) ).
+    ENDIF.
+
+    is_granted = me->authorization_checker->is_authorized( auth_obj          = 'ZMRG_CER'
+                                                           field_value_pairs = key_values ).
+  ENDMETHOD.
+
+  METHOD is_created_granted.
+    DATA key_values TYPE zmrg_cla_auth_util=>ty_field_value_tab.
+
+    IF material_type IS SUPPLIED.
+      key_values = VALUE #( ( auth_field = 'ACTVT'   auth_value = '01' )
+                            ( auth_field = 'MTART'   auth_value = 'HAWA' ) ).
+    ELSE.
+      key_values = VALUE #( ( auth_field = 'ACTVT'   auth_value = '01' )
                             ( auth_field = 'DDLS'  auth_value = 'ZMRG_I_CERTIFICATE' ) ).
     ENDIF.
 

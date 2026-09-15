@@ -1,0 +1,30 @@
+projection;
+strict ( 2 );
+use draft;
+
+define behavior for zmrg_c_certificate alias Certificate
+{
+  use create;
+  use update;
+  use delete;
+
+  use action newVersion;
+  use action releaseVersion;
+  use action archiveVersion;
+
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+  use association _CertificateState { create; with draft; }
+}
+
+define behavior for zmrg_c_certificatestate alias CertificateState
+{
+  use update;
+  use delete;
+
+  use association _Certificate { with draft; }
+}

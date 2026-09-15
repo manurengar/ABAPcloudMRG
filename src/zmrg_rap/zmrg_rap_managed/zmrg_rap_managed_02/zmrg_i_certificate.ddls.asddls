@@ -13,8 +13,6 @@ define root view entity zmrg_i_certificate
       @Semantics.uuid: true
   key cert_uuid             as CertUUID,
       @EndUserText.label: 'Product Number'
-      @Consumption.valueHelpDefinition: [{ entity: { name: 'zmrg_i_producttext', element: 'Material' } }]
-      @ObjectModel.text.association: '_ProductText'
       matnr                 as Product,
       version               as Version,
       cert_status           as CertificationStatus,

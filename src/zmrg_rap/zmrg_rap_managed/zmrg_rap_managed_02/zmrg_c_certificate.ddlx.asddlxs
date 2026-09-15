@@ -1,0 +1,111 @@
+@Metadata.layer: #CORE
+@UI.headerInfo:
+{
+    typeName: 'Certificate management',
+    typeNamePlural: 'List of certificates',
+    typeImageUrl: 'sap-icon://attachment-e-pub',
+    imageUrl: 'AttachmentTuev',
+    title.label: 'Product:',
+    title.value: 'Product',
+    title.type: #STANDARD,
+    description.label: 'Version',
+    description.value: 'Version',
+    description.type: #STANDARD
+}
+
+@UI.presentationVariant:
+[{
+    qualifier: 'productASC',
+    maxItems: 5,
+    text: 'Sorting by Product asc.',
+    sortOrder: [{ by: 'Product', direction: #ASC }],
+    visualizations: [{ type: #AS_LINEITEM }]
+}]
+
+@UI.selectionVariant:
+[{
+    qualifier: 'activeCertificates',
+    text: 'Active Certificates',
+    filter: 'Criticality EQ 3'
+},
+{
+    qualifier: 'newCertificates',
+    text: 'New Certificates',
+    filter: 'Criticality EQ 2'
+},
+{
+    qualifier: 'inactiveCertificates',
+    text: 'Inactive Certificates',
+    filter: 'Criticality EQ 1'
+}]
+
+@UI.selectionPresentationVariant:
+[{
+    id: 'activeSPV',
+    qualifier: 'activeSPV',
+    text: 'Product ASC and active Certificates',
+    presentationVariantQualifier: 'productASC',
+    selectionVariantQualifier: 'activeCertificates'
+},
+{
+    id: 'inactiveSPV',
+    qualifier: 'inactiveSPV',
+    text: 'Product ASC and inactive Certificates',
+    presentationVariantQualifier: 'productASC',
+    selectionVariantQualifier: 'inactiveCertificates'
+},
+{
+    id: 'newSPV',
+    qualifier: 'newSPV',
+    text: 'Product ASC and new Certificates',
+    presentationVariantQualifier: 'productASC',
+    selectionVariantQualifier: 'newCertificates'
+}]
+annotate entity zmrg_c_certificate with
+{
+  @UI.facet:
+  [{
+    purpose: #HEADER,
+    type: #FIELDGROUP_REFERENCE,
+    importance: #HIGH,
+    position: 10,
+    label: 'Certificate Details',
+    targetQualifier: 'headerData'
+  }]
+
+  @UI.hidden: true
+  CertUUID;
+
+  @UI.selectionField: [{ position: 10 }]
+  @UI.lineItem: [{ position: 10 },
+                 { type: #FOR_ACTION, dataAction: 'newVersion', label: 'Set new version' },
+                 { type: #FOR_ACTION, dataAction: 'releaseVersion', label: 'Activate Certificate' },
+                 { type: #FOR_ACTION, dataAction: 'archiveVersion', label: 'Set to inactive' }]
+  Product;
+
+  @UI.fieldGroup: [{ qualifier: 'headerData', position: 10 }]
+  @UI.lineItem: [{ position: 20, importance: #LOW }]
+  ProductName;
+
+  @UI.fieldGroup: [{ qualifier: 'headerData', position: 20 }]
+  @UI.selectionField: [{ position: 20 }]
+  @UI.lineItem: [{ position: 30 }]
+  Version;
+
+  @UI.fieldGroup: [{ qualifier: 'headerData', position: 30 }]
+  @UI.lineItem: [{ position: 40, importance: #MEDIUM }]
+  StatusText;
+
+  @UI.selectionField: [{ position: 30 }]
+  @UI.lineItem: [{ position: 50, importance: #LOW }]
+  Criticality;
+  
+  @UI.lineItem: [{ position: 60, label: 'Created by', importance: #LOW }]
+  CreatedBy;
+  
+  @UI.lineItem: [{ position: 70, label: 'Created at', importance: #LOW }]
+  CreatedAt;
+  
+  @UI.lineItem: [{ position: 80, label: 'Last changed by', importance: #LOW }]
+  LocalLastChangedAt;
+}
