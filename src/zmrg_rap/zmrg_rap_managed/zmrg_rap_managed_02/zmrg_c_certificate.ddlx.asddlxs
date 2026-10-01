@@ -71,12 +71,36 @@ annotate entity zmrg_c_certificate with
     position: 10,
     label: 'Certificate Details',
     targetQualifier: 'headerData'
+  },
+  {
+    id: 'CertificateDetails',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Certificate Details',
+    position: 20
+  },
+  {
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    importance: #HIGH,
+    position: 30,
+    targetQualifier: 'CertificateDetails',
+    label: 'Certificate Details'
+  },
+  {
+    id: 'CertificateStateTable',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    position: 40,
+    label: 'Certificate Status',
+    targetElement: '_CertificateState' 
   }]
 
   @UI.hidden: true
   CertUUID;
 
   @UI.selectionField: [{ position: 10 }]
+  @UI.identification: [{ position: 10 }]
   @UI.lineItem: [{ position: 10 },
                  { type: #FOR_ACTION, dataAction: 'newVersion', label: 'Set new version' },
                  { type: #FOR_ACTION, dataAction: 'releaseVersion', label: 'Activate Certificate' },
@@ -84,6 +108,7 @@ annotate entity zmrg_c_certificate with
   Product;
 
   @UI.fieldGroup: [{ qualifier: 'headerData', position: 10 }]
+  @UI.identification: [{ position: 10 }]
   @UI.lineItem: [{ position: 20, importance: #LOW }]
   ProductName;
 
@@ -99,13 +124,34 @@ annotate entity zmrg_c_certificate with
   @UI.selectionField: [{ position: 30 }]
   @UI.lineItem: [{ position: 50, importance: #LOW }]
   Criticality;
-  
+
   @UI.lineItem: [{ position: 60, label: 'Created by', importance: #LOW }]
   CreatedBy;
-  
+
   @UI.lineItem: [{ position: 70, label: 'Created at', importance: #LOW }]
   CreatedAt;
-  
+
   @UI.lineItem: [{ position: 80, label: 'Last changed by', importance: #LOW }]
+  LocalLastChangedBy;
+  
+  @UI.hidden: true
   LocalLastChangedAt;
+
+  @UI.fieldGroup: [{ qualifier: 'CertificateDetails', position: 10 }]
+  CertificateCe;
+  @UI.fieldGroup: [{ qualifier: 'CertificateDetails', position: 20, label: 'CE Attachment' }]
+  AttachmentCE;
+
+  @UI.fieldGroup: [{ qualifier: 'CertificateDetails', position: 30 }]
+  CertificateGs;
+  @UI.fieldGroup: [{ qualifier: 'CertificateDetails', position: 40, label: 'GS Attachment' }]
+  AttachmentGS;
+
+  @UI.fieldGroup: [{ qualifier: 'CertificateDetails', position: 50 }]
+  CertificateTuev;
+  @UI.fieldGroup: [{ qualifier: 'CertificateDetails', position: 60 }]
+  AttachmentTuev;
+  
+  @UI.fieldGroup: [{ qualifier: 'CertificateDetails', position: 70 }]
+  virtualSampleText;
 }

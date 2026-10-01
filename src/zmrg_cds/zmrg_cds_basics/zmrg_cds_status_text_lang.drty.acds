@@ -1,0 +1,3 @@
+@EndUserText.label: 'Status text language'
+@Semantics.language: true
+define type zmrg_cds_status_text_lang: abap.lang; 
