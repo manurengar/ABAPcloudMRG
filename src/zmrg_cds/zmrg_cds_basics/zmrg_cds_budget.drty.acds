@@ -1,0 +1,16 @@
+@EndUserText.label: 'Budget type for flights'
+define type zmrg_cds_budget : abap.int1 enum
+{
+  @EndUserText.label: 'Not applicable price'
+  NOT_APPLICABLE = initial;
+  @EndUserText.label: 'Bargain'
+  BARGAIN        =       1;
+  @EndUserText.label: 'Below average price'
+  CHEAP          =       2;
+  @EndUserText.label: 'Average price'
+  MEDIUM         =       3;
+  @EndUserText.label: 'Above the average price'
+  EXPENSIVE      =       4;
+  @EndUserText.label: 'Expensive, far avobe average price'
+  VERY_EXPENSIVE =       5;
+}

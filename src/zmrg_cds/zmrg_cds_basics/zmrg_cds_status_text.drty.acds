@@ -1,0 +1,5 @@
+@EndUserText.label: 'Status text'
+@Consumption.valueHelpDefinition: [{ 
+    entity: { name: 'zmrg_status_t', element: 'StatusText' }
+ }]
+define type zmrg_cds_status_text: abap.char(16);
