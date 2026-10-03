@@ -9,6 +9,7 @@ CLASS zmrg_cds_basics_run DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
     METHODS fill_zmrg_cds_02.
+    methods fill_zmrg_cds_01.
 ENDCLASS.
 
 
@@ -34,6 +35,17 @@ CLASS zmrg_cds_basics_run IMPLEMENTATION.
     ENDDO.
 
     MODIFY zmrg_cds_02 FROM TABLE @to_insert_tab.
+  ENDMETHOD.
+
+  METHOD fill_zmrg_cds_01.
+    DATA line_cds_01 TYPE zmrg_cds_01.
+    line_cds_01-client = sy-mandt.
+    line_cds_01-username = 'MANUELR'.
+    line_cds_01-first_name = 'Manuel'.
+    line_cds_01-last_name = 'Rentero'.
+
+    MODIFY zmrg_cds_01 FROM @line_cds_01.
+    COMMIT WORK.
   ENDMETHOD.
 
 ENDCLASS.
