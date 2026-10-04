@@ -9,7 +9,8 @@ CLASS zmrg_cds_basics_run DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
     METHODS fill_zmrg_cds_02.
-    methods fill_zmrg_cds_01.
+    METHODS fill_zmrg_cds_01.
+    METHODS usage_of_cds_with_parameters.
 ENDCLASS.
 
 
@@ -46,6 +47,15 @@ CLASS zmrg_cds_basics_run IMPLEMENTATION.
 
     MODIFY zmrg_cds_01 FROM @line_cds_01.
     COMMIT WORK.
+  ENDMETHOD.
+
+  METHOD usage_of_cds_with_parameters.
+    " Simple example of how to use cds with parameters
+    DATA(todays_date) = CONV zmrg_cds_start_date( xco_cp=>sy->date( xco_cp_time=>time_zone->user )->as( io_format =  xco_cp_time=>format->abap )->value ).
+
+    SELECT * FROM zmrg_i_basics_parameters( p_end_date = @todays_date,
+                                            p_start_date = @todays_date )
+    INTO TABLE @DATA(example_cds_tab).
   ENDMETHOD.
 
 ENDCLASS.

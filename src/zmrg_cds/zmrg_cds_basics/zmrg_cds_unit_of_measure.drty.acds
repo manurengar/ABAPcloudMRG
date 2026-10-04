@@ -1,0 +1,2 @@
+@EndUserText.label: 'Unit of measure'
+define type zmrg_cds_unit_of_measure: abap.char( 20 )

@@ -1,0 +1,3 @@
+@EndUserText.label: 'Wage type text language'
+@Semantics.language: true
+define type ZMRG_CDS_WAGE_TYPE_LANGUAGE: abap.lang; 

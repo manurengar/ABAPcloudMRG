@@ -1,0 +1,2 @@
+@EndUserText.label: 'Start date'
+define type zmrg_cds_start_date : abap.dats

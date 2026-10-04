@@ -1,0 +1,2 @@
+@EndUserText.label: 'End date'
+define type ZMRG_CDS_END_DATE : abap.dats

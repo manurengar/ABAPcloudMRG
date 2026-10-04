@@ -109,6 +109,7 @@ union all select from zmrg_cds_01
   key abap.dats'20230531' as end_date,
   key abap.char'9E01'     as wage_type,
       abap.cuky'EUR'      as currency,
+
       abap.curr'1120.00'  as amount,
       abap.dec'6.50'      as quantity
 }
@@ -122,4 +123,158 @@ union all select from zmrg_cds_01
 
       abap.curr'1350.80'  as amount,
       abap.dec'15.00'     as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820004'  as personnel_number,
+  key abap.dats'20210101' as start_date,
+  key abap.dats'20211231' as end_date,
+  key abap.char'9E01'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1050.00'  as amount,
+      abap.dec'5.50'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820004'  as personnel_number,
+  key abap.dats'20220101' as start_date,
+  key abap.dats'20221231' as end_date,
+  key abap.char'9E02'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1250.00'  as amount,
+      abap.dec'7.00'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820004'  as personnel_number,
+  key abap.dats'20230101' as start_date,
+  key abap.dats'20231231' as end_date,
+  key abap.char'9E03'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1450.00'  as amount,
+      abap.dec'8.50'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820004'  as personnel_number,
+  key abap.dats'20240101' as start_date,
+  key abap.dats'99991231' as end_date,
+  key abap.char'9E01'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1600.00'  as amount,
+      abap.dec'10.00'     as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820005'  as personnel_number,
+  key abap.dats'20200101' as start_date,
+  key abap.dats'20201231' as end_date,
+  key abap.char'9E02'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1100.00'  as amount,
+      abap.dec'6.00'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820005'  as personnel_number,
+  key abap.dats'20210101' as start_date,
+  key abap.dats'20211231' as end_date,
+  key abap.char'9E01'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1300.00'  as amount,
+      abap.dec'7.50'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820005'  as personnel_number,
+  key abap.dats'20220101' as start_date,
+  key abap.dats'20221231' as end_date,
+  key abap.char'9E03'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1550.00'  as amount,
+      abap.dec'9.00'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820005'  as personnel_number,
+  key abap.dats'20230101' as start_date,
+  key abap.dats'20231231' as end_date,
+  key abap.char'9E02'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1700.00'  as amount,
+      abap.dec'11.50'     as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820005'  as personnel_number,
+  key abap.dats'20240101' as start_date,
+  key abap.dats'99991231' as end_date,
+  key abap.char'9E01'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1900.00'  as amount,
+      abap.dec'13.00'     as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820006'  as personnel_number,
+  key abap.dats'20220101' as start_date,
+  key abap.dats'20220630' as end_date,
+  key abap.char'9E01'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'850.00'   as amount,
+      abap.dec'3.50'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820006'  as personnel_number,
+  key abap.dats'20220701' as start_date,
+  key abap.dats'20221231' as end_date,
+  key abap.char'9E03'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'950.00'   as amount,
+      abap.dec'4.50'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820006'  as personnel_number,
+  key abap.dats'20230101' as start_date,
+  key abap.dats'20231231' as end_date,
+  key abap.char'9E02'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1150.00'  as amount,
+      abap.dec'6.00'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820007'  as personnel_number,
+  key abap.dats'20230101' as start_date,
+  key abap.dats'20231231' as end_date,
+  key abap.char'9E01'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1320.00'  as amount,
+      abap.dec'8.00'      as quantity
+}
+union all select from zmrg_cds_01
+{
+  key abap.numc'1820007'  as personnel_number,
+  key abap.dats'20240101' as start_date,
+  key abap.dats'99991231' as end_date,
+  key abap.char'9E03'     as wage_type,
+      abap.cuky'EUR'      as currency,
+
+      abap.curr'1580.00'  as amount,
+      abap.dec'10.50'     as quantity
 }
