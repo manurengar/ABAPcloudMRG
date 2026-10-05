@@ -1,0 +1,5 @@
+define scalar function zmrg_scal_add_values
+  with parameters
+    p_left : abap.int4,
+    p_right: abap.int4
+  returns abap.int4

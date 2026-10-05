@@ -1,0 +1,14 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Add values implementation reference",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "scalarFunctionName": "ZMRG_SCAL_ADD_VALUES",
+  "engine": "sqlEngine",
+  "sqlProperties": {
+    "amdpReference": "ZMRG_CLA_SCALAR_FUNCTION=>ADD_VALUES",
+    "autoExposedInSqlServices": false
+  }
+}

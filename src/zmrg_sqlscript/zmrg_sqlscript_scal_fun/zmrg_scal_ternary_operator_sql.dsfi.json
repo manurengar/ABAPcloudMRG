@@ -1,0 +1,14 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Implementation reference for ternary operator",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "scalarFunctionName": "ZMRG_SCAL_TERNARY_OPERATOR",
+  "engine": "sqlEngine",
+  "sqlProperties": {
+    "amdpReference": "zmrg_cla_scalar_ref_function=>ternary_operator",
+    "autoExposedInSqlServices": false
+  }
+}

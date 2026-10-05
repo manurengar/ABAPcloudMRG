@@ -1,0 +1,10 @@
+@EndUserText.label: 'Allowed operations'
+define type zmrg_typ_operation : abap.char(1) enum
+{
+  SUM = initial;
+  SUB = '-';
+  MUL = '*';
+  DIV = '/';
+  POW = '^';
+  MOD = '%';
+}

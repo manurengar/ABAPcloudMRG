@@ -1,0 +1,22 @@
+define scalar function zmrg_scal_ternary_operator
+  with parameters
+    q1      : numeric
+      with reference type [ #CUKY, #UNIT, #CALC, #NONE ],
+    q2      : numeric
+      with reference type [ #CUKY, #UNIT, #CALC, #NONE ],
+    operator: zmrg_typ_operator
+  returns abap.decfloat34
+    with reference type
+      case
+        when q1: [ #CUKY ] and
+             q2: [ #UNIT ]
+          then [ #CALC ]
+        when q2: [ #CUKY ] and
+             q1: [ #UNIT ]
+          then [ #CALC ]
+        when q1: [ reference type of q2 ]
+          then reference type of q1
+        when q2: [ reference type of q1 ]
+          then reference type of q2
+        else [ #NONE ]
+      end

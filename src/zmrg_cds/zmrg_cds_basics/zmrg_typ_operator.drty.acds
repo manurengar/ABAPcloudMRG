@@ -1,0 +1,2 @@
+@EndUserText.label: 'Single operator'
+define type zmrg_typ_operator : abap.char(1)
