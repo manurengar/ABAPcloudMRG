@@ -21,22 +21,24 @@ ENDCLASS.
 
 
 
-CLASS ZCL_MRG_LOAD_NATIONALITIES IMPLEMENTATION.
+CLASS zcl_mrg_load_nationalities IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.
-    DATA range_tab TYPE TABLE OF zmrg_ranges WITH DEFAULT KEY.
+*    DATA range_tab TYPE TABLE OF zmrg_ranges WITH DEFAULT KEY.
+*
+*    APPEND INITIAL LINE TO range_tab ASSIGNING FIELD-SYMBOL(<range>).
+*    <range>-range_key = '01'.
+*    <range>-range_value = '10000000'.
+*
+*    APPEND INITIAL LINE TO range_tab ASSIGNING <range>.
+*    <range>-range_key = '02'.
+*    <range>-range_value = '2000000'.
+*
+*    MODIFY zmrg_ranges FROM TABLE @range_tab.
+*    COMMIT WORK.
 
-    APPEND INITIAL LINE TO range_tab ASSIGNING FIELD-SYMBOL(<range>).
-    <range>-range_key = '01'.
-    <range>-range_value = '10000000'.
-
-    APPEND INITIAL LINE TO range_tab ASSIGNING <range>.
-    <range>-range_key = '02'.
-    <range>-range_value = '2000000'.
-
-    MODIFY zmrg_ranges FROM TABLE @range_tab.
-    COMMIT WORK.
+    me->get_nationalities( ).
   ENDMETHOD.
 
 
@@ -244,5 +246,15 @@ CLASS ZCL_MRG_LOAD_NATIONALITIES IMPLEMENTATION.
       ( spras = 'E'  natkey = 'ZW'  natdescr = 'Zimbabwean'          )
     ).
 
+    DATA natio_tab TYPE TABLE OF zmrg_tab_natio WITH EMPTY KEY.
+
+    LOOP AT rt_data ASSIGNING FIELD-SYMBOL(<fs>).
+      APPEND INITIAL LINE TO natio_tab ASSIGNING FIELD-SYMBOL(<nat>).
+      <nat> = CORRESPONDING #( <fs> ).
+      <nat>-client = sy-mandt.
+    ENDLOOP.
+
+    INSERT zmrg_tab_natio FROM TABLE @natio_tab.
+    COMMIT WORK.
   ENDMETHOD.
 ENDCLASS.
