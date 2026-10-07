@@ -1,0 +1,2 @@
+@EndUserText.label: 'Currency (generic) type'
+define type zmrg_typ_currency: abap.cuky

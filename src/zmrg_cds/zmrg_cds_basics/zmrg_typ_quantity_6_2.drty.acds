@@ -1,0 +1,2 @@
+@EndUserText.label: 'Quantity 6 length 2 decimals'
+define type zmrg_typ_quantity_6_2 : abap.quan(6,2)

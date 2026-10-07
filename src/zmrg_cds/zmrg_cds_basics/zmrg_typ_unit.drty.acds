@@ -1,0 +1,2 @@
+@EndUserText.label: 'Unit (generic) type'
+define type zmrg_typ_unit : abap.unit(2);
