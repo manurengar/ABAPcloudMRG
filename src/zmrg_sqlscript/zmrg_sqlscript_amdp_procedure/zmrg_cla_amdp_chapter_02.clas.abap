@@ -29,6 +29,8 @@ CLASS zmrg_cla_amdp_chapter_02 DEFINITION
     METHODS dummy_table
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
 
+    METHODS case_expression
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -77,15 +79,34 @@ CLASS zmrg_cla_amdp_chapter_02 IMPLEMENTATION.
     BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
     dum_var = select coalesce( null, 1, 2 ) as A1 from dummy;
+
+  ENDMETHOD.
+
+  METHOD case_expression
+    BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
+    declare dummy_number smallint default 3;
+
+    dummy_select = select '1' as "Col1",
+                   case dummy_number        -- Expression case
+                   when 3 then 'A'
+                   else 'B' end as "Col2",
+                   case                     -- Case with conditions
+                   when MOD(( :dummy_number + 2 ), 2) = 0 then 'X1'
+                   when MOD(( :dummy_number + 3 ), 2) = 0 then 'X2'
+                   else 'X3' end as "Col3" from dummy;
+
   ENDMETHOD.
 
   METHOD dummy_table
     BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
     dum_var = select * from dummy;
+
+
   ENDMETHOD.
 
   METHOD if_oo_adt_classrun~main.
+    me->case_expression( ).
     me->the_like_on_where( ).
     me->the_null_value( ).
     me->coalesce_function( ).

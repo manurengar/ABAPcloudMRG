@@ -8,7 +8,7 @@ CLASS zmrg_cla_amdp_sample_scal_fun DEFINITION
     INTERFACES if_amdp_marker_hdb .
     INTERFACES if_oo_adt_classrun.
 
-    METHODS test_amdp_table_function
+    METHODS test_amdp_scalar_function
       AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT
       IMPORTING VALUE(iv_langu)       TYPE zmrg_cla_amdp_sample_procedure=>t_langu
       EXPORTING VALUE(rv_country_des) TYPE zmrg_employee_natio.
@@ -43,7 +43,7 @@ CLASS zmrg_cla_amdp_sample_scal_fun IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD test_amdp_table_function
+  METHOD test_amdp_scalar_function
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   OPTIONS READ-ONLY
   USING zmrg_cla_amdp_sample_scal_fun=>get_country_text.
@@ -54,7 +54,7 @@ CLASS zmrg_cla_amdp_sample_scal_fun IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD if_oo_adt_classrun~main.
-    me->test_amdp_table_function( EXPORTING iv_langu = sy-langu
+    me->test_amdp_scalar_function( EXPORTING iv_langu = sy-langu
                                   IMPORTING rv_country_des = DATA(country_description) ).
 
     out->write( |Country: { country_description }| ).
