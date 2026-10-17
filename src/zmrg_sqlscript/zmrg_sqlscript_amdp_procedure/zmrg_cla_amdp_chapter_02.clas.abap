@@ -83,7 +83,8 @@ CLASS zmrg_cla_amdp_chapter_02 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD case_expression
-    BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
+    BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
+    using zmrg_basics_grouping_source.
     declare dummy_number smallint default 3;
 
     dummy_select = select '1' as "Col1",
@@ -95,6 +96,18 @@ CLASS zmrg_cla_amdp_chapter_02 IMPLEMENTATION.
                    when MOD(( :dummy_number + 3 ), 2) = 0 then 'X2'
                    else 'X3' end as "Col3" from dummy;
 
+   -- Be aware that when doing case expressions on group statements we need to repeat the whole case
+   -- In this case its better to do a query apart with the case and then group by on another one
+    select case
+            when amount > 1500 then 'A'
+            else 'B'
+           end as "Col1",
+           count( * )
+    from zmrg_basics_grouping_source
+    group by case
+               when amount > 1500 then 'A'
+               else 'B'
+             end;
   ENDMETHOD.
 
   METHOD dummy_table

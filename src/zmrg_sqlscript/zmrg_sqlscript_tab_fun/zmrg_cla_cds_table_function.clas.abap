@@ -44,6 +44,7 @@ CLASS zmrg_cla_cds_table_function IMPLEMENTATION.
      OPTIONS READ-ONLY
      USING zmrg_tab_natio.
 
+    -- CDS table function implemented on zmrg_fun_get_countries_text
     RETURN
       select client AS client_element_name,
              spras as langu,
