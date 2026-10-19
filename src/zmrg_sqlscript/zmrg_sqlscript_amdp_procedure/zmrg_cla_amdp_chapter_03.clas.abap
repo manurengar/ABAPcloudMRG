@@ -81,12 +81,22 @@ CLASS zmrg_cla_amdp_chapter_03 DEFINITION
     METHODS using_map_merge
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
 
+    METHODS using_map_reduce
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+
+    " Example for map-merge / map-reduce
     METHODS get_days_between_udf
       AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT
       IMPORTING VALUE(str_key)           TYPE string
                 VALUE(start_date)        TYPE d
                 VALUE(end_date)          TYPE d
       RETURNING VALUE(computed_days_tab) TYPE tt_map_merge_sample.
+
+    METHODS reduce_days_udf
+      AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT
+      IMPORTING VALUE(iv_key)           TYPE string
+                VALUE(it_grouped_rows)  TYPE tt_grouped_days
+      RETURNING VALUE(reduced_days_tab) TYPE tt_map_merge_sample.
 ENDCLASS.
 
 
@@ -145,6 +155,47 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
     RETURN select str_key as my_key, days_between( to_date( nullif( :start_date, '00000000' ), 'YYYYMMDD' ),
                                                    to_date( nullif( :end_date, '00000000' ), 'YYYYMMDD' ) ) as days_diff
            from dummy;
+
+  ENDMETHOD.
+
+
+  METHOD reduce_days_udf
+    BY DATABASE FUNCTION FOR HDB LANGUAGE SQLSCRIPT
+    OPTIONS READ-ONLY.
+
+    RETURN select :iv_key as my_key,
+                  sum( days_diff ) as days_diff
+           from :it_grouped_rows;
+
+  ENDMETHOD.
+
+  METHOD using_map_reduce
+  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
+  USING zmrg_cla_amdp_chapter_03=>get_days_between_udf
+        zmrg_cla_amdp_chapter_03=>reduce_days_udf.
+
+    -- map_reduce applies a map_merge to a table, then the result is UNION ALL, after that
+    -- another function applies over this temporal table ( the reduce function ) and eventually, the final result
+    -- is again UNION ALL
+    -- SEE: https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-sqlscript-reference/map-reduce-operator?q=map_reduce
+
+    declare my_dummy_tab table (  my_key varchar(50), start_date nvarchar( 8 ), end_date nvarchar( 8 ) );
+
+    :my_dummy_tab.insert( ( 'A1', '20260101', '20260111' ), 1 );
+    :my_dummy_tab.insert( ( 'A1', '20260101', '20260106' ), 2 );
+    :my_dummy_tab.insert( ( 'B1', '20260101', '20260121' ), 3 );
+    :my_dummy_tab.insert( ( 'B1', '20260101', '20260103' ), 4 );
+
+    dummy_select
+    =
+    map_reduce( :my_dummy_tab,
+                "ZMRG_CLA_AMDP_CHAPTER_03=>GET_DAYS_BETWEEN_UDF"( :my_dummy_tab.my_key,
+                                                                  :my_dummy_tab.start_date,
+                                                                  :my_dummy_tab.end_date )
+                group by my_key as mapped_group,
+                "ZMRG_CLA_AMDP_CHAPTER_03=>REDUCE_DAYS_UDF"( mapped_group.my_key,
+                                                             mapped_group ) );
+
 
   ENDMETHOD.
 
@@ -663,6 +714,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD if_oo_adt_classrun~main.
+    me->using_map_reduce( ).
     me->using_map_merge( ).
     me->intersect_execpt_union( ).
     me->grouping_sets( ).
