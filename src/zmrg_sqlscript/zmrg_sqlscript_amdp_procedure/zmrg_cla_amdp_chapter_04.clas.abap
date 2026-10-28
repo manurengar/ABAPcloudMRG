@@ -9,8 +9,13 @@ CLASS zmrg_cla_amdp_chapter_04 DEFINITION
     INTERFACES if_oo_adt_classrun .
   PROTECTED SECTION.
   PRIVATE SECTION.
+    "DATA TYPES DOCU
+    " https://help.sap.com/docs/SAP_ASE/cbed2190ee2d4486b0bbe0e75bf4b636/120d06d76d6642fb8824b791a94d2a04.html
 
+    " STRING PROCESSING
     METHODS string_functions_basic
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS string_conversion
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
     METHODS string_functions_regexp
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
@@ -27,15 +32,139 @@ CLASS zmrg_cla_amdp_chapter_04 DEFINITION
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
     METHODS summary_sqlscript_string_lib
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+
+    " DATE & TIME
+    METHODS possible_date_formats
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS possible_time_formats
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS date_time_conversion
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
 ENDCLASS.
 
 
 
 CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
 
-
-METHOD summary_sqlscript_string_lib BY DATABASE PROCEDURE
+  METHOD date_time_conversion BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- We can convert from ABAP DATS into DATE using to_date
+    -- and viceversa using to_dats
+
+    dummy_select
+    =
+    select to_date( '20050101' ) as conv_to_date,
+    to_dats( to_date( '2005/01/01' ) ) as conv_to_dats
+    from dummy;
+
+    -- For converting between string and time information on SQLSCRIPT
+    -- we use to_time( <value>, <format> )
+
+    dummy_select1
+    =
+    select to_time( '9:9:9AM' ) as conv_to_time
+    from dummy;
+
+  ENDMETHOD.
+
+  METHOD possible_time_formats BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    declare dummy_tab table ( t time );
+
+    -- The extended format HH24/12:MI:SS[AM|PM]
+    -- HH from 0 to 23
+    -- MI from 0 to 59
+    -- SS from 0 to 59
+
+    insert into :dummy_tab values ( '23:59:59' );
+    insert into :dummy_tab values ( to_time( '09:01:01 PM', 'HH12:MI:SS PM' ) );
+    insert into :dummy_tab values ( to_time( '05:01', 'HH24:MI' ) );
+    insert into :dummy_tab values ( '09:09:09 AM' );
+
+    dummy_select
+    =
+    select *
+    from :dummy_tab;
+  ENDMETHOD.
+
+
+  METHOD possible_date_formats BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- The possible ways to instance a date type are
+
+    declare dummy_tab table ( d date );
+    declare date_dummy_tab table ( line int, date_val date );
+
+    -- YYYY-MM-DD
+    insert into :dummy_tab values ( '1957-06-13' );
+
+    -- YYYY/MM/DD , YYYY/MM-DD, YYYY-MM/DD
+    insert into :dummy_tab values ( '1957/06-13' );
+    insert into :dummy_tab values ( '1957-06/13' );
+    insert into :dummy_tab values ( '1957/06/13' );
+
+    -- YYYYMMDD ABAP
+    insert into :dummy_tab values ( '19570613' );
+
+    -- YYYY-MON-DD -> Short named month
+    insert into :dummy_tab values ( to_date('1957-JUN-13',
+                                            'YYYY-MON-DD' ) );
+
+    -- Long named month
+    insert into :dummy_tab values ( to_date('1957-June-13',
+                                            'YYYY-MONTH-DD' ) );
+
+    insert into :dummy_tab values ( to_date('1957-JULY-13',
+                                            'YYYY-MONTH-DD' ) );
+
+    insert into :dummy_tab values ( to_date('January-13',
+                                            'MONTH-DD' ) );
+
+    -- Roman numerical months
+    insert into :dummy_tab values ( to_date('1957-IV-13',
+                                            'YYYY-RM-DD' ) );
+
+    -- Custom formats
+    insert into :dummy_tab values ( to_date('1750=05=01',
+                                            'YYYY=MM=DD' ) );
+
+
+    -- Calendar week & Quarter (extracting from a DATE into string)
+    dummy_week_quarter
+    =
+    select to_nvarchar( to_date('20261028', 'YYYYMMDD'), 'WW' ) as calendar_week,
+           to_nvarchar( to_date('20261028', 'YYYYMMDD'), 'Q' )  as quarter
+    from dummy;
+
+
+    dummy_select1
+    =
+    select *
+    from :dummy_tab;
+
+    -- The lowest date corresponds to 01.01.0001 which can be represented as 00.00.0000
+    -- on string format it is displayed as 31.12.-1
+
+    insert into :date_dummy_tab values ( 1, '' );
+    insert into :date_dummy_tab values ( 2, '0' );
+    insert into :date_dummy_tab values ( 3, '0000-00-00' );
+    insert into :date_dummy_tab values ( 4, '00000000' );
+    insert into :date_dummy_tab values ( 5, '0001-01-01' );
+
+    dummy_select
+    =
+    select line, date_val,
+           to_nvarchar( date_val ) as as_char,
+           days_between( date_val, '0001-01-10' ) as delta
+    from :date_dummy_tab;
+  ENDMETHOD.
+
+
+  METHOD summary_sqlscript_string_lib BY DATABASE PROCEDURE
+    FOR HDB LANGUAGE SQLSCRIPT.
     /*
     -- The function table_summary returns a CSV string and for each row, it is break using UNIX line feed
     using "PUBLIC"."SQLSCRIPT_STRING" as lib;
@@ -141,7 +270,17 @@ METHOD summary_sqlscript_string_lib BY DATABASE PROCEDURE
     select * from dummy;
   ENDMETHOD.
 
+  METHOD string_conversion
+  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
+    -- The data types we are using are NVARCHAR and NCLOB
+    -- For NCLOB we can use only LIKE, Regexpr or contains on the where clause
+
+    dummy_select
+    =
+    select to_nvarchar( to_date( '1999-01/01' ) ) as conv_char from dummy;
+
+  ENDMETHOD.
 
   METHOD string_functions_basic
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
@@ -160,25 +299,35 @@ METHOD summary_sqlscript_string_lib BY DATABASE PROCEDURE
     dummy_select
     =
     select
-    'A ' || ', B' || 'C .' as Concat,
-    ABAP_LOWER( 'PC' ) as lowerCase,
-    ABAP_UPPER( 'pc' ) as upperCase,
-    INITCAP( 'manuel' ) || INITCAP( 'ramirez' ) as captialLetters,
-    LEFT( sampleText, 8 ) as leftResult,
-    RIGHT( sampleText, 8 ) as rightResult,
-    SUBSTR_BEFORE( sampleText, 'E' )  as subStringBefore,
-    SUBSTR_BEFORE( sampleText, '' )  as subStringBeforeEmpty,
-    SUBSTR_AFTER( sampleText, 'E' )  as subStringAfter
+    'A ' || ', B' || 'C .' as Concat,                                -- CONCATENATION
+    LENGTH( 'asoidjaoisjdas' ) as strLength,                         -- String Length
+    ABAP_LOWER( 'PC' ) as lowerCase,                                 -- LOWER CASE
+    ABAP_UPPER( 'pc' ) as upperCase,                                 -- UPPER CASE
+    INITCAP( 'manuel' ) || INITCAP( 'ramirez' ) as captialLetters,   -- 1st Letter CAPITAL
+    LEFT( sampleText, 8 ) as leftResult,                             -- LEFT side STR from Nth
+    RIGHT( sampleText, 8 ) as rightResult,                           -- RIGHT side STR from Nth
+    SUBSTR_BEFORE( sampleText, 'E' )  as subStringBefore,            -- SubSTR before char
+    SUBSTR_BEFORE( sampleText, '' )  as subStringBeforeEmpty,        -- All SubSTR
+    SUBSTR_AFTER( sampleText, 'E' )  as subStringAfter               -- SubSTR after char
     from :my_dummy_table;
 
   ENDMETHOD.
 
   METHOD if_oo_adt_classrun~main.
     me->string_functions_basic( ).
+    me->string_conversion( ).
     me->string_functions_regexp( ).
     me->string_functions_trim_pad( ).
     me->string_functions_similarity( ).
     me->string_functions_unicode_conv( ).
+
+    me->split_sqlscript_string_lib( ).
+    me->format_sqlscript_string_lib( ).
+    me->summary_sqlscript_string_lib( ).
+
+    me->possible_date_formats( ).
+    me->possible_time_formats( ).
+    me->date_time_conversion( ).
   ENDMETHOD.
 
   METHOD string_functions_regexp
