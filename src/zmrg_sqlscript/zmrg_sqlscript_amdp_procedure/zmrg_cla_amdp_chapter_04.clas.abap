@@ -40,11 +40,112 @@ CLASS zmrg_cla_amdp_chapter_04 DEFINITION
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
     METHODS date_time_conversion
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS timestamp_formats
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS now_and_today_functions
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS add_functions
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS between_functions
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
 ENDCLASS.
 
 
 
 CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
+
+  METHOD between_functions BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+    dummy_select
+    =
+    select
+    -- Exact 100ns difference (last digit .0000001 vs .0000005 -> returns 4)
+      nano100_between( to_timestamp( '2026-10-29 12:00:00.0000001' ),
+                       to_timestamp( '2026-10-29 12:00:00.0000005' ) ) as diff_400ns,
+
+    -- 1 full second difference -> returns 10,000,000
+      nano100_between( to_timestamp( '2026-10-29 12:00:00.0000000' ),
+                       to_timestamp( '2026-10-29 12:00:01.0000000' ) ) as diff_1_sec,
+
+      seconds_between( '2026-10-29 12:00:00', '2026-10-29 12:01:00' ) as diff_seconds,
+      days_between( '2026-10-01', '2026-10-29' )                      as diff_days,
+      months_between( '2026-01-01', '2026-10-01' )                    as diff_months,
+      years_between( '2021-01-01', '2026-01-01' )                     as diff_years
+      from dummy;
+  ENDMETHOD.
+
+  METHOD add_functions BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- Where <date> appears, all data types that contain a date are allowed
+    -- Where <time> appears, all data types that contain a time are allowed
+
+    -- add_months( <date>, <months> )
+    dummy_select1
+    =
+    select
+    add_months( '2025/01/31', 1 ) as addMonth1,
+    add_months( '2025/02/27', 1 ) as addMonth2,
+    add_months_last( '2025/02/28', 1 ) as addMonthLast1  -- Round to last day if your day is last day of curr the month
+    from dummy;
+
+    -- add_workdays(  ) We can calculate using calendars ( factory ) from SCAL
+
+    -- last_day( <date> ) is last day of a month
+    -- next_day( <date> ), add_days( <date>, days ) Adds 1 day or any number of days
+    dummy_select2
+    =
+    select
+    next_day( '2026/10/29' ) as nxtday,
+    add_days( '2026/10/29', -1 ) as prevDay,
+    last_day( '2026-10-08' ) as lastDay
+    from dummy;
+
+    -- add_seconds( <time>, seconds ) & add_years( <date>, years )
+
+    dummy_select3
+    =
+    select
+    add_seconds( '17:59:59', '121' ) as scndsAdded,
+    add_years( '20210101', 5 ) as yearsAdded
+    from dummy;
+  ENDMETHOD.
+
+  METHOD now_and_today_functions BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- There some variables to get time information
+    dummy_select
+    =
+    select current_date,         -- local system date
+           current_time,         -- local system time
+           current_timestamp,    -- local system timestamp
+           now( ) as now_timstamp, -- Same as current_timestamp
+           current_utcdate,      -- Date on UTC
+           current_utctime,      -- Time on UTC
+           current_utctimestamp,  -- Timestamp UTC
+           to_seconddate( current_utctimestamp ) as seconddate_tim
+    from dummy;
+
+
+  ENDMETHOD.
+
+  METHOD timestamp_formats BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+    -- There are 2 types for timestamps
+
+    -- SECONDDATE: YYYY-MM-DD HH24:MI:SS
+    -- TIMESTAMP:  YYYY-MM-DD HH24:MI:SS.F7
+
+    dummy_select
+    =
+    select to_seconddate( '2026-10-29 14:30:59', 'YYYY-MM-DD HH24:MI:SS' ) as second_date_val,
+           to_timestamp( '2026-10-29 14:30:59.1234567', 'YYYY-MM-DD HH24:MI:SS.FF7' ) as timestamp_val,
+           to_seconddate( current_timestamp ) as curr_seconddate,
+           current_timestamp as curr_timestamp
+    from dummy;
+
+  ENDMETHOD.
 
   METHOD date_time_conversion BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
@@ -327,7 +428,11 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
 
     me->possible_date_formats( ).
     me->possible_time_formats( ).
+    me->timestamp_formats( ).
     me->date_time_conversion( ).
+    me->now_and_today_functions( ).
+    me->add_functions( ).
+    me->between_functions( ).
   ENDMETHOD.
 
   METHOD string_functions_regexp
