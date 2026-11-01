@@ -1,0 +1,3 @@
+@EndUserText.label: 'Unit of measure'
+@ObjectModel.sapObjectNodeTypeReference: 'zmrg_unitofmeasure'
+define type zmrg_typ_unit_of_measure: abap.unit( 3 )
