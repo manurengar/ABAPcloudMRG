@@ -7,7 +7,7 @@ CLASS zmrg_cla_amdp_chapter_04 DEFINITION
 
     INTERFACES if_amdp_marker_hdb .
     INTERFACES if_oo_adt_classrun .
-  PROTECTED SECTION.
+
   PRIVATE SECTION.
     "DATA TYPES DOCU
     " https://help.sap.com/docs/SAP_ASE/cbed2190ee2d4486b0bbe0e75bf4b636/120d06d76d6642fb8824b791a94d2a04.html
@@ -48,11 +48,345 @@ CLASS zmrg_cla_amdp_chapter_04 DEFINITION
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
     METHODS between_functions
         AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS extrac_components_from_date
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS week_from_date
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS time_zones_conversion
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+
+    " Some practical examples using date & time
+    METHODS calculate_runtime
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS calculate_date_info
+      AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT
+      IMPORTING VALUE(iv_date)   TYPE d
+      EXPORTING VALUE(rt_result) TYPE tt_day_info.
+
+    " Numerical data
+    METHODS numerical_data_types
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS basic_numerical_operations
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS rounding_operations
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS trigonometry_functions
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS random_numbers
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
+    METHODS number_signs
+        AMDP OPTIONS READ-ONLY CDS SESSION CLIENT DEPENDENT.
 ENDCLASS.
 
 
 
 CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
+
+  METHOD number_signs BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- SIGN( <value> ): Returns 1 if number is positive and -1 if negative
+    -- ABS( <value> ) : Returns the absolute value of the number
+    -- UMINUS( <VALUE> ): Reverses the sign of the number
+
+    dummy_select
+    =
+    select
+    SIGN( -900 ) as "sign1",
+    SIGN( 90 )   as "sign2",
+    abs( -1.45 ) as "abs",
+    uminus( -1.2 ) as "reversedVal"
+    from dummy;
+
+  endmethod.
+
+  METHOD random_numbers BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- Functions RAND y RAND_SECURE both use DOUBLE types between 0 and 1.
+
+    dummy_select
+    =
+    select RAND( ) as random,
+           RAND_SECURE( ) as randomSecure
+    from dummy;
+
+  ENDMETHOD.
+
+  METHOD trigonometry_functions BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- Here some trigonometry functions
+    -- pi = ACOS( -1 ) (~3.141592653589793)
+
+    dummy_select
+    =
+    select
+      -- Standard Trigonometric Functions (input in radians)
+      SIN( ACOS( -1 ) / 2 )       as "sin_90_deg",   -- sin(pi/2) = 1
+      COS( 0 )                    as "cos_0_deg",    -- cos(0)    = 1
+      TAN( ACOS( -1 ) / 4 )       as "tan_45_deg",   -- tan(pi/4) = 1
+      COT( ACOS( -1 ) / 4 )       as "cot_45_deg",   -- cot(pi/4) = 1
+
+      -- Inverse Trigonometric Functions (output in radians)
+      ASIN( 1 )                   as "asin_1",       -- pi/2 (~1.570796)
+      ACOS( -1 )                  as "acos_minus_1", -- pi   (~3.141592)
+      ATAN( 1 )                   as "atan_1",       -- pi/4 (~0.785398)
+      ATAN2( 1, 1 )               as "atan2_y_x",    -- atan(1/1) = pi/4
+
+      -- Hyperbolic Functions
+      SINH( 1 )                   as "sinh_1",       -- Hyperbolic sine
+      COSH( 0 )                   as "cosh_0",       -- Hyperbolic cosine (= 1)
+      TANH( 1 )                   as "tanh_1"        -- Hyperbolic tangent
+    from dummy;
+
+  endmethod.
+
+  METHOD rounding_operations BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- ROUND( <value>, <place>, [<model>] ): Allows to reduce precision of a number
+    -- <place>: if 0 means round to whole number, 2 to 2 decimal places.
+    -- if <place> is negative like -3, it will make 1, 10 and 100 values on number 6389 -> 6000 to 0.
+
+    -- <mode> defines the rounding mode:
+    -- ROUND_HALF_UP  : Value is always rounded to the closest straight value. If in the middle, it is always rounded UP.
+    -- ROUND_HALF_DOWN: Same as HALF_UP but when in doubt it rounds to the closest straight but DOWN.
+    -- ROUND_HALF_EVEN: Similar to the previous two, but when in doubt, it rounds to the value that after rounding becomes EVEN
+    -- ROUND_UP       : Always round up the amount
+    -- ROUND_DOWN     : Always round down the amount
+    -- ROUND_CEILING  : Always round up.
+    -- ROUND_FLOOR    : Always round down
+
+    -- Also to mention we have the functions FLOOR( ) and CEIL( ).
+
+    declare dummy_tab table ( val DOUBLE );
+
+    insert into :dummy_tab values ( 1 );
+    insert into :dummy_tab values ( 1.1 );
+    insert into :dummy_tab values ( -1.1 );
+    insert into :dummy_tab values ( 1.499999 );
+    insert into :dummy_tab values ( 1.500000 );
+    insert into :dummy_tab values ( -1.499999 );
+    insert into :dummy_tab values ( -1.500000 );
+    insert into :dummy_tab values ( 1.749999 );
+    insert into :dummy_tab values ( 1.750000 );
+    insert into :dummy_tab values ( 175 );
+
+    dummy_select
+    =
+    select
+    val,
+    CEIL( VAL ) as ceiling,
+    FLOOR( val ) as floor,
+    ROUND( val, 0, ROUND_HALF_UP ) as rhu_0,
+    ROUND( val, 0, ROUND_UP ) as ru_0,
+    ROUND( val, 1, ROUND_HALF_UP ) as rhu_1,
+    ROUND( val, 1, ROUND_UP ) as ru_1,
+    ROUND( val, -1 ) as  rhu_m1
+    from :dummy_tab;
+
+  endmethod.
+
+
+  METHOD basic_numerical_operations BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- Basic numerical operations include + / * -
+    -- Also the NDIV0( <numerator>, <denominator> ) --> Returns 0 if the denominator is 0
+
+
+    dummy_select
+    =
+    select 1 + 3 as "summatory",
+           1 - 3 as "subtractrion",
+           NDIV0( 1, 3 ) as "division",
+           1 / 3 as "division1",
+           NDIV0( 1, 0 ) as "division2",
+           1 * 3 as "multiplication",
+           MOD( 1, 3 ) as "modulo"
+   from dummy;
+
+
+    -- To do the exponentiation of a number or square root we do
+    -- POWER( <basis>, <exponent> )
+    -- SQRT( <number> )
+    -- EXP( <value> ) Power in base Euler
+    -- PI( ) is number  pi
+
+    dummy_select1
+    =
+    select POWER( 2, 4 ) as "examplePower",
+           SQRT( 9 )     as "squareRoot",
+           EXP( 3 )      as "EulerToThe3",
+           ACOS( -1 )    as "piNumber"
+    from dummy;
+
+    -- For logarithms we have
+    -- LN( <value> ) base e
+    -- LOG( <basis>, <value> )
+    dummy_select2
+    =
+    select LN( EXP( 4 ) ) as "naturalLogarithim",
+           LOG( 10, POWER( 10, 3 ) ) as "base10Logarithm"
+    from dummy;
+  ENDMETHOD.
+
+  METHOD numerical_data_types BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+    declare dummy_tab table ( a TINYINT,  -- Integer from 0 to 255
+                              b SMALLINT, -- Integer from +/- 32,767
+                              c INTEGER,  -- Integer from +/- 2,147,483,647
+                              d BIGINT,   -- Integer from +/- 9,223,372,036,854,775,807
+                              e DECIMAL( 6, 2 ), -- Fixed point, p from 1 to 38 places, s from 0 to p places
+                              f DECIMAL, -- Decimal floating point. Decimal part up to 34 places. Exponent +/- ~6000
+                              g SMALLDECIMAL, -- Decimal floating point. Decimal part up to 16 places. Exponent +/- 368--
+                              h REAL, -- Binary floating point  32 bit
+                              i DOUBLE, -- Binary floating point 64 bit
+                              j FLOAT(1), -- Equivalent to REAL
+                              K FLOAT( 25 ) -- Equivalent to double
+                            );
+  ENDMETHOD.
+
+
+  METHOD calculate_date_info BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+    date_selection
+    =
+    select
+      to_date( :iv_date ) as d_date,
+      weekday( to_date( :iv_date ) ) as weekNumber
+    from dummy;
+
+    rt_result
+    =
+    select
+      to_dats( d_date )  as d,
+      initcap( abap_lower( dayname( d_date ) ) )  as weekDayEn,
+      case weekNumber
+        when 0 then 'Lunes'
+        when 1 then 'Martes'
+        when 2 then 'Mi' || nchar( 233 ) || 'rcoles'
+        when 3 then 'Jueves'
+        when 4 then 'Viernes'
+        when 5 then 'S'  || nchar( 225 ) || 'bado'
+        when 6 then 'Domingo'
+      end                as weekDayLocale,
+      week( d_date )     as weekNumber
+    from :date_selection;
+  ENDMETHOD.
+
+
+  METHOD calculate_runtime BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- Imagine we have 2 begda/endda from ABAP & 2 beguz/endduz
+    -- They represent program start and end times
+    -- Calculate the runtime between those 2
+
+    declare runtime_information table ( begda nvarchar( 8 ), beguz nvarchar( 6 ), endda nvarchar( 8 ), enduz nvarchar( 6 ) );
+
+     :runtime_information.insert( ( '20261015', '091655', '20261018', '050319' ), 1 );
+     :runtime_information.insert( ( '20261015', '100000', '20261015', '113000' ), 2 );
+     :runtime_information.insert( ( '20261231', '100000', '20270101', '110000' ), 3 );
+
+     -- Converted units
+     converted_time_units
+     =
+     select
+     to_seconddate( begda || ' ' || beguz, 'YYYYMMDDHH24MISS' ) as start_time,
+     to_seconddate( endda || ' ' || enduz, 'YYYYMMDDHH24MISS' ) as end_time
+     from :runtime_information;
+
+     -- Calculate difference
+     calculated_timespawn_seconds
+     =
+     select
+     abs( seconds_between( end_time, start_time ) ) as spawn_seconds
+     from :converted_time_units;
+
+     calculated_timespawn
+     =
+     select
+     floor( mod( spawn_seconds, 60 ) )        as "seconds",
+     floor( mod( spawn_seconds, 3600 ) / 60 ) as "minutes",
+     floor( spawn_seconds / 3600 )            as "hours"
+     from :calculated_timespawn_seconds;
+
+
+  ENDMETHOD.
+
+  METHOD time_zones_conversion BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- There are 2 functions:
+    -- UTCTOLOCAL( <timestamp>, <timezone>, <origin> )
+    -- LOCALTOUTC( <timestamp>, <timezone>, <origin> )
+
+    dummy_select
+    =
+    select
+    CURRENT_UTCTIMESTAMP as "utc",
+    CURRENT_TIMESTAMP as "timestamp",
+    utctolocal( to_timestamp( '2026-10-01 19:45:00', 'YYYY-MM-DD HH24:MI:SS' ), 'CET', 'sap' ) as "conv1",
+    utctolocal( CURRENT_UTCTIMESTAMP, 'CET', 'SAP' ) as "conv2",
+    utctolocal( CURRENT_UTCTIMESTAMP, 'UTC+1', 'SAP' ) as "conv3"
+    from dummy;
+  ENDMETHOD.
+
+  METHOD week_from_date BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- There are 2 ways of obtaining the week from a date. With the function WEEK and the function ISOWEEK
+    -- WEEK: Returns from 1st january that year ( counted as 1 ) the number of weeks from that date
+    -- ISOWEEK: Returns from the 1st week containing the 1st Thursday, the number of weeks in a format: <YEAR>-W<WEEK>
+    -- WEEKDAY: 0 means Monday and 6 means Sunday.
+    -- QUARTER( <date>, <first_month> ): Return the quarter of that date, we can also specify a month for setting the start there
+    -- DAYOFYEAR: Returns the number of calendar days for that date
+    -- DAYNAME: Returns the
+
+    dummy_select
+    =
+    select week( current_date ) as "week",
+           isoweek( current_date )    as "isoWeek",
+           weekday( current_date )    as "weekDay",
+           quarter( current_date )    as "quarter",
+           quarter( current_date, 2 ) as "quarterStartingMarch",
+           dayofyear( current_date )  as "dayOfYear",
+           dayname( current_date )    as "dayName",
+           monthname( current_date )  as "monthName"
+           from dummy;
+
+  ENDMETHOD.
+
+  METHOD extrac_components_from_date BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- We can use EXTRACT( <component> from <value> ) using a series of <component>
+    -- YEAR, MONTH, DAY, HOUR, MINUTE, SECOND
+    -- Apart from EXTRACT, there are other SQL functions for this tiask
+
+    dummy_select
+    =
+    select 1                          as "Row",
+           year( current_date )       as "Year",
+           month( current_date )      as "Month",
+           dayofmonth( current_date ) as "Day",
+           hour( current_time )       as "hour",
+           minute( current_time )     as "minute",
+           second( current_time )     as "second"
+    from dummy
+    union all
+    select 2                          as "Row",
+           extract( year from current_date )       as "Year",
+           extract( month from current_date )      as "Month",
+           extract( day from current_date )        as "Day",
+           extract( hour from current_time )       as "hour",
+           extract( minute from current_time )     as "minute",
+           extract( second from current_time )     as "second"
+    from dummy;
+  ENDMETHOD.
+
 
   METHOD between_functions BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
@@ -117,13 +451,13 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     -- There some variables to get time information
     dummy_select
     =
-    select current_date,         -- local system date
-           current_time,         -- local system time
-           current_timestamp,    -- local system timestamp
+    select current_date,           -- local system date
+           current_time,           -- local system time
+           current_timestamp,      -- local system timestamp
            now( ) as now_timstamp, -- Same as current_timestamp
-           current_utcdate,      -- Date on UTC
-           current_utctime,      -- Time on UTC
-           current_utctimestamp,  -- Timestamp UTC
+           current_utcdate,        -- Date on UTC
+           current_utctime,        -- Time on UTC
+           current_utctimestamp,   -- Timestamp UTC
            to_seconddate( current_utctimestamp ) as seconddate_tim
     from dummy;
 
@@ -415,6 +749,7 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD if_oo_adt_classrun~main.
+    " Basic String functions
     me->string_functions_basic( ).
     me->string_conversion( ).
     me->string_functions_regexp( ).
@@ -422,10 +757,12 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     me->string_functions_similarity( ).
     me->string_functions_unicode_conv( ).
 
+    " Library: SQLSCRIPT_STRING
     me->split_sqlscript_string_lib( ).
     me->format_sqlscript_string_lib( ).
     me->summary_sqlscript_string_lib( ).
 
+    " Date & time
     me->possible_date_formats( ).
     me->possible_time_formats( ).
     me->timestamp_formats( ).
@@ -433,6 +770,22 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     me->now_and_today_functions( ).
     me->add_functions( ).
     me->between_functions( ).
+    me->extrac_components_from_date( ).
+    me->week_from_date( ).
+    me->time_zones_conversion( ).
+
+    " Time & date exercises
+    me->calculate_runtime( ).
+    me->calculate_date_info( EXPORTING iv_date = CONV d( xco_cp=>sy->date( xco_cp_time=>time_zone->user )->as( io_format =  xco_cp_time=>format->abap )->value )
+                             IMPORTING rt_result = DATA(date_info) ).
+
+    " Integers / Numeric data
+    me->numerical_data_types( ).
+    me->rounding_operations( ).
+    me->trigonometry_functions( ).
+    me->random_numbers( ).
+    me->number_signs( ).
+
   ENDMETHOD.
 
   METHOD string_functions_regexp
