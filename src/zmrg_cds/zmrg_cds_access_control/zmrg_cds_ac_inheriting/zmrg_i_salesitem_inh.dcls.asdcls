@@ -1,0 +1,18 @@
+@EndUserText.label: 'Access control Sales order item'
+@MappingRole: true
+
+// Inherits the access control raw from sales order, the fields on the auth. object are not present on the
+// projection field of this cds, thus we have to rely on the association, therefore we replace root with the asso.
+// Also in case the access control is deleted, we default the access to TRUE
+
+define role ZMRG_I_SALESITEM_INH {
+    grant
+        select
+            on
+                ZMRG_I_SALESITEM_INH
+                    where
+                        inheriting conditions from entity ZMRG_I_SALESORDER_INH
+                        default true
+                        replacing { root with _SalesOrder };
+                        
+}

@@ -1,0 +1,14 @@
+@EndUserText.label: 'Access control Sales schedule line'
+@MappingRole: true
+
+// Inherits the access control from salesitem
+
+define role ZMRG_I_SALESLINE_INH {
+    grant
+        select
+            on
+                ZMRG_I_SALESLINE_INH
+                    where
+                        inherit ZMRG_I_SALESITEM_INH for grant select on ZMRG_I_SALESITEM_INH;
+                        
+}

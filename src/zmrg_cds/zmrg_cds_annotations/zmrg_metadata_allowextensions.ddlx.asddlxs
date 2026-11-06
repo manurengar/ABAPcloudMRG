@@ -1,0 +1,8 @@
+@Metadata.layer: #CORE
+annotate entity ZMRG_METADATA_ALLOWEXTENSIONS
+    with 
+{   
+    @EndUserText.label: 'User name'
+    Username;
+    
+}

@@ -1,0 +1,15 @@
+@EndUserText.label: 'Access control Sales order item'
+@MappingRole: true
+
+// Here the example of how to access fields not present on the projection list through eval. path
+
+define role ZMRG_I_SALESITEM_PATH_EXP {
+    grant 
+        select
+            on
+                ZMRG_I_SALESITEM_PATH_EXP
+                    where
+                        (_SalesOrder.SalesOrganization,  _SalesOrder.DistributionChannel, _SalesOrder.OrganizationDivision ) 
+                         = aspect pfcg_auth ( ZMRG_VKO, ZMRG_VKORG, ZMRG_VTWEG, ZMRG_SPART, ACTVT = '03' );
+                        
+}
