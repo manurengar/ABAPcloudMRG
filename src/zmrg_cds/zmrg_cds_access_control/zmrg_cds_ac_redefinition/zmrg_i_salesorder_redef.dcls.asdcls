@@ -1,0 +1,11 @@
+@EndUserText.label: 'Original'
+@MappingRole: true
+define role ZMRG_I_SALESORDER_REDEF {
+    grant 
+        select
+            on
+                ZMRG_I_SALESORDER_REDEF
+                    where
+                           ( SalesOrganization, DistributionChannel, OrganizationDivision )
+                           = aspect pfcg_auth ( ZMRG_VKO, ZMRG_VKORG, ZMRG_VTWEG, ZMRG_SPART, ACTVT = '03' );
+}

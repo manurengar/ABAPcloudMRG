@@ -1,0 +1,13 @@
+@EndUserText.label: 'Access control with parameters'
+@MappingRole: true
+define role ZMRG_I_SALESITEM_PARAM {
+    grant 
+        select
+            on
+                ZMRG_I_SALESITEM_PARAM
+                    where
+                        (_SalesOrder( p_p1 : $parameters.p_p1,
+                                      p_p2 : $parameters.p_p2,
+                                      p_p3 : 'X' ).SalesOrganization) 
+                                      ?= aspect  pfcg_auth ( ZMRG_VKO, ZMRG_VKORG, ACTVT = '03' );
+}

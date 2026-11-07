@@ -1,0 +1,15 @@
+@EndUserText.label: 'Access control with qualifier'
+@MappingRole: true
+
+// In case we also wanted to fetch those associations where authorization group is empty, we can add
+// bypass when is null
+
+define role ZMRG_I_SALESORDER_QUALIFI3 {
+    grant
+        select
+            on
+                ZMRG_I_SALESORDER_QUALIFI
+                    where all
+                        ( _Item._Product.AuthorizationGroup bypass when is null ) ?=
+                         aspect pfcg_auth( ZMRG_MMAT, ZMRG_BEGRU, ACTVT = '03' );
+}

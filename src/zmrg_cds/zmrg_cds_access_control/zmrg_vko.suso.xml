@@ -24,6 +24,10 @@
      <BROBJ>ZMRG_VKO</BROBJ>
      <ACTVT>03</ACTVT>
     </TACTZ>
+    <TACTZ>
+     <BROBJ>ZMRG_VKO</BROBJ>
+     <ACTVT>F4</ACTVT>
+    </TACTZ>
    </TACTZ>
   </asx:values>
  </asx:abap>

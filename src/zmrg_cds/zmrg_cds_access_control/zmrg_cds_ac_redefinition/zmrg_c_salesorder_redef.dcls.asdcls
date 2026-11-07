@@ -1,0 +1,17 @@
+@EndUserText.label: 'Redefinition'
+@MappingRole: true
+
+// Replace the value for value help activity and also keep the 03 value display
+
+define role ZMRG_C_SALESORDER_REDEF {
+    grant 
+        select
+            on
+                ZMRG_C_SALESORDER_REDEF
+                    where inheriting conditions from entity zmrg_i_salesorder_redef
+                        replacing { pfcg_filter field ACTVT value '03' with 'F4' }
+                     or 
+                     inheriting conditions from entity zmrg_i_salesorder_redef;
+                        
+                        
+}
