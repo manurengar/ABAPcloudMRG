@@ -1,0 +1,17 @@
+@EndUserText.label: 'Access control Sales Order'
+@MappingRole: true
+
+// Generally literals are used in conjuction with roles
+// This example can be also achieved with ?= operator
+
+define role ZMRG_I_SALESORDER_LITERAL {
+    grant 
+        select
+            on
+                ZMRG_I_SALESORDER_LITERAL
+                        where ( SalesOrganization, DistributionChannel, OrganizationDivision )
+                           = aspect pfcg_auth ( ZMRG_VKO, ZMRG_VKORG, ZMRG_VTWEG, ZMRG_SPART, ACTVT = '03' )
+                        or ( ( SalesOrganization is initial or SalesOrganization = 'AFF' ) 
+                        and DistributionChannel is initial 
+                        and OrganizationDivision is initial );
+}

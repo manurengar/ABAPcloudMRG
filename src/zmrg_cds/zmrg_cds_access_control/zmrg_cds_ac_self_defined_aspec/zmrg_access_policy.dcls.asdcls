@@ -1,0 +1,9 @@
+@EndUserText.label: 'Access control with self defined aspect'
+define accesspolicy ZMRG_ACCESS_POLICY {
+    define aspect ZMRG_ACCESS_POLICY as 
+        select from ZMRG_CDS_I_SELF_DEFINED_ASPEC
+            with user element Username
+            { 
+                SalesGroup
+            }              
+}

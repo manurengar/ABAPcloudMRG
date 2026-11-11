@@ -1,0 +1,16 @@
+@EndUserText.label: 'Renamed elements on AC'
+@MappingRole: true
+
+// Replace the value for value help activity and also keep the 03 value display
+
+define role ZMRG_C_SALESORDER_RENAMED {
+    grant 
+        select
+            on
+                ZMRG_C_SALESORDER_RENAMED
+                    where inheriting conditions from entity ZMRG_I_SALESORDER_RENAMED
+                        replacing { element SalesOrganization with SalesOrganizationRenamed, element DistributionChannel with DistributionChannelRenamed };
+                     
+                        
+                        
+}

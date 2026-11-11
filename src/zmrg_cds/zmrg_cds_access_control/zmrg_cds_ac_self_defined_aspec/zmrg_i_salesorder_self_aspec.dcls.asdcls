@@ -1,0 +1,6 @@
+@EndUserText.label: 'Access control with self defined aspect'
+@MappingRole: true
+define role zmrg_i_salesorder_self_aspec { 
+    grant select on zmrg_i_salesorder_self_aspec 
+        where ( SalesGroup ) = aspect ZMRG_ACCESS_POLICY;
+}

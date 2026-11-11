@@ -1,0 +1,9 @@
+@EndUserText.label: 'Original'
+@MappingRole: true
+define role ZMRG_I_SALESORDER_USER_REF {
+    grant 
+        select
+            on
+                ZMRG_I_SALESORDER_USER_REF
+                    where  CreatedBy = aspect user;
+}
