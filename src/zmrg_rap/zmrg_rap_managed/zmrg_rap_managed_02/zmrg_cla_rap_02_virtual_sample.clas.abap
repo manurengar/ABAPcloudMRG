@@ -11,7 +11,9 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_rap_02_virtual_sample IMPLEMENTATION.
+CLASS ZMRG_CLA_RAP_02_VIRTUAL_SAMPLE IMPLEMENTATION.
+
+
   METHOD if_sadl_exit_calc_element_read~calculate.
     " Use the populated fields to perform the business logic
     DATA certificate TYPE TABLE OF zmrg_c_certificate.
@@ -25,6 +27,7 @@ CLASS zmrg_cla_rap_02_virtual_sample IMPLEMENTATION.
     ct_calculated_data = CORRESPONDING #( certificate ).
   ENDMETHOD.
 
+
   METHOD if_sadl_exit_calc_element_read~get_calculation_info.
     "Here to take which elements do we need populated for our business logic
     LOOP AT it_requested_calc_elements ASSIGNING FIELD-SYMBOL(<element>).
@@ -34,5 +37,4 @@ CLASS zmrg_cla_rap_02_virtual_sample IMPLEMENTATION.
       ENDCASE.
     ENDLOOP.
   ENDMETHOD.
-
 ENDCLASS.

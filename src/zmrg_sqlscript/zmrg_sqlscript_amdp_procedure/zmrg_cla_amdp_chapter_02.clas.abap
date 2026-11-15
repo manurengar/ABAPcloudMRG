@@ -37,33 +37,8 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_amdp_chapter_02 IMPLEMENTATION.
+CLASS ZMRG_CLA_AMDP_CHAPTER_02 IMPLEMENTATION.
 
-
-  METHOD the_null_value
-    BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
-
-    dum_var = select null as A1, 'A' as A2 from dummy union
-              select 1 as A1, 'B' as A2 from dummy union
-              select 2 as A1, 'C' as A2 from dummy union
-              select 3 as A1, null as A2 from dummy;
-
-    not_null_values = select * from :dum_var
-                       where A1 is not null;
-  ENDMETHOD.
-
-  METHOD the_like_on_where
-   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
-
-    dum_var = select 'Marisa' as A1, 'Garcia' as A2 from dummy union
-              select 'Rosa' as A1, 'Perez' as A2 from dummy union
-              select 'Martin' as A1, 'D1ego' as A2 from dummy union
-              select 'Ana' as A1, 'Maga' as A2 from dummy;
-
-    like_stat = select * from :dum_var where A1 like 'M%';
-    like_regex_stat = select * from :dum_var where A1 LIKE_REGEXPR '[aA].*[aA]' flag 's';
-
-  ENDMETHOD.
 
   METHOD primitive_variable_declaration
     BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
@@ -75,12 +50,6 @@ CLASS zmrg_cla_amdp_chapter_02 IMPLEMENTATION.
     declare my_date DATE default '20260115';
   ENDMETHOD.
 
-  METHOD coalesce_function
-    BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
-
-    dum_var = select coalesce( null, 1, 2 ) as A1 from dummy;
-
-  ENDMETHOD.
 
   METHOD case_expression
     BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -110,6 +79,42 @@ CLASS zmrg_cla_amdp_chapter_02 IMPLEMENTATION.
              end;
   ENDMETHOD.
 
+
+  METHOD the_null_value
+    BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
+
+    dum_var = select null as A1, 'A' as A2 from dummy union
+              select 1 as A1, 'B' as A2 from dummy union
+              select 2 as A1, 'C' as A2 from dummy union
+              select 3 as A1, null as A2 from dummy;
+
+    not_null_values = select * from :dum_var
+                       where A1 is not null;
+  ENDMETHOD.
+
+
+  METHOD the_like_on_where
+   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
+
+    dum_var = select 'Marisa' as A1, 'Garcia' as A2 from dummy union
+              select 'Rosa' as A1, 'Perez' as A2 from dummy union
+              select 'Martin' as A1, 'D1ego' as A2 from dummy union
+              select 'Ana' as A1, 'Maga' as A2 from dummy;
+
+    like_stat = select * from :dum_var where A1 like 'M%';
+    like_regex_stat = select * from :dum_var where A1 LIKE_REGEXPR '[aA].*[aA]' flag 's';
+
+  ENDMETHOD.
+
+
+  METHOD coalesce_function
+    BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
+
+    dum_var = select coalesce( null, 1, 2 ) as A1 from dummy;
+
+  ENDMETHOD.
+
+
   METHOD dummy_table
     BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
@@ -118,6 +123,7 @@ CLASS zmrg_cla_amdp_chapter_02 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD if_oo_adt_classrun~main.
     me->case_expression( ).
     me->the_like_on_where( ).
@@ -125,5 +131,4 @@ CLASS zmrg_cla_amdp_chapter_02 IMPLEMENTATION.
     me->coalesce_function( ).
     me->dummy_table( ).
   ENDMETHOD.
-
 ENDCLASS.

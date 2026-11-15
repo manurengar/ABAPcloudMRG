@@ -1,4 +1,6 @@
 CLASS zbp_mrg_i_child DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zmrg_i_employee.
+protected section.
+private section.
 ENDCLASS.
 
 

@@ -1,0 +1,17 @@
+@EndUserText.label: 'Block data selection on this CDS via AC'
+@MappingRole: true
+
+// If we have a cds which is not intended to be selected from on ABAP
+// like an extension include, we can filter out all records on this CDS
+// by applying this kind of AC.
+
+// We should document this by annotation @AccessControl.authorizationCheck: #PRIVILEGED_ONLY
+// on CDS
+define role ZMRG_I_SALESORDER_DATA_BLOCKAG {
+    grant
+        select
+            on
+                ZMRG_I_SALESORDER_DATA_BLOCKAG
+                    where false;
+                        
+}

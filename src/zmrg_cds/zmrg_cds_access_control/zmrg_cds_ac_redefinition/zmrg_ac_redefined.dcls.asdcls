@@ -1,0 +1,9 @@
+@EndUserText.label: 'Redefining a CDS entity'
+@MappingRole: true
+
+// We can remove an access control by redefining it and granting another thing instead
+define role ZMRG_AC_REDEFINED {
+    grant select  on  zmrg_i_salesorder_replacement
+    redefinition where SalesGroup = 'AB';
+                        
+}

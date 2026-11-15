@@ -6,6 +6,7 @@ CLASS zcl_mrg_load_nationalities DEFINITION
   PUBLIC SECTION.
     INTERFACES if_oo_adt_classrun.
 
+protected section.
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_nationality,
              spras    TYPE spras,
@@ -21,7 +22,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_mrg_load_nationalities IMPLEMENTATION.
+CLASS ZCL_MRG_LOAD_NATIONALITIES IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.

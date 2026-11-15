@@ -12,7 +12,7 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_producttext_generator IMPLEMENTATION.
+CLASS ZMRG_CLA_PRODUCTTEXT_GENERATOR IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.

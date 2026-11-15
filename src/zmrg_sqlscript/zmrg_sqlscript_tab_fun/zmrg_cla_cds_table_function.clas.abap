@@ -16,7 +16,7 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_cds_table_function IMPLEMENTATION.
+CLASS ZMRG_CLA_CDS_TABLE_FUNCTION IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.
@@ -39,6 +39,7 @@ CLASS zmrg_cla_cds_table_function IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD get_countries_text
      BY DATABASE FUNCTION FOR HDB LANGUAGE SQLSCRIPT
      OPTIONS READ-ONLY
@@ -55,5 +56,4 @@ CLASS zmrg_cla_cds_table_function IMPLEMENTATION.
          AND spras = :language;
 
   ENDMETHOD.
-
 ENDCLASS.

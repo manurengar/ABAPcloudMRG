@@ -66,65 +66,75 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_amdp_chapter_05 IMPLEMENTATION.
+CLASS ZMRG_CLA_AMDP_CHAPTER_05 IMPLEMENTATION.
 
-  METHOD update_from_other_table
+
+  METHOD insert_data_database_tab
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
-
-    -- We can update our sorce table from other(s) tables using
-    -- This statement is only supported for DATABASE tables
-
-    declare dummy_tab1 table ( col1 int, col2 nvarchar( 2 ), col3 date );
-    declare dummy_tab2 table ( name nvarchar( 50 ), birth_date date );
-
-    insert into :dummy_tab1 values ( 1, 'XX', to_date( '19000101' ) );
-    insert into :dummy_tab1 values ( 2, 'XX', to_date( '19000101' ) );
-    insert into :dummy_tab1 values ( 3, 'XX', to_date( '19000101' ) );
-
-    insert into :dummy_tab2 values ( 'Jean Paultier',   to_date( '19890911' ) );
-    insert into :dummy_tab2 values ( 'Sarah Allatolah', to_date( '20150501' ) );
-    insert into :dummy_tab2 values ( 'Niggasus Pensus', to_date( '20020221' ) );
-
+  --USING zfrpa_tab_dio_m9 zfrpa_tab_dio_m8.
     /*
- This damn statement is not supported would be like this:
+    -- On this example, the code was tested on SAP ON PREMISE machine
+    -- modifying real db tables.
 
-     CREATE TABLE dummy_tab1(
-        col1 INT,
-        col2 NVARCHAR(2),
-        col3 DATE
-    );
-    CREATE TABLE dummy_tab2(
-        col1 INT,
-        name NVARCHAR(50),
-        birth_date DATE
-    );
-    INSERT INTO dummy_tab1 VALUES(1, 'XX', to_date('19000101'));
-    INSERT INTO dummy_tab1 VALUES(2, 'XX', to_date('19000101'));
-    INSERT INTO dummy_tab1 VALUES(3, 'XX', to_date('19000101'));
-    INSERT INTO dummy_tab2 VALUES(1, 'Jean Paultier', to_date('19890911'));
-    INSERT INTO dummy_tab2 VALUES(2, 'Sarah Allatolah', to_date('20150501'));
-    INSERT INTO dummy_tab2 VALUES(3, 'Niggasus Pensus', to_date('20020221'));
-    UPDATE dummy_tab1
-    SET
-        t1.col2 = LEFT( t2.name, 1 ) || LEFT( SUBSTR_AFTER( t2.name, ' ' ), 1 ),
-        t1.col3 = t2.birth_date
-    FROM
-        dummy_tab1 AS t1,
-        dummy_tab2 AS t2
-    WHERE (dummy_tab1.col1 IN (1, 2, 3))
-        AND dummy_tab1.col1 = t2.col1;
-    -- assuming col1 is the join key
+    -- M9 Table
+    insert into zfrpa_tab_dio_m9 ( client, employee_number, employee_name, birth_date )
+        values (  SESSION_CONTEXT('CLIENT'), 00002984, 'Nangus Dongus', '19871121' );
+   insert into zfrpa_tab_dio_m9 ( client, employee_number, employee_name, birth_date )
+        values (  SESSION_CONTEXT('CLIENT'), 00002985, 'Mangus Dongus', '19940112' );
+   insert into zfrpa_tab_dio_m9 ( client, employee_number, employee_name, birth_date )
+        values (  SESSION_CONTEXT('CLIENT'), 00002986, 'Tangus Dongus', '20061225' );
+   insert into zfrpa_tab_dio_m9 ( client, employee_number, employee_name, birth_date )
+        values (  SESSION_CONTEXT('CLIENT'), 00002987, 'Cangus Dongus', '20210317' );
 
 
-    SELECT *
-    FROM dummy_tab1;
-    drop table dummy_tab1;
-    drop table dummy_tab2;
+    dummy_select1
+    =
+    select * from  zfrpa_tab_dio_m9;
 
+    -- M8 table
+   insert into zfrpa_tab_dio_m8 ( client, serial_number, custom_date )
+        values (  SESSION_CONTEXT('CLIENT'), 00002984, '19000101' );
+   insert into zfrpa_tab_dio_m8 ( client, serial_number, custom_date )
+        values (  SESSION_CONTEXT('CLIENT'), 00002985, '19000101' );
+   insert into zfrpa_tab_dio_m8 ( client, serial_number, custom_date )
+        values (  SESSION_CONTEXT('CLIENT'), 00002986,  '19000101' );
+   insert into zfrpa_tab_dio_m8 ( client, serial_number, custom_date )
+        values (  SESSION_CONTEXT('CLIENT'), 00002987, '19000101' );
+
+    dummy_select2
+    =
+    select * from  zfrpa_tab_dio_m8;
+    */
+  ENDMETHOD.
+
+
+  METHOD delete_data_database_tab
+  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
+  --USING zfrpa_tab_dio_m9.
+
+/*
+    -- Here if you omit the where clause the all the database will be erased.
+    -- However you can use ROLLBACK in this case to undo the deletion.
+
+    delete from zfrpa_tab_dio_m9
+    where client = SESSION_CONTEXT('CLIENT')
+    and employee_number like '9%';
+
+    -- commit; NOT PERMITTED
+
+    delete from zfrpa_tab_dio_m9
+    where client = SESSION_CONTEXT('CLIENT')
+    and employee_number = '00002986';
+
+    -- rollback; NOT PERMITTED
+
+    dummy_select1
+    =
+    select * from  zfrpa_tab_dio_m9;
 
     */
-
   endmethod.
+
 
   METHOD update_column_subset
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
@@ -207,7 +217,6 @@ CLASS zmrg_cla_amdp_chapter_05 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
   METHOD insert_data_imperative
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
@@ -236,33 +245,6 @@ CLASS zmrg_cla_amdp_chapter_05 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD insert_data_declarative
-  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
-
-    -- This method should not contain READ-ONLY but here is not permitted
-    -- We will work with local tables instead
-
-    -- DECLARATIVE DML statement, CAN BE USED ON DATABASE TABLES
-
-    -- INSERT INTO <TABLE> <column sequence> VALUES ( <column values> )
-    declare dummy_tab table ( col1 nvarchar( 3 ), col2 int, col3 date );
-    declare dummy_tab2 table ( col1 nvarchar( 3 ), col2 int, col3 date );
-
-    insert into :dummy_tab values ( 'abc', 2, to_date( '19000101' ) );                       -- Without column specification
-    insert into :dummy_tab ( col2, col3, col1 ) values ( 10, to_date( '20260101' ), 'xyz' ); -- Wiwth column specification ( recommended )
-
-    -- Inserting multiple records simultaneously
-
-    -- INSERT INTO <TABLE> <COLUMNORDER> <QUERY>;
-
-    insert into :dummy_tab ( col3, col2, col1 )
-        select to_date( '01/01/2025', 'DD/MM/YYYY' ) as col3,
-               15                                    as col2,
-               'MNX'                                 as col1
-               from dummy;
-
-  ENDMETHOD.
-
   METHOD if_oo_adt_classrun~main.
 
     " INSERT
@@ -286,56 +268,6 @@ CLASS zmrg_cla_amdp_chapter_05 IMPLEMENTATION.
 *    me->merge_data_database_tab( ).
 *    me->delete_data_database_tab( ).
   ENDMETHOD.
-
-
-   METHOD truncate_data_database_tab
-  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
-  --USING zfrpa_tab_dio_m9 zfrpa_tab_dio_m8.
-/*
-    -- CAREFULL with this, erases all database, no ROLLBACK allowed
-    -- NOT ALLOWED ON AMDP
-    -- truncate table zfrpa_tab_dio_m9;
-    -- truncate table zfrpa_tab_dio_m8;
-
-    -- Alternative
-    delete from zfrpa_tab_dio_m9 where client = SESSION_CONTEXT('CLIENT');
-    delete from zfrpa_tab_dio_m8 where client = SESSION_CONTEXT('CLIENT');
-
-    dummy_select2
-    =
-    select * from  zfrpa_tab_dio_m8;
-    dummy_select1
-    =
-    select * from  zfrpa_tab_dio_m9;
-    */
-  endmethod.
-
-  METHOD delete_data_database_tab
-  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
-  --USING zfrpa_tab_dio_m9.
-
-/*
-    -- Here if you omit the where clause the all the database will be erased.
-    -- However you can use ROLLBACK in this case to undo the deletion.
-
-    delete from zfrpa_tab_dio_m9
-    where client = SESSION_CONTEXT('CLIENT')
-    and employee_number like '9%';
-
-    -- commit; NOT PERMITTED
-
-    delete from zfrpa_tab_dio_m9
-    where client = SESSION_CONTEXT('CLIENT')
-    and employee_number = '00002986';
-
-    -- rollback; NOT PERMITTED
-
-    dummy_select1
-    =
-    select * from  zfrpa_tab_dio_m9;
-
-    */
-  endmethod.
 
 
   METHOD upsert_data_database_tab
@@ -440,44 +372,112 @@ CLASS zmrg_cla_amdp_chapter_05 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD insert_data_database_tab
+   METHOD truncate_data_database_tab
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
   --USING zfrpa_tab_dio_m9 zfrpa_tab_dio_m8.
-    /*
-    -- On this example, the code was tested on SAP ON PREMISE machine
-    -- modifying real db tables.
+/*
+    -- CAREFULL with this, erases all database, no ROLLBACK allowed
+    -- NOT ALLOWED ON AMDP
+    -- truncate table zfrpa_tab_dio_m9;
+    -- truncate table zfrpa_tab_dio_m8;
 
-    -- M9 Table
-    insert into zfrpa_tab_dio_m9 ( client, employee_number, employee_name, birth_date )
-        values (  SESSION_CONTEXT('CLIENT'), 00002984, 'Nangus Dongus', '19871121' );
-   insert into zfrpa_tab_dio_m9 ( client, employee_number, employee_name, birth_date )
-        values (  SESSION_CONTEXT('CLIENT'), 00002985, 'Mangus Dongus', '19940112' );
-   insert into zfrpa_tab_dio_m9 ( client, employee_number, employee_name, birth_date )
-        values (  SESSION_CONTEXT('CLIENT'), 00002986, 'Tangus Dongus', '20061225' );
-   insert into zfrpa_tab_dio_m9 ( client, employee_number, employee_name, birth_date )
-        values (  SESSION_CONTEXT('CLIENT'), 00002987, 'Cangus Dongus', '20210317' );
-
-
-    dummy_select1
-    =
-    select * from  zfrpa_tab_dio_m9;
-
-    -- M8 table
-   insert into zfrpa_tab_dio_m8 ( client, serial_number, custom_date )
-        values (  SESSION_CONTEXT('CLIENT'), 00002984, '19000101' );
-   insert into zfrpa_tab_dio_m8 ( client, serial_number, custom_date )
-        values (  SESSION_CONTEXT('CLIENT'), 00002985, '19000101' );
-   insert into zfrpa_tab_dio_m8 ( client, serial_number, custom_date )
-        values (  SESSION_CONTEXT('CLIENT'), 00002986,  '19000101' );
-   insert into zfrpa_tab_dio_m8 ( client, serial_number, custom_date )
-        values (  SESSION_CONTEXT('CLIENT'), 00002987, '19000101' );
+    -- Alternative
+    delete from zfrpa_tab_dio_m9 where client = SESSION_CONTEXT('CLIENT');
+    delete from zfrpa_tab_dio_m8 where client = SESSION_CONTEXT('CLIENT');
 
     dummy_select2
     =
     select * from  zfrpa_tab_dio_m8;
+    dummy_select1
+    =
+    select * from  zfrpa_tab_dio_m9;
     */
+  endmethod.
+
+
+  METHOD insert_data_declarative
+  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- This method should not contain READ-ONLY but here is not permitted
+    -- We will work with local tables instead
+
+    -- DECLARATIVE DML statement, CAN BE USED ON DATABASE TABLES
+
+    -- INSERT INTO <TABLE> <column sequence> VALUES ( <column values> )
+    declare dummy_tab table ( col1 nvarchar( 3 ), col2 int, col3 date );
+    declare dummy_tab2 table ( col1 nvarchar( 3 ), col2 int, col3 date );
+
+    insert into :dummy_tab values ( 'abc', 2, to_date( '19000101' ) );                       -- Without column specification
+    insert into :dummy_tab ( col2, col3, col1 ) values ( 10, to_date( '20260101' ), 'xyz' ); -- Wiwth column specification ( recommended )
+
+    -- Inserting multiple records simultaneously
+
+    -- INSERT INTO <TABLE> <COLUMNORDER> <QUERY>;
+
+    insert into :dummy_tab ( col3, col2, col1 )
+        select to_date( '01/01/2025', 'DD/MM/YYYY' ) as col3,
+               15                                    as col2,
+               'MNX'                                 as col1
+               from dummy;
+
   ENDMETHOD.
 
 
+  METHOD update_from_other_table
+  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
+    -- We can update our sorce table from other(s) tables using
+    -- This statement is only supported for DATABASE tables
+
+    declare dummy_tab1 table ( col1 int, col2 nvarchar( 2 ), col3 date );
+    declare dummy_tab2 table ( name nvarchar( 50 ), birth_date date );
+
+    insert into :dummy_tab1 values ( 1, 'XX', to_date( '19000101' ) );
+    insert into :dummy_tab1 values ( 2, 'XX', to_date( '19000101' ) );
+    insert into :dummy_tab1 values ( 3, 'XX', to_date( '19000101' ) );
+
+    insert into :dummy_tab2 values ( 'Jean Paultier',   to_date( '19890911' ) );
+    insert into :dummy_tab2 values ( 'Sarah Allatolah', to_date( '20150501' ) );
+    insert into :dummy_tab2 values ( 'Niggasus Pensus', to_date( '20020221' ) );
+
+    /*
+ This damn statement is not supported would be like this:
+
+     CREATE TABLE dummy_tab1(
+        col1 INT,
+        col2 NVARCHAR(2),
+        col3 DATE
+    );
+    CREATE TABLE dummy_tab2(
+        col1 INT,
+        name NVARCHAR(50),
+        birth_date DATE
+    );
+    INSERT INTO dummy_tab1 VALUES(1, 'XX', to_date('19000101'));
+    INSERT INTO dummy_tab1 VALUES(2, 'XX', to_date('19000101'));
+    INSERT INTO dummy_tab1 VALUES(3, 'XX', to_date('19000101'));
+    INSERT INTO dummy_tab2 VALUES(1, 'Jean Paultier', to_date('19890911'));
+    INSERT INTO dummy_tab2 VALUES(2, 'Sarah Allatolah', to_date('20150501'));
+    INSERT INTO dummy_tab2 VALUES(3, 'Niggasus Pensus', to_date('20020221'));
+    UPDATE dummy_tab1
+    SET
+        t1.col2 = LEFT( t2.name, 1 ) || LEFT( SUBSTR_AFTER( t2.name, ' ' ), 1 ),
+        t1.col3 = t2.birth_date
+    FROM
+        dummy_tab1 AS t1,
+        dummy_tab2 AS t2
+    WHERE (dummy_tab1.col1 IN (1, 2, 3))
+        AND dummy_tab1.col1 = t2.col1;
+    -- assuming col1 is the join key
+
+
+    SELECT *
+    FROM dummy_tab1;
+    drop table dummy_tab1;
+    drop table dummy_tab2;
+
+
+    */
+
+  endmethod.
 ENDCLASS.

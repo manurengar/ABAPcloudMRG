@@ -1,0 +1,11 @@
+@EndUserText.label: 'Redefining a CDS entity'
+@MappingRole: true
+
+// If we continue to define access control over an entity they are by default joined with OR
+// We can explicitly state that this way
+
+define role ZMRG_AC_COMB_MODE_OR {
+    grant select  on  zmrg_i_salesorder_replacement
+    combination mode or where SalesGroup = 'AC';
+                        
+}

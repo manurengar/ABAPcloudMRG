@@ -15,12 +15,13 @@ ENDCLASS.
 
 
 
-CLASS zcl_mrg_json_executable_01 IMPLEMENTATION.
+CLASS ZCL_MRG_JSON_EXECUTABLE_01 IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.
     me->deserialize_object( ).
   ENDMETHOD.
+
 
   METHOD deserialize_object.
     SELECT * FROM zmrg_obj_state
@@ -55,6 +56,7 @@ CLASS zcl_mrg_json_executable_01 IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
+
 
   METHOD serialize_object.
     DATA(lo_parent) = NEW lcl_parent( ).
@@ -92,5 +94,4 @@ CLASS zcl_mrg_json_executable_01 IMPLEMENTATION.
       COMMIT WORK.
     ENDIF.
   ENDMETHOD.
-
 ENDCLASS.

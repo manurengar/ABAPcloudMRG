@@ -54,7 +54,7 @@ ENDCLASS.
 
 
 
-CLASS zcx_mrg_rap_02_messages IMPLEMENTATION.
+CLASS ZCX_MRG_RAP_02_MESSAGES IMPLEMENTATION.
 
 
   METHOD constructor ##ADT_SUPPRESS_GENERATION.
@@ -72,5 +72,4 @@ CLASS zcx_mrg_rap_02_messages IMPLEMENTATION.
 
     me->if_abap_behv_message~m_severity = severity.
   ENDMETHOD.
-
 ENDCLASS.

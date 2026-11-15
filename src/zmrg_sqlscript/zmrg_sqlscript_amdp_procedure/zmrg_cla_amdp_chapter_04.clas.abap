@@ -86,115 +86,8 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
+CLASS ZMRG_CLA_AMDP_CHAPTER_04 IMPLEMENTATION.
 
-  METHOD binary_data BY DATABASE PROCEDURE
-  FOR HDB LANGUAGE SQLSCRIPT.
-
-    -- Binary data has the types: VARBINARY( N ) and for 2GB large datasets
-    -- we have the BLOB data type.
-
-    -- When we input binary data from string we must do it like X'' ( with the X )
-    -- This is in hexadecimal value. So the binary representation into a string will always be
-    -- an hexadecimal.
-
-    -- Some functions are:
-
-    -- BINTOSTR( ): Converts binary data to character string.
-    -- BINTOHEX( ): Converts binary into hexadecimal representation
-    -- BINTONHEX( ): Like BINTOHEX but output NVARCHAR, unicode.
-    -- HEXTOBIN( ): Converts hexadecimal to binary
-
-    declare character_table table ( ascii_int int, ascii_char nvarchar( 1 ), ascii_hex varbinary( 1 ) );
-    declare i int;
-
-    for i in 33..127 do
-        :character_table.insert( ( :i, char( :i ), bintohex( char( :i ) ) ), :i );
-    end for;
-
-    selection_character_tab
-    =
-    select ascii_int as "Int", ascii_char as "char", ascii_hex as "Hex"
-    from :character_table;
-
-
-    /*
-    -- BITSET( <target_num>, <start_bit> [, <num_to_set> ] )
-    -- BITUNSET( <target_num>, <start_bit> [, <num_to_unset> ] )
-    -- BITCOUNT: Count  how many bits are on a  binary number
-
-    Parameters
-
-        1. `<target_num>`: The input value (VARBINARY or positive integer). Note: If you pass an integer, HANA converts
-           it to a `VARBINARY` representation.
-        2. `<start_bit>`: The 1-based position of the first bit to modify, counted from left to right
-           (most significant bit = position 1). It starts at 1.
-        3. `<num_to_set>` / `<num_to_unset>` (optional): How many consecutive bits to set to 1 (or 0), starting from <start_bit>.
-           Defaults to `1` if omitted.
-    */
-
-        dummy_bits =
-          SELECT
-            -- Starting with 1 byte of all zeros: X'00' (0000 0000)
-            -- Set bit 1 (leftmost) to 1 -> 1000 0000 = X'80' (128)
-            BITSET( hextobin( '00' ), 1, 1 )    AS "set_bit_1",
-
-            -- Set bit 8 (rightmost) to 1 -> 0000 0001 = X'01' (1)
-            BITSET( hextobin( '00' ), 8, 1 )    AS "set_bit_8",
-
-            -- Set 4 bits starting at position 5 -> 0000 1111 = X'0F' (15)
-            BITSET( hextobin( '00' ), 5, 4 )    AS "set_bits_5_to_8",
-
-            -- Starting with 1 byte of all ones: X'FF' (1111 1111)
-            -- Unset bit 1 (leftmost) to 0 -> 0111 1111 = X'7F' (127)
-            BITUNSET( hextobin( 'FF' ), 1, 1 )  AS "unset_bit_1",
-
-            -- Unset 4 bits starting at position 1 -> 0000 1111 = X'0F' (15)
-            BITUNSET( hextobin( 'FF' ), 1, 4 )  AS "unset_bits_1_to_4",
-
-            -- Bonus: BITCOUNT counts how many bits are set to 1
-            BITCOUNT( hextobin( '0F' ) )        AS "ones_in_0F" -- Returns 4
-          FROM dummy;
-
-    /*
-    -- Bitwise Logical Operations:
-    -- BITAND( <val1>, <val2> ): Bitwise AND. Returns 1 at each bit position where BOTH inputs have 1.
-    --                           (Accepts INTEGER/BIGINT or VARBINARY; returns INTEGER/BIGINT for numbers, VARBINARY for binary).
-    -- BITOR( <val1>, <val2> ) : Bitwise OR. Returns 1 at each bit position where AT LEAST ONE input has 1.
-    -- BITXOR( <val1>, <val2> ): Bitwise EXCLUSIVE OR (XOR). Returns 1 at each bit position where the inputs have DIFFERENT bits (one is 1, the other is 0).
-    -- BITNOT( <val> )         : Bitwise NOT (One s complement). Inverts all bits (0 -> 1, 1 -> 0).
-    --                           Note: For signed integers, BITNOT( x ) equals -(x + 1) due to twos complement representation.
-    */
-
- -- Examples using Binary / Hexadecimal values:
-    -- Let A = X'F0' (1111 0000 in binary = 240)
-    -- Let B = X'CC' (1100 1100 in binary = 204)
-    dummy_bitwise_hex =
-      SELECT
-        -- 1111 0000 AND 1100 1100 -> 1100 0000 = X'C0' (192)
-        BITAND( hextobin( 'F0' ), hextobin( 'CC' ) ) AS "bitand_hex",
-
-        -- 1111 0000 OR  1100 1100 -> 1111 1100 = X'FC' (252)
-        BITOR(  hextobin( 'F0' ), hextobin( 'CC' ) ) AS "bitor_hex",
-
-        -- 1111 0000 XOR 1100 1100 -> 0011 1100 = X'3C' (60)
-        BITXOR( hextobin( 'F0' ), hextobin( 'CC' ) ) AS "bitxor_hex",
-
-        -- NOT 1111 0000           -> 0000 1111 = X'0F' (15)
-        BITNOT( hextobin( 'F0' ) )                   AS "bitnot_hex"
-      FROM dummy;
-
-    -- Examples using Integers:
-    -- Let 12 = 1100 in binary
-    -- Let 10 = 1010 in binary
-    dummy_bitwise_int =
-      SELECT
-        BITAND( 12, 10 ) AS "bitand_int", -- 1100 & 1010 = 1000 (8)
-        BITOR(  12, 10 ) AS "bitor_int",  -- 1100 | 1010 = 1110 (14)
-        BITXOR( 12, 10 ) AS "bitxor_int", -- 1100 ^ 1010 = 0110 (6)
-        BITNOT( 12 )     AS "bitnot_int"  -- ~12         = -13
-      FROM dummy;
-  ENDMETHOD.
 
   METHOD unit_and_quantity_conversion BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
@@ -304,6 +197,128 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD binary_data BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- Binary data has the types: VARBINARY( N ) and for 2GB large datasets
+    -- we have the BLOB data type.
+
+    -- When we input binary data from string we must do it like X'' ( with the X )
+    -- This is in hexadecimal value. So the binary representation into a string will always be
+    -- an hexadecimal.
+
+    -- Some functions are:
+
+    -- BINTOSTR( ): Converts binary data to character string.
+    -- BINTOHEX( ): Converts binary into hexadecimal representation
+    -- BINTONHEX( ): Like BINTOHEX but output NVARCHAR, unicode.
+    -- HEXTOBIN( ): Converts hexadecimal to binary
+
+    declare character_table table ( ascii_int int, ascii_char nvarchar( 1 ), ascii_hex varbinary( 1 ) );
+    declare i int;
+
+    for i in 33..127 do
+        :character_table.insert( ( :i, char( :i ), bintohex( char( :i ) ) ), :i );
+    end for;
+
+    selection_character_tab
+    =
+    select ascii_int as "Int", ascii_char as "char", ascii_hex as "Hex"
+    from :character_table;
+
+
+    /*
+    -- BITSET( <target_num>, <start_bit> [, <num_to_set> ] )
+    -- BITUNSET( <target_num>, <start_bit> [, <num_to_unset> ] )
+    -- BITCOUNT: Count  how many bits are on a  binary number
+
+    Parameters
+
+        1. `<target_num>`: The input value (VARBINARY or positive integer). Note: If you pass an integer, HANA converts
+           it to a `VARBINARY` representation.
+        2. `<start_bit>`: The 1-based position of the first bit to modify, counted from left to right
+           (most significant bit = position 1). It starts at 1.
+        3. `<num_to_set>` / `<num_to_unset>` (optional): How many consecutive bits to set to 1 (or 0), starting from <start_bit>.
+           Defaults to `1` if omitted.
+    */
+
+        dummy_bits =
+          SELECT
+            -- Starting with 1 byte of all zeros: X'00' (0000 0000)
+            -- Set bit 1 (leftmost) to 1 -> 1000 0000 = X'80' (128)
+            BITSET( hextobin( '00' ), 1, 1 )    AS "set_bit_1",
+
+            -- Set bit 8 (rightmost) to 1 -> 0000 0001 = X'01' (1)
+            BITSET( hextobin( '00' ), 8, 1 )    AS "set_bit_8",
+
+            -- Set 4 bits starting at position 5 -> 0000 1111 = X'0F' (15)
+            BITSET( hextobin( '00' ), 5, 4 )    AS "set_bits_5_to_8",
+
+            -- Starting with 1 byte of all ones: X'FF' (1111 1111)
+            -- Unset bit 1 (leftmost) to 0 -> 0111 1111 = X'7F' (127)
+            BITUNSET( hextobin( 'FF' ), 1, 1 )  AS "unset_bit_1",
+
+            -- Unset 4 bits starting at position 1 -> 0000 1111 = X'0F' (15)
+            BITUNSET( hextobin( 'FF' ), 1, 4 )  AS "unset_bits_1_to_4",
+
+            -- Bonus: BITCOUNT counts how many bits are set to 1
+            BITCOUNT( hextobin( '0F' ) )        AS "ones_in_0F" -- Returns 4
+          FROM dummy;
+
+    /*
+    -- Bitwise Logical Operations:
+    -- BITAND( <val1>, <val2> ): Bitwise AND. Returns 1 at each bit position where BOTH inputs have 1.
+    --                           (Accepts INTEGER/BIGINT or VARBINARY; returns INTEGER/BIGINT for numbers, VARBINARY for binary).
+    -- BITOR( <val1>, <val2> ) : Bitwise OR. Returns 1 at each bit position where AT LEAST ONE input has 1.
+    -- BITXOR( <val1>, <val2> ): Bitwise EXCLUSIVE OR (XOR). Returns 1 at each bit position where the inputs have DIFFERENT bits (one is 1, the other is 0).
+    -- BITNOT( <val> )         : Bitwise NOT (One s complement). Inverts all bits (0 -> 1, 1 -> 0).
+    --                           Note: For signed integers, BITNOT( x ) equals -(x + 1) due to twos complement representation.
+    */
+
+ -- Examples using Binary / Hexadecimal values:
+    -- Let A = X'F0' (1111 0000 in binary = 240)
+    -- Let B = X'CC' (1100 1100 in binary = 204)
+    dummy_bitwise_hex =
+      SELECT
+        -- 1111 0000 AND 1100 1100 -> 1100 0000 = X'C0' (192)
+        BITAND( hextobin( 'F0' ), hextobin( 'CC' ) ) AS "bitand_hex",
+
+        -- 1111 0000 OR  1100 1100 -> 1111 1100 = X'FC' (252)
+        BITOR(  hextobin( 'F0' ), hextobin( 'CC' ) ) AS "bitor_hex",
+
+        -- 1111 0000 XOR 1100 1100 -> 0011 1100 = X'3C' (60)
+        BITXOR( hextobin( 'F0' ), hextobin( 'CC' ) ) AS "bitxor_hex",
+
+        -- NOT 1111 0000           -> 0000 1111 = X'0F' (15)
+        BITNOT( hextobin( 'F0' ) )                   AS "bitnot_hex"
+      FROM dummy;
+
+    -- Examples using Integers:
+    -- Let 12 = 1100 in binary
+    -- Let 10 = 1010 in binary
+    dummy_bitwise_int =
+      SELECT
+        BITAND( 12, 10 ) AS "bitand_int", -- 1100 & 1010 = 1000 (8)
+        BITOR(  12, 10 ) AS "bitor_int",  -- 1100 | 1010 = 1110 (14)
+        BITXOR( 12, 10 ) AS "bitxor_int", -- 1100 ^ 1010 = 0110 (6)
+        BITNOT( 12 )     AS "bitnot_int"  -- ~12         = -13
+      FROM dummy;
+  ENDMETHOD.
+
+
+  METHOD random_numbers BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- Functions RAND y RAND_SECURE both use DOUBLE types between 0 and 1.
+
+    dummy_select
+    =
+    select RAND( ) as random,
+           RAND_SECURE( ) as randomSecure
+    from dummy;
+
+  ENDMETHOD.
+
 
   METHOD number_signs BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
@@ -323,18 +338,6 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
 
   endmethod.
 
-  METHOD random_numbers BY DATABASE PROCEDURE
-  FOR HDB LANGUAGE SQLSCRIPT.
-
-    -- Functions RAND y RAND_SECURE both use DOUBLE types between 0 and 1.
-
-    dummy_select
-    =
-    select RAND( ) as random,
-           RAND_SECURE( ) as randomSecure
-    from dummy;
-
-  ENDMETHOD.
 
   METHOD trigonometry_functions BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
@@ -364,6 +367,7 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     from dummy;
 
   endmethod.
+
 
   METHOD rounding_operations BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
@@ -455,6 +459,7 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     from dummy;
   ENDMETHOD.
 
+
   METHOD numerical_data_types BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
     declare dummy_tab table ( a TINYINT,  -- Integer from 0 to 255
@@ -539,6 +544,7 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD time_zones_conversion BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
 
@@ -556,6 +562,7 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     utctolocal( CURRENT_UTCTIMESTAMP, 'UTC+1', 'SAP' ) as "conv3"
     from dummy;
   ENDMETHOD.
+
 
   METHOD week_from_date BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
@@ -581,6 +588,7 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
            from dummy;
 
   ENDMETHOD.
+
 
   METHOD extrac_components_from_date BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
@@ -631,6 +639,7 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
       from dummy;
   ENDMETHOD.
 
+
   METHOD add_functions BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
 
@@ -668,6 +677,25 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     from dummy;
   ENDMETHOD.
 
+
+  METHOD timestamp_formats BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+    -- There are 2 types for timestamps
+
+    -- SECONDDATE: YYYY-MM-DD HH24:MI:SS
+    -- TIMESTAMP:  YYYY-MM-DD HH24:MI:SS.F7
+
+    dummy_select
+    =
+    select to_seconddate( '2026-10-29 14:30:59', 'YYYY-MM-DD HH24:MI:SS' ) as second_date_val,
+           to_timestamp( '2026-10-29 14:30:59.1234567', 'YYYY-MM-DD HH24:MI:SS.FF7' ) as timestamp_val,
+           to_seconddate( current_timestamp ) as curr_seconddate,
+           current_timestamp as curr_timestamp
+    from dummy;
+
+  ENDMETHOD.
+
+
   METHOD now_and_today_functions BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
 
@@ -687,64 +715,17 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD timestamp_formats BY DATABASE PROCEDURE
-  FOR HDB LANGUAGE SQLSCRIPT.
-    -- There are 2 types for timestamps
 
-    -- SECONDDATE: YYYY-MM-DD HH24:MI:SS
-    -- TIMESTAMP:  YYYY-MM-DD HH24:MI:SS.F7
+  METHOD string_conversion
+  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
-    dummy_select
-    =
-    select to_seconddate( '2026-10-29 14:30:59', 'YYYY-MM-DD HH24:MI:SS' ) as second_date_val,
-           to_timestamp( '2026-10-29 14:30:59.1234567', 'YYYY-MM-DD HH24:MI:SS.FF7' ) as timestamp_val,
-           to_seconddate( current_timestamp ) as curr_seconddate,
-           current_timestamp as curr_timestamp
-    from dummy;
-
-  ENDMETHOD.
-
-  METHOD date_time_conversion BY DATABASE PROCEDURE
-  FOR HDB LANGUAGE SQLSCRIPT.
-
-    -- We can convert from ABAP DATS into DATE using to_date
-    -- and viceversa using to_dats
+    -- The data types we are using are NVARCHAR and NCLOB
+    -- For NCLOB we can use only LIKE, Regexpr or contains on the where clause
 
     dummy_select
     =
-    select to_date( '20050101' ) as conv_to_date,
-    to_dats( to_date( '2005/01/01' ) ) as conv_to_dats
-    from dummy;
+    select to_nvarchar( to_date( '1999-01/01' ) ) as conv_char from dummy;
 
-    -- For converting between string and time information on SQLSCRIPT
-    -- we use to_time( <value>, <format> )
-
-    dummy_select1
-    =
-    select to_time( '9:9:9AM' ) as conv_to_time
-    from dummy;
-
-  ENDMETHOD.
-
-  METHOD possible_time_formats BY DATABASE PROCEDURE
-  FOR HDB LANGUAGE SQLSCRIPT.
-
-    declare dummy_tab table ( t time );
-
-    -- The extended format HH24/12:MI:SS[AM|PM]
-    -- HH from 0 to 23
-    -- MI from 0 to 59
-    -- SS from 0 to 59
-
-    insert into :dummy_tab values ( '23:59:59' );
-    insert into :dummy_tab values ( to_time( '09:01:01 PM', 'HH12:MI:SS PM' ) );
-    insert into :dummy_tab values ( to_time( '05:01', 'HH24:MI' ) );
-    insert into :dummy_tab values ( '09:09:09 AM' );
-
-    dummy_select
-    =
-    select *
-    from :dummy_tab;
   ENDMETHOD.
 
 
@@ -821,52 +802,6 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD summary_sqlscript_string_lib BY DATABASE PROCEDURE
-  FOR HDB LANGUAGE SQLSCRIPT.
-    /*
-    -- The function table_summary returns a CSV string and for each row, it is break using UNIX line feed
-    using "PUBLIC"."SQLSCRIPT_STRING" as lib;
-    declare lv_string nvarchar( 5000 );
-
-    dummy_select
-    =
-    select * from pa0000 limit 30;
-
-    lv_string = lib:table_summary( :dummy_select, 10 );
-*/
-
-    select * from dummy;
-  endmethod.
-
-  METHOD format_sqlscript_string_lib BY DATABASE PROCEDURE
-  FOR HDB LANGUAGE SQLSCRIPT.
-    /*
-    -- Formatting functions follows python string formatting rules
-    -- **This function cannot be used on the field declaration of a select clause
-    using "PUBLIC"."SQLSCRIPT_STRING" as lib;
-
-    declare formatted_string nvarchar( 50 );
-    declare formatted_table table ( result nvarchar( 5000 ) );
-    declare arr nvarchar( 200 ) array;
-
-
-    tt = select 'Sutherland' as lname, 'Jhon'   as fname, to_double( 29.8 ) as age from dummy
-     union all
-     select 'Stark'      as lname, 'Edward' as fname, to_double( 46.1 ) as age from dummy;
-
-    formatted_string = lib:format( '{1}, {0} is {2:.2f} years old', 'Miller', 'Peter', 21.3 );
-
-    -- However this function FORMAT_TO_TABLE can be used instead to save results on a table
-    -- This table contains just a column named 'result'
-    formatted_table = lib:format_to_table( 'Complete name: {fname}, {lname}. AGE: {age:.2f}', :tt );
-
-    -- Also there is a variant for creating arrays
-    arr = lib:format_to_array( 'Complete name: {fname}, {lname}. AGE: {age}', :tt );
-*/
-
-    select * from dummy;
-  endmethod.
-
   METHOD split_sqlscript_string_lib BY DATABASE PROCEDURE
   FOR HDB LANGUAGE SQLSCRIPT.
     /*
@@ -928,20 +863,52 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     select * from dummy;
   ENDMETHOD.
 
-  METHOD string_conversion
-  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
-    -- The data types we are using are NVARCHAR and NCLOB
-    -- For NCLOB we can use only LIKE, Regexpr or contains on the where clause
+  METHOD summary_sqlscript_string_lib BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+    /*
+    -- The function table_summary returns a CSV string and for each row, it is break using UNIX line feed
+    using "PUBLIC"."SQLSCRIPT_STRING" as lib;
+    declare lv_string nvarchar( 5000 );
 
     dummy_select
     =
-    select to_nvarchar( to_date( '1999-01/01' ) ) as conv_char from dummy;
+    select * from pa0000 limit 30;
+
+    lv_string = lib:table_summary( :dummy_select, 10 );
+*/
+
+    select * from dummy;
+  endmethod.
+
+
+  METHOD date_time_conversion BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    -- We can convert from ABAP DATS into DATE using to_date
+    -- and viceversa using to_dats
+
+    dummy_select
+    =
+    select to_date( '20050101' ) as conv_to_date,
+    to_dats( to_date( '2005/01/01' ) ) as conv_to_dats
+    from dummy;
+
+    -- For converting between string and time information on SQLSCRIPT
+    -- we use to_time( <value>, <format> )
+
+    dummy_select1
+    =
+    select to_time( '9:9:9AM' ) as conv_to_time
+    from dummy;
 
   ENDMETHOD.
 
-  METHOD string_functions_basic
+
+  METHOD string_functions_regexp
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
+    -- Now lets use substr_regexpr whose signature is
+    -- substr_regexpr( <patter> [FLAG <flag>] in <string> [from <start> ] [occurrence <nth>] [group <group>] )
 
     declare my_dummy_table table ( sampleText nvarchar( 50 ) );
     declare emails_table table ( emails nvarchar( 50 ) );
@@ -952,24 +919,43 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     insert into :emails_table values ( 'manuel.rentero@hotmail.com' );
     insert into :emails_table values ( '123SArentero@alight.com' );
 
-    -- Here some basic string functions
-    -- for processing text
-    dummy_select
+    -- For flags check chapter 4.1
+    dummy_select_2
     =
     select
-    'A ' || ', B' || 'C .' as Concat,                                -- CONCATENATION
-    LENGTH( 'asoidjaoisjdas' ) as strLength,                         -- String Length
-    ABAP_LOWER( 'PC' ) as lowerCase,                                 -- LOWER CASE
-    ABAP_UPPER( 'pc' ) as upperCase,                                 -- UPPER CASE
-    INITCAP( 'manuel' ) || INITCAP( 'ramirez' ) as captialLetters,   -- 1st Letter CAPITAL
-    LEFT( sampleText, 8 ) as leftResult,                             -- LEFT side STR from Nth
-    RIGHT( sampleText, 8 ) as rightResult,                           -- RIGHT side STR from Nth
-    SUBSTR_BEFORE( sampleText, 'E' )  as subStringBefore,            -- SubSTR before char
-    SUBSTR_BEFORE( sampleText, '' )  as subStringBeforeEmpty,        -- All SubSTR
-    SUBSTR_AFTER( sampleText, 'E' )  as subStringAfter               -- SubSTR after char
+    SUBSTR_REGEXPR( '\b([A-Z0-9.-_+&%]+)@([A-Z0-9.-_+&%]+)\b' flag 'i' in emails group 1 ) as senderName,
+    SUBSTR_REGEXPR( '\b([A-Z0-9.-_+&%]+)@([A-Z0-9.-_+&%]+)\b' flag 'i' in emails group 2 ) as hostName
+    from :emails_table;
+
+    dummy_select_3
+    =
+    select
+    SUBSTR_REGEXPR( '\b\s\w+\s\b' in sampleText occurrence 1 ) as REGX1
     from :my_dummy_table;
 
+    -- Replacement through regexp
+    dummy_select_4
+    =
+    select
+    REPLACE_REGEXPR( '(\d{4})-(\d{2})-((?2))' in '2026-04-03'  with '\3/\2/\1' ) as dateFormatted,
+    REPLACE_REGEXPR( '(^\s?\w+)\s(\w+\s?$)' in 'Richard Volnik'  with 'First Name: \1, Last Name: \2' ) as namesFormatted
+    from dummy;
+
+    -- Number of occurrences of pattern
+    dummy_select_5
+    =
+    select
+    OCCURRENCES_REGEXPR( '\b\s?\w+\s?\b' in sampleText ) AS REGX1
+    FROM :my_dummy_table;
+
+    -- Locate
+    dummy_select_6
+    =
+    select
+    LOCATE_REGEXPR( '\b\s\w+\s\b' in sampleText occurrence 1 ) AS REGX1
+    FROM :my_dummy_table;
   ENDMETHOD.
+
 
   METHOD if_oo_adt_classrun~main.
     " Basic String functions
@@ -1031,56 +1017,6 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD string_functions_regexp
-  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
-    -- Now lets use substr_regexpr whose signature is
-    -- substr_regexpr( <patter> [FLAG <flag>] in <string> [from <start> ] [occurrence <nth>] [group <group>] )
-
-    declare my_dummy_table table ( sampleText nvarchar( 50 ) );
-    declare emails_table table ( emails nvarchar( 50 ) );
-
-    insert into :my_dummy_table values ( 'String Example Pattern' );
-    insert into :my_dummy_table values ( '123456789 ABC DEFG 987XXX321' );
-
-    insert into :emails_table values ( 'manuel.rentero@hotmail.com' );
-    insert into :emails_table values ( '123SArentero@alight.com' );
-
-    -- For flags check chapter 4.1
-    dummy_select_2
-    =
-    select
-    SUBSTR_REGEXPR( '\b([A-Z0-9.-_+&%]+)@([A-Z0-9.-_+&%]+)\b' flag 'i' in emails group 1 ) as senderName,
-    SUBSTR_REGEXPR( '\b([A-Z0-9.-_+&%]+)@([A-Z0-9.-_+&%]+)\b' flag 'i' in emails group 2 ) as hostName
-    from :emails_table;
-
-    dummy_select_3
-    =
-    select
-    SUBSTR_REGEXPR( '\b\s\w+\s\b' in sampleText occurrence 1 ) as REGX1
-    from :my_dummy_table;
-
-    -- Replacement through regexp
-    dummy_select_4
-    =
-    select
-    REPLACE_REGEXPR( '(\d{4})-(\d{2})-((?2))' in '2026-04-03'  with '\3/\2/\1' ) as dateFormatted,
-    REPLACE_REGEXPR( '(^\s?\w+)\s(\w+\s?$)' in 'Richard Volnik'  with 'First Name: \1, Last Name: \2' ) as namesFormatted
-    from dummy;
-
-    -- Number of occurrences of pattern
-    dummy_select_5
-    =
-    select
-    OCCURRENCES_REGEXPR( '\b\s?\w+\s?\b' in sampleText ) AS REGX1
-    FROM :my_dummy_table;
-
-    -- Locate
-    dummy_select_6
-    =
-    select
-    LOCATE_REGEXPR( '\b\s\w+\s\b' in sampleText occurrence 1 ) AS REGX1
-    FROM :my_dummy_table;
-  ENDMETHOD.
 
   METHOD string_functions_similarity
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -1097,6 +1033,7 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
     -- For english, if two strings sound equally, they return the same phonetic code
     SELECT SOUNDEX ('Smith'), SOUNDEX ('Smythe') FROM DUMMY;
   ENDMETHOD.
+
 
   METHOD string_functions_trim_pad
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
@@ -1120,6 +1057,7 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
    from dummy;
   ENDMETHOD.
 
+
   METHOD string_functions_unicode_conv
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
@@ -1131,4 +1069,87 @@ CLASS zmrg_cla_amdp_chapter_04 IMPLEMENTATION.
 from dummy;
   ENDMETHOD.
 
+
+  METHOD format_sqlscript_string_lib BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+    /*
+    -- Formatting functions follows python string formatting rules
+    -- **This function cannot be used on the field declaration of a select clause
+    using "PUBLIC"."SQLSCRIPT_STRING" as lib;
+
+    declare formatted_string nvarchar( 50 );
+    declare formatted_table table ( result nvarchar( 5000 ) );
+    declare arr nvarchar( 200 ) array;
+
+
+    tt = select 'Sutherland' as lname, 'Jhon'   as fname, to_double( 29.8 ) as age from dummy
+     union all
+     select 'Stark'      as lname, 'Edward' as fname, to_double( 46.1 ) as age from dummy;
+
+    formatted_string = lib:format( '{1}, {0} is {2:.2f} years old', 'Miller', 'Peter', 21.3 );
+
+    -- However this function FORMAT_TO_TABLE can be used instead to save results on a table
+    -- This table contains just a column named 'result'
+    formatted_table = lib:format_to_table( 'Complete name: {fname}, {lname}. AGE: {age:.2f}', :tt );
+
+    -- Also there is a variant for creating arrays
+    arr = lib:format_to_array( 'Complete name: {fname}, {lname}. AGE: {age}', :tt );
+*/
+
+    select * from dummy;
+  endmethod.
+
+
+  METHOD possible_time_formats BY DATABASE PROCEDURE
+  FOR HDB LANGUAGE SQLSCRIPT.
+
+    declare dummy_tab table ( t time );
+
+    -- The extended format HH24/12:MI:SS[AM|PM]
+    -- HH from 0 to 23
+    -- MI from 0 to 59
+    -- SS from 0 to 59
+
+    insert into :dummy_tab values ( '23:59:59' );
+    insert into :dummy_tab values ( to_time( '09:01:01 PM', 'HH12:MI:SS PM' ) );
+    insert into :dummy_tab values ( to_time( '05:01', 'HH24:MI' ) );
+    insert into :dummy_tab values ( '09:09:09 AM' );
+
+    dummy_select
+    =
+    select *
+    from :dummy_tab;
+  ENDMETHOD.
+
+
+  METHOD string_functions_basic
+  BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
+
+    declare my_dummy_table table ( sampleText nvarchar( 50 ) );
+    declare emails_table table ( emails nvarchar( 50 ) );
+
+    insert into :my_dummy_table values ( 'String Example Pattern' );
+    insert into :my_dummy_table values ( '123456789 ABC DEFG 987XXX321' );
+
+    insert into :emails_table values ( 'manuel.rentero@hotmail.com' );
+    insert into :emails_table values ( '123SArentero@alight.com' );
+
+    -- Here some basic string functions
+    -- for processing text
+    dummy_select
+    =
+    select
+    'A ' || ', B' || 'C .' as Concat,                                -- CONCATENATION
+    LENGTH( 'asoidjaoisjdas' ) as strLength,                         -- String Length
+    ABAP_LOWER( 'PC' ) as lowerCase,                                 -- LOWER CASE
+    ABAP_UPPER( 'pc' ) as upperCase,                                 -- UPPER CASE
+    INITCAP( 'manuel' ) || INITCAP( 'ramirez' ) as captialLetters,   -- 1st Letter CAPITAL
+    LEFT( sampleText, 8 ) as leftResult,                             -- LEFT side STR from Nth
+    RIGHT( sampleText, 8 ) as rightResult,                           -- RIGHT side STR from Nth
+    SUBSTR_BEFORE( sampleText, 'E' )  as subStringBefore,            -- SubSTR before char
+    SUBSTR_BEFORE( sampleText, '' )  as subStringBeforeEmpty,        -- All SubSTR
+    SUBSTR_AFTER( sampleText, 'E' )  as subStringAfter               -- SubSTR after char
+    from :my_dummy_table;
+
+  ENDMETHOD.
 ENDCLASS.

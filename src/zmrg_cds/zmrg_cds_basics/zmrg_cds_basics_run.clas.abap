@@ -15,12 +15,13 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cds_basics_run IMPLEMENTATION.
+CLASS ZMRG_CDS_BASICS_RUN IMPLEMENTATION.
 
 
   METHOD if_oo_adt_classrun~main.
 
   ENDMETHOD.
+
 
   METHOD fill_zmrg_cds_02.
     DATA(o_ramdon) = cl_abap_random_int=>create( min = 1 max = 5 ).
@@ -38,6 +39,7 @@ CLASS zmrg_cds_basics_run IMPLEMENTATION.
     MODIFY zmrg_cds_02 FROM TABLE @to_insert_tab.
   ENDMETHOD.
 
+
   METHOD fill_zmrg_cds_01.
     DATA line_cds_01 TYPE zmrg_cds_01.
     line_cds_01-client = sy-mandt.
@@ -49,6 +51,7 @@ CLASS zmrg_cds_basics_run IMPLEMENTATION.
     COMMIT WORK.
   ENDMETHOD.
 
+
   METHOD usage_of_cds_with_parameters.
     " Simple example of how to use cds with parameters
     DATA(todays_date) = CONV zmrg_cds_start_date( xco_cp=>sy->date( xco_cp_time=>time_zone->user )->as( io_format =  xco_cp_time=>format->abap )->value ).
@@ -57,5 +60,4 @@ CLASS zmrg_cds_basics_run IMPLEMENTATION.
                                             p_start_date = @todays_date )
     INTO TABLE @DATA(example_cds_tab).
   ENDMETHOD.
-
 ENDCLASS.

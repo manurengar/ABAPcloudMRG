@@ -26,7 +26,9 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_amdp_sample_procedure IMPLEMENTATION.
+CLASS ZMRG_CLA_AMDP_SAMPLE_PROCEDURE IMPLEMENTATION.
+
+
   METHOD get_countries
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_tab_natio.
@@ -50,6 +52,7 @@ CLASS zmrg_cla_amdp_sample_procedure IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD if_oo_adt_classrun~main.
     DATA(entries) = 20.
     me->get_countries( EXPORTING iv_langu = sy-langu
@@ -61,5 +64,4 @@ CLASS zmrg_cla_amdp_sample_procedure IMPLEMENTATION.
       out->write( |Entry #{ sy-tabix }: { <fs>-natdescr }| ).
     ENDLOOP.
   ENDMETHOD.
-
 ENDCLASS.

@@ -1,0 +1,16 @@
+@EndUserText.label: 'Renamed elements on AC'
+@MappingRole: true
+
+// when we define a projection view from a root entity, we cannot define freely AC conditions
+// We can only inhertir from this view. If you uncomment the other line you will find the error
+
+define role ZMRG_C_SALESORDER_CONTRACT {
+    grant 
+        select
+            on
+                ZMRG_C_SALESORDER_CONTRACT
+                    //where  SalesGroup = '04';
+                    where inheriting conditions from entity zmrg_i_salesorder_contract; 
+                        
+                        
+}

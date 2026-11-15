@@ -9,7 +9,10 @@ CLASS zmrg_cla_statustext_generator DEFINITION
   PRIVATE SECTION.
 ENDCLASS.
 
-CLASS zmrg_cla_statustext_generator IMPLEMENTATION.
+
+
+CLASS ZMRG_CLA_STATUSTEXT_GENERATOR IMPLEMENTATION.
+
 
   METHOD if_oo_adt_classrun~main.
     DATA: lt_status TYPE TABLE OF zmrg_status_t.

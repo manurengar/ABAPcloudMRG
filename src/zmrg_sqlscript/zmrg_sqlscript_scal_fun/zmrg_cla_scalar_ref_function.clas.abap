@@ -15,7 +15,9 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_scalar_ref_function IMPLEMENTATION.
+CLASS ZMRG_CLA_SCALAR_REF_FUNCTION IMPLEMENTATION.
+
+
   METHOD ternary_operator
   BY DATABASE FUNCTION FOR HDB
   LANGUAGE SQLSCRIPT
@@ -30,5 +32,4 @@ CLASS zmrg_cla_scalar_ref_function IMPLEMENTATION.
                   ELSE NULL
                 END;
   ENDMETHOD.
-
 ENDCLASS.

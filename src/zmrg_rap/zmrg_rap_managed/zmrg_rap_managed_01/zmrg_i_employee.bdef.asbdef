@@ -5,7 +5,7 @@ with draft;
 define behavior for zmrg_i_employee alias Employee
 implementation in class zbp_mrg_i_employee unique
 persistent table zmrg_tab_employe
-draft table zmrg_dra_employe
+draft table zmrg_dra_employe query ZMRG_DRAFT_TABLE_ACCES_CONTROL
 lock master total etag LastChangedAt
 authorization master ( instance, global )
 etag master LocalLastChangedAt

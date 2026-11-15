@@ -1,0 +1,10 @@
+@EndUserText.label: 'Redefining a CDS entity'
+@MappingRole: true
+
+// This way we preserve the AC from super AC and also add our condition
+
+define role ZMRG_AC_REDEFINED_2 {
+    grant select  on  zmrg_i_salesorder_replacement
+    redefinition where inheriting conditions from super and SalesGroup = 'AB';
+                        
+}

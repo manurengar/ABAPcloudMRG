@@ -24,7 +24,9 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_amdp_sample_tab_func IMPLEMENTATION.
+CLASS ZMRG_CLA_AMDP_SAMPLE_TAB_FUNC IMPLEMENTATION.
+
+
   METHOD get_country_text
   BY DATABASE FUNCTION FOR HDB LANGUAGE SQLSCRIPT
   OPTIONS READ-ONLY
@@ -37,6 +39,7 @@ CLASS zmrg_cla_amdp_sample_tab_func IMPLEMENTATION.
                      order by natkey;
   ENDMETHOD.
 
+
   METHOD test_amdp_table_function
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   OPTIONS READ-ONLY
@@ -47,6 +50,7 @@ CLASS zmrg_cla_amdp_sample_tab_func IMPLEMENTATION.
                  from "ZMRG_CLA_AMDP_SAMPLE_TAB_FUNC=>GET_COUNTRY_TEXT"( iv_langu => :iv_langu );
   ENDMETHOD.
 
+
   METHOD if_oo_adt_classrun~main.
     me->test_amdp_table_function( EXPORTING iv_langu = sy-langu
                                   IMPORTING rt_country = DATA(tab_natio) ).
@@ -56,5 +60,4 @@ CLASS zmrg_cla_amdp_sample_tab_func IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
 ENDCLASS.

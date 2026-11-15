@@ -14,10 +14,13 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_bcs_example_01 IMPLEMENTATION.
+CLASS ZMRG_CLA_BCS_EXAMPLE_01 IMPLEMENTATION.
+
+
   METHOD if_oo_adt_classrun~main.
     me->send_text_email( out ).
   ENDMETHOD.
+
 
   METHOD send_text_email.
     DATA email_content TYPE string.
@@ -49,5 +52,4 @@ CLASS zmrg_cla_bcs_example_01 IMPLEMENTATION.
         out->write( exception->get_text( ) ).
     ENDTRY.
   ENDMETHOD.
-
 ENDCLASS.

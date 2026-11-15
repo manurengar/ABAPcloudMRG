@@ -1,0 +1,10 @@
+@EndUserText.label: 'Redefining a CDS entity'
+@MappingRole: true
+
+// We can also specify that a new access condition will be joined with the previous by an AND condition
+
+define role ZMRG_AC_COMB_MODE_AND {
+    grant select  on  zmrg_i_salesorder_replacement
+    combination mode and where SalesGroup = 'AC';
+                        
+}

@@ -24,7 +24,9 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_amdp_sample_scal_fun IMPLEMENTATION.
+CLASS ZMRG_CLA_AMDP_SAMPLE_SCAL_FUN IMPLEMENTATION.
+
+
   METHOD get_country_text
   BY DATABASE FUNCTION FOR HDB LANGUAGE SQLSCRIPT
   OPTIONS READ-ONLY
@@ -43,6 +45,15 @@ CLASS zmrg_cla_amdp_sample_scal_fun IMPLEMENTATION.
 
   ENDMETHOD.
 
+
+  METHOD if_oo_adt_classrun~main.
+    me->test_amdp_scalar_function( EXPORTING iv_langu = sy-langu
+                                  IMPORTING rv_country_des = DATA(country_description) ).
+
+    out->write( |Country: { country_description }| ).
+  ENDMETHOD.
+
+
   METHOD test_amdp_scalar_function
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   OPTIONS READ-ONLY
@@ -52,12 +63,4 @@ CLASS zmrg_cla_amdp_sample_scal_fun IMPLEMENTATION.
     rv_country_des = "ZMRG_CLA_AMDP_SAMPLE_SCAL_FUN=>GET_COUNTRY_TEXT"(  :iv_langu  );
 
   ENDMETHOD.
-
-  METHOD if_oo_adt_classrun~main.
-    me->test_amdp_scalar_function( EXPORTING iv_langu = sy-langu
-                                  IMPORTING rv_country_des = DATA(country_description) ).
-
-    out->write( |Country: { country_description }| ).
-  ENDMETHOD.
-
 ENDCLASS.

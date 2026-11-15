@@ -101,7 +101,8 @@ ENDCLASS.
 
 
 
-CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
+CLASS ZMRG_CLA_AMDP_CHAPTER_03 IMPLEMENTATION.
+
 
   METHOD intersect_execpt_union
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -148,6 +149,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
                        where e.currency = f.currency );
   ENDMETHOD.
 
+
   METHOD get_days_between_udf
   BY DATABASE FUNCTION FOR HDB LANGUAGE SQLSCRIPT
   OPTIONS READ-ONLY.
@@ -168,6 +170,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
            from :it_grouped_rows;
 
   ENDMETHOD.
+
 
   METHOD using_map_reduce
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -199,6 +202,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD using_map_merge
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_cla_amdp_chapter_03=>get_days_between_udf.
@@ -223,6 +227,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD grouping_sets
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_basics_grouping_source.
@@ -239,6 +244,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
     order by Currency desc nulls first;
   ENDMETHOD.
 
+
   METHOD with_clause
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_basics_grouping_source.
@@ -254,6 +260,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
     from my_dummy_select_query
     where Text = 'NIG';
   ENDMETHOD.
+
 
   METHOD where_clause_fuzzy_search
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
@@ -302,6 +309,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
     when :dummy_param = '' then '.*'
     else :dummy_param end flag 's';
   ENDMETHOD.
+
 
   METHOD where_clause_exists
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -358,6 +366,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD where_clause_some_any_all
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.
 
@@ -389,6 +398,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD select_up_to_entries
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_i_basics_group_source1.
@@ -397,7 +407,6 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
     limited_entries_2 = select top 3 * from zmrg_i_basics_group_source1;
 
   ENDMETHOD.
-
 
 
   METHOD table_type_decalaration
@@ -419,6 +428,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
                        FROM dummy;
 
   ENDMETHOD.
+
 
   METHOD calling_cds_with_parameters
     BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -448,6 +458,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
                 end as f;
   ENDMETHOD.
 
+
   METHOD inner_join_example
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_i_basics_group_source1.
@@ -476,7 +487,6 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
   ENDMETHOD.
 
 
-
   METHOD cross_join_example
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_i_basics_group_source1.
@@ -493,6 +503,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
     from zmrg_i_basics_group_source1,
     ( select 'A' as col1, 1 as col2 from dummy );
   ENDMETHOD.
+
 
   METHOD left_join_example
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -514,6 +525,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD right_join_example
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_basics_grouping_source.
@@ -533,6 +545,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
    on f.currency = c.curr;
 
   ENDMETHOD.
+
 
   METHOD full_outer_join_example
     BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -554,6 +567,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
    on f.currency = c.curr;
 
   ENDMETHOD.
+
 
   METHOD lateral_join_example
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -588,6 +602,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
        on 1 = 1;
 
   ENDMETHOD.
+
 
   METHOD using_window_functions
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -661,6 +676,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
                      ORDER BY class, val;
   ENDMETHOD.
 
+
   METHOD using_subqueries
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_basics_grouping_source.
@@ -676,6 +692,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
                     where f.KeyGroup in ( select col1 from :dummy_table );
 
   ENDMETHOD.
+
 
   METHOD using_aggregate_functions
     BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
@@ -712,6 +729,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
                        where KeyGroup in ( 1, 2, 4 )
                        group by KeyGroup, Currency;
   ENDMETHOD.
+
 
   METHOD if_oo_adt_classrun~main.
     me->using_map_reduce( ).
@@ -753,6 +771,7 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
      carrier_id = :iv_carrier;
   ENDMETHOD.
 
+
   METHOD scalar_function_call
   BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT
   USING zmrg_cla_amdp_chapter_03=>get_carrier_name
@@ -764,5 +783,4 @@ CLASS zmrg_cla_amdp_chapter_03 IMPLEMENTATION.
                           f.CurrencyCode
                    from "ZMRG_I_BASICS_AVG_FLIGHT_PRICE" as f;
   ENDMETHOD.
-
 ENDCLASS.

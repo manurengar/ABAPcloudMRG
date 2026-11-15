@@ -164,6 +164,8 @@ CLASS zcx_mrg_rap_01_messages DEFINITION
         prof_picture  TYPE zmrg_employee_photo OPTIONAL
         mimetype      TYPE zmrg_mime_type OPTIONAL
         filename      TYPE zmrg_filename OPTIONAL.
+protected section.
+private section.
 ENDCLASS.
 
 

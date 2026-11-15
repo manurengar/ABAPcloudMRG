@@ -1,0 +1,35 @@
+@EndUserText.label: 'Granting access control to draft table'
+@MappingRole: true
+
+
+//By default, when you only specify draft table <draft_table>, the RAP runtime reads active instances through your CDS Entity (which supports DCL access control), but reads draft instances directly from the draft database table (<draft_table>).
+//
+//Because ABAP Dictionary database tables cannot have CDS Access Controls (DCL) attached directly to them, reading directly from the draft table bypasses DCL checks unless you place a CDS view (Draft Query View) in front of it.
+//
+//(Note: RAP still performs all transactional `INSERT`/`UPDATE`/`DELETE` draft writes directly against `<draft_table>`; the `<draft_query_view>` is usedonly for read/query operations.)
+//
+//
+//When Do You Use query <draft_query_view>?
+//
+//    1. Enforcing CDS Access Control (DCL) on Drafts (Primary Use Case)
+//    2. In Fiori Elements apps (e.g., List Reports with Editing Status = All or Own Draft / Unsaved Changes by Another User), users can query draft records.
+//    3. Without a draft query view + DCL, users who have access to the app could see draft records belonging to organizational units (e.g., Sales Organizations, Company Codes) 
+//       they are not authorized for, or see other users' private drafts.
+//    4. Defining a <draft_query_view> lets you attach a DCL (DEFINE ROLE) to enforce pfcg_auth checks or user-based restrictions (e.g., = aspect user on CreatedByUser) on 
+//       draft data.
+//    5. Security & ATC Checks in Production RAP BOs
+//    6. If your active CDS entity is protected by a DCL, standard security guidelines (and ATC checks) expect draft instances to be similarly protected so sensitive 
+//       data isn't exposed while in draft state.
+//    7. SQL-Level Calculated / Derived Fields During Draft Reads
+//    8. While draft tables persist the columns of the entity, if your active CDS view computes certain read-only/display fields dynamically via SQL expressions or 
+//       associations (and you don't want to maintain them via RAP determination logic in the draft table), the draft query view can compute those expressions dynamically on read.
+
+define role ZMRG_DRAFT_TABLE_ACCES_CONTROL {
+    grant 
+        select
+            on
+                ZMRG_DRAFT_TABLE_ACCES_CONTROL
+                    where
+                       Employeeid is not initial;
+                        
+}

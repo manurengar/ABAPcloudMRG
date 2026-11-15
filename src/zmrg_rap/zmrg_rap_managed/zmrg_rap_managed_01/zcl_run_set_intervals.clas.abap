@@ -10,6 +10,8 @@ CLASS zcl_run_set_intervals DEFINITION
       generate_intervals RETURNING VALUE(is_ok) TYPE abap_bool,
       test_intervals IMPORTING out TYPE REF TO if_oo_adt_classrun_out.
 
+protected section.
+private section.
 ENDCLASS.
 
 
