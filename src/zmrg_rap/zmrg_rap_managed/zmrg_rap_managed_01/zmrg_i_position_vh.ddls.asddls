@@ -10,6 +10,7 @@ define view entity zmrg_i_POSITION_VH
       @ObjectModel.text.element: ['PosText']
       @UI.textArrangement: #TEXT_FIRST
   key type     as Type,
+   @Semantics.language: true
   key langu    as Langu,
       @Semantics.text: true
       @Search.defaultSearchElement: true

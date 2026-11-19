@@ -13,6 +13,7 @@ define view entity zmrg_i_nationality_vh
   key natkey   as Nationality,
 
       @UI.hidden: true
+      @Semantics.language: true
   key spras    as Language,
 
       @Semantics.text: true

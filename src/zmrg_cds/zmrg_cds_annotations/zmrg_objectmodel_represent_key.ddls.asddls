@@ -7,6 +7,13 @@
 /*
 @ObjectModel.representativeKey: 'FieldName'
 
+The representative key of a cds is the part of the k ey that that represents the row for this view. The representative key is 
+often similar to the CDS name.
+
+
+Not all CDS need a representative key. Views with representative key represent discrete entities that can be connected by
+foreing keys to enrich other CDS.
+
     •  What it means: Specifies the single key element that represents the entity itself (excluding compound keys like Language or validity dates).
     •  When to use: On Dimension (I_) and Text (#TEXT) views. Target associations (@ObjectModel.foreignKey.association or @ObjectModel.text.association) match against this representative key.
 */
