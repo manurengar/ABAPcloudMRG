@@ -1,5 +1,0 @@
-@EndUserText.label: 'Unit of measure'  // Field label, Equivalent to short, medium and long of data element
-@EndUserText.quickInfo: 'Unit of measure' // Short description
-@EndUserText.heading: 'Unit of measure' // For columns headers
-@ObjectModel.sapObjectNodeTypeReference: 'zmrg_unitofmeasure'
-define type zmrg_typ_unit_of_measure: abap.unit( 3 )
