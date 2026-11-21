@@ -5,12 +5,7 @@
 @ObjectModel : { resultSet.sizeCategory: #XS }
 @Search.searchable: true
 
-/*
-@ObjectModel.text.element represent a list of elements. It is used together with Semantics.text
 
-If the list contains one text field, the first found is used as standard text. This variant does not support laguage dependent
-texts.
-*/
 define view entity ZMRG_OBJECTMODEL_TEXT_ELEMENT
   as select from zmrg_tab_positio
 {

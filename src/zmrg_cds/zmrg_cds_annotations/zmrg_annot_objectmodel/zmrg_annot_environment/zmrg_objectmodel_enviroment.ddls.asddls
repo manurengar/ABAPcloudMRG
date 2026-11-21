@@ -3,34 +3,6 @@
 @EndUserText.label: 'Annotation Object Model Example 1'
 @Metadata.ignorePropagatedAnnotations: true
 
-/*
-@Environment.systemField: #ENUM
-
-Assigns an ABAP system field to an input parameter of a CDS object for implicit parameter passing in ABAP SQL.
-
-Enums
-#CLIENT
-
-sy-mandt
-#SYSTEM_LANGUAGE
-
-sy-langu
-#USER
-
-sy-uname
-#SYSTEM_DATE
-
-sy-datum
-#SYSTEM_TIME
-
-sy-uzeit
-#USER_DATE
-
-sy-datlo
-#USER_TIMEZONE
-
-sy-zonlo
-*/
 
 define view entity ZMRG_OBJECTMODEL_ENVIROMENT
   with parameters

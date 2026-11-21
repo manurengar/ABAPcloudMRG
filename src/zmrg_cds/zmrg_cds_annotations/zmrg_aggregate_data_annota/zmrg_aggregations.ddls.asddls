@@ -3,15 +3,6 @@
 @EndUserText.label: 'Aggregation anntotations'
 @Metadata.ignorePropagatedAnnotations: true
 
-// @Aggregation.default is a metadata annotation evaluated by analytical and UI frameworks rather than the database/SQL layer:
-
-// •  ABAP Analytical Engine / Analytical Queries (`@Analytics.query: true` / `provider contract analytical_query`):
-
-//When you expose `ZMRG_AGGREGATIONS` in a RAP OData V4 service (UI or Web API), SADL translates @Aggregation.default into Org.OData.Aggregation.V1 annotations in $metadata:
-
-//    •  Fields with #SUM, #AVG, #MIN, #MAX, #COUNT_DISTINCT are exposed as aggregatable measures (CustomAggregate / AggregatableProperties).
-//    •  #NONE explicitly tells OData V4 / UI clients not to aggregate AmountNone by default.
-//    •  Unannotated fields (Username, LastName, Currency) can be used as groupable dimensions (GroupableProperties).
 define view entity ZMRG_AGGREGATIONS
   as select from zmrg_cds_01
 {

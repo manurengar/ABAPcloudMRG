@@ -2,7 +2,6 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Annotation Object Model Example 1'
 @Metadata.ignorePropagatedAnnotations: true
-
 /*
 2. Keys & Entity Semantics (Header Level)
 

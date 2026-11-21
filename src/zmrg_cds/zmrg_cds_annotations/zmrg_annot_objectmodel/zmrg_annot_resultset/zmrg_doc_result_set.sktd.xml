@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SKTD" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <KTD_OBJECT>
+    <NAME>ZMRG_DOC_RESULT_SET</NAME>
+    <TYPE>GENERAL_TEXT</TYPE>
+    <SOURCE_CONTENT_TYPE>02</SOURCE_CONTENT_TYPE>
+    <REF_OBJ_TYPE>DEVC</REF_OBJ_TYPE>
+    <REF_OBJ_NAME>ZMRG_ANNOT_RESULTSET</REF_OBJ_NAME>
+    <ABAP_LANGUAGE_VERSION>X</ABAP_LANGUAGE_VERSION>
+    <CONTENT>
+     <item>
+      <NAME>ZMRG_DOC_RESULT_SET</NAME>
+      <LANGU>E</LANGU>
+      <COMPONENT_UUID>spMygoGeH9G5tFyrkLpL</COMPONENT_UUID>
+      <SOURCE_CONTENT>QE9iamVjdE1vZGVsLnJlc3VsdFNldC5zaXplQ2F0ZWdvcnk6ICNYUwoKV2hhdCBpdCBtZWFuczog
+VGVsbHMgdGhlIHJ1bnRpbWUgdGhhdCB0aGUgdmlldyByZXR1cm5zIGEgdmVyeSBzbWFsbCByZXN1
+bHQgc2V0ICh0eXBpY2FsbHkgPCAyMDAgcm93cykuIFdoZW4gdG8gdXNlOiBPbiBzbWFsbCBWYWx1
+ZSBIZWxwIG9yIFN0YXR1cy9Eb21haW4gQ0RTIHZpZXdzIHNvIEZpb3JpIEVsZW1lbnRzIGF1dG9t
+YXRpY2FsbHkgcmVuZGVycyB0aGUgZmllbGQgYXMgYSBEcm9wZG93biBsaXN0IGluc3RlYWQgb2Yg
+YSBkaWFsb2cgcG9wdXAu</SOURCE_CONTENT>
+     </item>
+    </CONTENT>
+   </KTD_OBJECT>
+  </asx:values>
+ </asx:abap>
+</abapGit>

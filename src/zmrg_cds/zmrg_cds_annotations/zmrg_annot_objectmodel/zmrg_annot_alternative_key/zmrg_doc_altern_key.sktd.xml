@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SKTD" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <KTD_OBJECT>
+    <NAME>ZMRG_DOC_ALTERN_KEY</NAME>
+    <TYPE>GENERAL_TEXT</TYPE>
+    <SOURCE_CONTENT_TYPE>02</SOURCE_CONTENT_TYPE>
+    <REF_OBJ_TYPE>DEVC</REF_OBJ_TYPE>
+    <REF_OBJ_NAME>ZMRG_ANNOT_ALTERNATIVE_KEY</REF_OBJ_NAME>
+    <ABAP_LANGUAGE_VERSION>X</ABAP_LANGUAGE_VERSION>
+    <CONTENT>
+     <item>
+      <NAME>ZMRG_DOC_ALTERN_KEY</NAME>
+      <LANGU>E</LANGU>
+      <COMPONENT_UUID>spMygoGeH9G5tD1HNgEL</COMPONENT_UUID>
+      <SOURCE_CONTENT>QE9iamVjdE1vZGVsLmFsdGVybmF0aXZlS2V5IGlzIG5vdCBhdmFpbGFibGUgb24gem1yZ19vYmpl
+Y3Rtb2RlbF9hbHRlcm5hdGlfa2V5LmFzZGRscyBiZWNhdXNlIHRoaXMgQ0RTIHZpZXcgZW50aXR5
+IHVzZXMgdGhlIEFCQVAgZm9yIENsb3VkIERldmVsb3BtZW50IGxhbmd1YWdlIHZlcnNpb24gKGFi
+YXBMYW5ndWFnZVZlcnNpb249ImNsb3VkRGV2ZWxvcG1lbnQiKSwgYW5kIEBPYmplY3RNb2RlbC5h
+bHRlcm5hdGl2ZUtleSBpcyBub3QgcmVsZWFzZWQgZm9yIENsb3VkIERldmVsb3BtZW50IChDMSBj
+b250cmFjdCkuCgpUaGUgYWx0ZXJuYXRpdmUgd291bGQgYmUgdG8gdXNlOgoKQE9iamVjdE1vZGVs
+LnNlbWFudGljS2V5OiBbICdFbXBsb3llZUlkJyBd</SOURCE_CONTENT>
+     </item>
+    </CONTENT>
+   </KTD_OBJECT>
+  </asx:values>
+ </asx:abap>
+</abapGit>

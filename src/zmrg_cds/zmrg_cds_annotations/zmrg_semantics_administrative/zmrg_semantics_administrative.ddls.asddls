@@ -2,23 +2,6 @@
 @EndUserText.label: 'Child entity view'
 @Metadata.ignorePropagatedAnnotations: true
 
-/*
-In ABAP RAP, these @Semantics annotations mark administrative 
-audit fields. When used in a Managed (or Draft-enabled) 
-RAP Business Object, the RAP runtime automatically populates 
-and updates these fields without requiring custom ABAP code, 
-and uses the timestamps for optimistic concurrency control (ETags) 
-and draft handling.
-
-
-`@Semantics.systemDate` and `@Semantics.systemTime` only support createdAt and lastChangedAt 
- (localInstanceLastChangedAt exists only under @Semantics.systemDateTime).
- 
-In a real Managed RAP Business Object where RAP populates these automatically, t
-hose fields would be persisted columns on the database table (using types such as abp_creation_date / abp_lastchange_date and abp_creation_time / abp_lastchange_time), 
-though @Semantics.systemDateTime timestamps are preferred in modern RAP for ETag and timezone accuracy.
-*/
-
 define view entity ZMRG_SEMANTICS_ADMINISTRATIVE
   as select from zmrg_tab_child
 {

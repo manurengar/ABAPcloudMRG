@@ -2,18 +2,7 @@
 @EndUserText.label: 'Child entity view'
 @Metadata.ignorePropagatedAnnotations: true
 
-/*
-@ObjectModel.alternativeKey is not available on
-zmrg_objectmodel_alternati_key.asddls because this CDS view entity
-uses the ABAP for Cloud Development language version
-(abapLanguageVersion="cloudDevelopment"),
-and @ObjectModel.alternativeKey is not released
-for Cloud Development (C1 contract).
 
-The alternative would be to use
-
-@ObjectModel.semanticKey: [ 'EmployeeId' ]
-*/
 @ObjectModel.semanticKey: [ 'EmployeeId' ]
 
 define view entity ZMRG_OBJECTMODEL_ALTERNATI_KEY
